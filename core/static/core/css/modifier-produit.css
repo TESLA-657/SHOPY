@@ -1,0 +1,653 @@
+/* ============================================
+   MODIFIER PRODUIT - Style Moderne Premium
+   ============================================ */
+
+:root {
+  /* Palette principale - Dark Theme Premium */
+  --mp-bg: #0d1117;
+  --mp-bg-2: #161b22;
+  --mp-bg-3: #21262d;
+  --mp-card: rgba(255, 255, 255, 0.06);
+  --mp-card-2: rgba(255, 255, 255, 0.10);
+  --mp-border: rgba(255, 255, 255, 0.12);
+  --mp-border-2: rgba(255, 255, 255, 0.20);
+  
+  /* Texte */
+  --mp-text: rgba(255, 255, 255, 0.92);
+  --mp-text-2: rgba(255, 255, 255, 0.72);
+  --mp-text-muted: rgba(255, 255, 255, 0.50);
+  
+  /* Accents */
+  --mp-primary: #238636;
+  --mp-primary-hover: #2ea043;
+  --mp-primary-glow: rgba(35, 134, 54, 0.4);
+  --mp-blue: #388bfd;
+  --mp-yellow: #d29922;
+  --mp-red: #f85149;
+  --mp-orange: #f0883e;
+  --mp-purple: #a371f7;
+  
+  /* Ombres */
+  --mp-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --mp-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --mp-shadow-glow: 0 0 30px var(--mp-primary-glow);
+  
+  /* Border radius */
+  --mp-radius: 12px;
+  --mp-radius-2: 16px;
+  --mp-radius-full: 9999px;
+  
+  /* Transitions */
+  --mp-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   WRAPPER PRINCIPAL
+   ============================================ */
+
+.mp-container {
+  background: radial-gradient(1000px 600px at 15% 0%, rgba(35, 134, 54, 0.12), transparent 50%),
+              radial-gradient(800px 500px at 85% 25%, rgba(56, 139, 253, 0.08), transparent 50%),
+              linear-gradient(180deg, rgba(13, 17, 23, 0.98), rgba(10, 14, 20, 0.98));
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.mp-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   HEADER STYLISÉ
+   ============================================ */
+
+.mp-header {
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-2);
+  padding: 28px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mp-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--mp-primary), var(--mp-blue), var(--mp-purple));
+}
+
+.mp-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.mp-header-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mp-header-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--mp-primary), var(--mp-blue));
+  border-radius: var(--mp-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: var(--mp-shadow-glow);
+}
+
+.mp-header-text h2 {
+  color: var(--mp-text);
+  font-weight: 800;
+  font-size: 24px;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.mp-header-text p {
+  color: var(--mp-text-muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+.mp-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius);
+  color: var(--mp-text-2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: var(--mp-transition);
+}
+
+.mp-back-btn:hover {
+  background: var(--mp-card-2);
+  border-color: var(--mp-border-2);
+  color: var(--mp-text);
+  transform: translateX(-3px);
+}
+
+/* ============================================
+   CARD PRINCIPALE
+   ============================================ */
+
+.mp-card {
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-2);
+  box-shadow: var(--mp-shadow);
+  padding: 8px;
+}
+
+.mp-card-inner {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--mp-radius);
+  padding: 28px;
+}
+
+/* ============================================
+   ALERTES ERRORS
+   ============================================ */
+
+.mp-alert {
+  background: rgba(248, 81, 73, 0.12);
+  border: 1px solid rgba(248, 81, 73, 0.4);
+  border-radius: var(--mp-radius);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.mp-alert-title {
+  color: #ff7b72;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mp-alert-list {
+  margin: 0;
+  padding-left: 20px;
+  color: rgba(255, 183, 178, 0.9);
+  font-size: 14px;
+}
+
+.mp-alert-list li {
+  margin: 4px 0;
+}
+
+/* ============================================
+   FORM GROUPS
+   ============================================ */
+
+.mp-form-group {
+  margin-bottom: 20px;
+}
+
+.mp-label {
+  display: block;
+  color: var(--mp-text-2);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mp-label-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ============================================
+   INPUTS & TEXTAREAS
+   ============================================ */
+
+.mp-input,
+.mp-textarea,
+.mp-select {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--mp-bg-2);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius);
+  color: var(--mp-text);
+  font-size: 15px;
+  transition: var(--mp-transition);
+  outline: none;
+}
+
+.mp-input::placeholder {
+  color: var(--mp-text-muted);
+}
+
+.mp-textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.mp-input:focus,
+.mp-textarea:focus,
+.mp-select:focus {
+  border-color: var(--mp-primary);
+  box-shadow: 0 0 0 3px var(--mp-primary-glow),
+              var(--mp-shadow-2);
+  background: var(--mp-bg-3);
+}
+
+.mp-input:hover,
+.mp-textarea:hover,
+.mp-select:hover {
+  border-color: var(--mp-border-2);
+}
+
+/* ============================================
+   ROW - COLUMNS
+   ============================================ */
+
+.mp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.mp-col {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* ============================================
+   PHOTO SECTION
+   ============================================ */
+
+.mp-photo-section {
+  background: var(--mp-bg-2);
+  border: 1px dashed var(--mp-border);
+  border-radius: var(--mp-radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.mp-photo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(35, 134, 54, 0.15);
+  border: 1px solid var(--mp-primary);
+  border-radius: var(--mp-radius);
+  color: var(--mp-primary-hover);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--mp-transition);
+}
+
+.mp-photo-btn:hover {
+  background: rgba(35, 134, 54, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
+}
+
+.mp-photo-preview {
+  display: inline-block;
+  margin-left: 12px;
+  vertical-align: middle;
+}
+
+.mp-photo-preview img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid var(--mp-border);
+  box-shadow: var(--mp-shadow-2);
+}
+
+.mp-photo-input {
+  display: none;
+}
+
+.mp-photo-label {
+  display: block;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--mp-bg-3);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius);
+  color: var(--mp-text-muted);
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--mp-transition);
+}
+
+.mp-photo-label:hover {
+  border-color: var(--mp-border-2);
+  color: var(--mp-text-2);
+}
+
+/* ============================================
+   PROMO BOX - REDESIGN
+   ============================================ */
+
+.mp-promo-box {
+  background: linear-gradient(135deg, rgba(210, 153, 34, 0.1), rgba(210, 153, 34, 0.05));
+  border: 1px solid rgba(210, 153, 34, 0.3);
+  border-radius: var(--mp-radius);
+  padding: 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mp-promo-box::before {
+  content: "🔥";
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 32px;
+  opacity: 0.3;
+}
+
+.mp-promo-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mp-promo-checkbox {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--mp-yellow);
+  cursor: pointer;
+}
+
+.mp-promo-label {
+  color: var(--mp-yellow);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mp-promo-content {
+  display: none;
+  animation: fadeSlide 0.3s ease;
+}
+
+.mp-promo-content.active {
+  display: block;
+}
+
+.mp-promo-hint {
+  color: var(--mp-text-muted);
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+/* ============================================
+   SUBMIT BUTTON
+   ============================================ */
+
+.mp-submit-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, var(--mp-primary), #1a7f2e);
+  border: none;
+  border-radius: var(--mp-radius);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: var(--mp-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.mp-submit-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.mp-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--mp-primary-glow);
+}
+
+.mp-submit-btn:hover::before {
+  left: 100%;
+}
+
+.mp-submit-btn:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--mp-primary-glow);
+  }
+  50% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .mp-container {
+    padding: 16px;
+  }
+  
+  .mp-header {
+    padding: 20px;
+  }
+  
+  .mp-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .mp-header-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+  
+  .mp-header-text h2 {
+    font-size: 20px;
+  }
+  
+  .mp-card-inner {
+    padding: 20px;
+  }
+  
+  .mp-row {
+    flex-direction: column;
+  }
+  
+  .mp-col {
+    width: 100%;
+  }
+  
+  .mp-input,
+  .mp-textarea {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+}
+
+/* ============================================
+   CHECKBOX & RADIO CUSTOM
+   ============================================ */
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--mp-primary);
+}
+
+/* File input custom */
+input[type="file"] {
+  background: var(--mp-bg-2);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius);
+  padding: 12px;
+  color: var(--mp-text-muted);
+}
+
+input[type="file"]::file-selector-button {
+  background: var(--mp-card-2);
+  border: 1px solid var(--mp-border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: var(--mp-text);
+  cursor: pointer;
+  transition: var(--mp-transition);
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: var(--mp-bg-3);
+  border-color: var(--mp-border-2);
+}
+
+/* ============================================
+   DJANGO FORM WIDGET STYLES
+   ============================================ */
+
+/* Cible les widgets Django directement */
+.mp-form-group input[type="text"],
+.mp-form-group input[type="number"],
+.mp-form-group input[type="email"],
+.mp-form-group input[type="password"],
+.mp-form-group input[type="tel"],
+.mp-form-group input[type="url"],
+.mp-form-group input[type="search"],
+.mp-form-group input[type="date"],
+.mp-form-group input[type="datetime-local"],
+.mp-form-group input[type="time"],
+.mp-form-group input[type="file"],
+.mp-form-group select,
+.mp-form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--mp-bg-2);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius);
+  color: var(--mp-text);
+  font-size: 15px;
+  transition: var(--mp-transition);
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.mp-form-group input::placeholder,
+.mp-form-group textarea::placeholder {
+  color: var(--mp-text-muted);
+}
+
+.mp-form-group input:focus,
+.mp-form-group select:focus,
+.mp-form-group textarea:focus {
+  border-color: var(--mp-primary);
+  box-shadow: 0 0 0 3px var(--mp-primary-glow),
+              var(--mp-shadow-2);
+  background: var(--mp-bg-3);
+}
+
+.mp-form-group input:hover,
+.mp-form-group select:hover,
+.mp-form-group textarea:hover {
+  border-color: var(--mp-border-2);
+}
+
+/* Labels Django */
+.mp-form-group label {
+  display: block;
+  color: var(--mp-text-2);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Error states */
+.mp-form-group input.is-invalid,
+.mp-form-group select.is-invalid,
+.mp-form-group textarea.is-invalid {
+  border-color: var(--mp-red);
+}
+
+.mp-form-group input.is-invalid:focus,
+.mp-form-group select.is-invalid:focus,
+.mp-form-group textarea.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(248, 81, 73, 0.3);
+}
+
+/* Select options */
+.mp-form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+/* Number input arrows */
+.mp-form-group input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.mp-form-group input[type="number"]::-webkit-inner-spin-button,
+.mp-form-group input[type="number"]::-webkit-outer-spin-button {
+  opacity: 0.5;
+}

@@ -1,0 +1,252 @@
+/* Styles dédiés aux pages de confirmations / paiements / notifications / inscription vendeur */
+
+:root{
+  --shopy-primary:#28a745;
+  --shopy-danger:#e74c3c;
+  --shopy-warning:#ffc107;
+  --shopy-bg-dark:#1e1e2e;
+}
+
+/* Centrage générique pour les écrans de confirmation */
+.confirmation-screen{
+  min-height:70vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.confirmation-card{
+  width:100%;
+  max-width:680px;
+  text-align:center;
+  padding:24px;
+}
+
+.confirmation-card .confirmation-icon{
+  font-size:64px;
+  line-height:1;
+}
+
+/* Table admin paiements */
+.admin-paiements-page .page-title{
+  font-weight:700;
+  margin-bottom:16px;
+}
+
+.admin-paiements-page .table thead{
+  background:var(--shopy-primary) !important;
+  color:#fff !important;
+}
+
+.admin-paiements-page .table{
+  border-radius:12px;
+  overflow:hidden;
+}
+
+/* Choix abonnement (cartes) */
+.abonnement-plans-wrap{
+  padding-top:40px;
+  padding-bottom:10px;
+}
+
+.abonnement-plan-card{
+  border-radius:16px;
+  border:2px solid #e0e0e0;
+  padding:24px;
+  height:100%;
+}
+
+.abonnement-plan-card.plan-pro{
+  border-color:var(--shopy-primary);
+  position:relative;
+}
+
+.abonnement-plan-card.plan-business{
+  border-color:#1a1a2e;
+  background:#1a1a2e;
+  color:#fff;
+}
+
+.abonnement-popular-ribbon{
+  position:absolute;
+  top:-14px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--shopy-primary);
+  color:#fff;
+  padding:4px 20px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+/* Notifications */
+.notifications-page .notif-card{
+  border-radius:10px;
+  border:none;
+  box-shadow:0 0.125rem 0.25rem rgba(0,0,0,0.05);
+}
+
+/* Dash product snippet */
+.dashboard-products-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:16px;
+  margin-top:12px;
+}
+
+.dashboard-product-card{
+  background:rgba(255,255,255,0.85);
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,0.06);
+}
+
+.dashboard-product-media{
+  position:relative;
+  padding:14px;
+  background:linear-gradient(180deg, rgba(40,167,69,0.08), rgba(40,167,69,0));
+}
+
+.dashboard-product-media img{
+  width:100%;
+  height:170px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,0.06);
+  background:#fff;
+}
+
+.dashboard-product-media .placeholder{
+  width:100%;
+  height:170px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  background:rgba(0,0,0,0.03);
+  color:#666;
+  font-size:40px;
+}
+
+.dashboard-product-badges{
+  position:absolute;
+  top:14px;
+  right:14px;
+  display:flex;
+  gap:6px;
+}
+
+.dashboard-product-badge{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:700;
+  color:#fff;
+}
+
+.dashboard-product-badge.on{ background:var(--shopy-primary); }
+.dashboard-product-badge.off{ background:#6c757d; }
+
+.dashboard-product-actions-block{
+  margin-top:10px;
+  display:flex;
+  gap:8px;
+}
+
+.btn-modifier-db{
+  flex:1;
+  background:var(--shopy-primary);
+  color:#fff;
+  text-decoration:none;
+  text-align:center;
+  border-radius:10px;
+  padding:10px 12px;
+  font-weight:700;
+}
+
+.btn-supprimer-db{
+  flex:1;
+  background:var(--shopy-danger);
+  color:#fff;
+  text-decoration:none;
+  text-align:center;
+  border-radius:10px;
+  padding:10px 12px;
+  font-weight:700;
+}
+
+.dashboard-product-info{
+  padding:14px;
+}
+
+.dashboard-product-name{
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.dashboard-product-meta{
+  margin-bottom:12px;
+  color:#666;
+  font-size:14px;
+}
+
+.dashboard-product-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.dashboard-product-price{
+  font-weight:800;
+}
+
+.dashboard-stock{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:800;
+  background:rgba(40,167,69,0.12);
+  color:var(--shopy-primary);
+}
+.dashboard-stock.low{
+  background:rgba(255,193,7,0.15);
+  color:#b57f00;
+}
+.dashboard-stock.zero{
+  background:rgba(231,76,60,0.15);
+  color:#c0392b;
+}
+
+.dashboard-product-footer .dashboard-stock.ok{
+  background:rgba(40,167,69,0.12);
+  color:var(--shopy-primary);
+}
+
+/* état vide dashboard */
+.account-empty-state{
+  margin-top:14px;
+  padding:18px;
+  background:rgba(255,255,255,0.75);
+  border-radius:14px;
+  text-align:center;
+  color:#666;
+}
+
+/* Signaler vendeur */
+.signaler-vendeur-card{
+  max-width:480px;
+  width:100%;
+  border-radius:12px;
+  border:none;
+  padding:20px;
+  box-shadow:0 0.125rem 0.25rem rgba(0,0,0,0.05);
+}
+
+/* Cartes notifications */
+.notifications-page .notif-left{
+  border-left-width:4px;
+  border-left-style:solid;
+}
+

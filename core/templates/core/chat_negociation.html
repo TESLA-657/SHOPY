@@ -1,0 +1,383 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+<style>
+  /* === CHAT ULTRA MODERNE STYLÉ === */
+  .chat-wrap{padding:0 12px 16px;}
+  
+  /* Produit en négociation */
+  .negociation-produit{background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);padding:16px;border-radius:16px 16px 0 0;color:white;}
+  .negociation-produit-card{background:white;border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+  .negociation-produit-img{width:60px;height:60px;border-radius:10px;object-fit:cover;}
+  .negociation-produit-info{flex:1;}
+  .negociation-produit-nom{font-weight:600;font-size:14px;margin:0 0 4px 0;color:#333;}
+  .negociation-produit-prix{font-size:16px;font-weight:700;color:#11998e;}
+  .negociation-produit-vendeur{font-size:12px;color:#666;margin:0;}
+  
+  .chat-card{background:rgba(255,255,255,0.98);border-radius:20px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+  .chat-header{padding:16px 20px;border-bottom:1px solid #ececec;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;}
+  .chat-head-main{display:flex;flex-direction:column;gap:4px}
+  .chat-header h3{margin:0;font-size:16px;font-weight:600;}
+  .chat-sub{font-size:12px;opacity:0.9;}
+  .chat-actions{display:flex;gap:8px;align-items:center;}
+  
+  /* Status en ligne */
+  .chat-status{display:flex;align-items:center;gap:6px;font-size:12px;}
+  .chat-status-dot{width:8px;height:8px;border-radius:50%;background:#2ecc71;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+  
+  .chat-messages{height:420px;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #f0f2f5 0%, #e8ecf1 100%);}
+  .chat-bubble{max-width:80%;padding:12px 16px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);animation:bubblePop 0.3s ease-out;}
+  @keyframes bubblePop{from{opacity:0;transform:translateY(10px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);}}
+  
+  /* Bulle client */
+  .bubble-client{background:linear-gradient(135deg, #11998e 0%, #38ef7d 100%);color:white;margin-left:auto;border-bottom-right-radius:6px;}
+  .bubble-client .chat-text{font-size:14px;line-height:1.4;}
+  
+  /* Bulle vendeur */
+  .bubble-vendeur{background:#fff;margin-right:auto;border-bottom-left-radius:6px;border:1px solid #e8e8e8;}
+  .bubble-vendeur .chat-text{color:#333;font-size:14px;line-height:1.4;}
+  
+  /* Bulle speciale prix */
+  .bubble-prix{background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%);color:white;text-align:center;padding:16px 20px;}
+  .bubble-prix .chat-text{font-size:20px;font-weight:700;}
+  .bubble-prix .bubble-meta{color:rgba(255,255,255,0.9);}
+  
+  .bubble-meta{font-size:11px;margin-top:6px;opacity:0.8;display:flex;align-items:center;gap:6px;justify-content:flex-end;}
+  .bubble-client .bubble-meta{color:rgba(255,255,255,0.9);}
+  .bubble-vendeur .bubble-meta{color:#888;}
+  .message-status{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:700;}
+  .message-status.read{background:#2563eb;color:#fff;}
+  .message-status.sent{background:#dbeafe;color:#1d4ed8;}
+  
+  /* Zone input moderne */
+  .chat-input{padding:16px;border-top:1px solid #e8e8e8;display:flex;flex-direction:column;gap:12px;background:#fff;position:sticky;bottom:0;box-shadow:0 -4px 20px rgba(0,0,0,0.08);}
+  
+  /* Quick price buttons */
+  .quick-prices{display:flex;gap:8px;flex-wrap:wrap;}
+  .quick-price{background:linear-gradient(135deg, #11998e 0%, #38ef7d 100%);color:white;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+  .quick-price:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(17,153,142,0.4);}
+  
+  .input-row{display:flex;gap:10px;align-items:flex-end;}
+  .chat-input textarea{flex:1;resize:none;border-radius:16px;padding:12px 16px;border:2px solid #e8e8e8;font-size:14px;transition:border-color 0.3s;min-height:44px;}
+  .chat-input textarea:focus{outline:none;border-color:#667eea;}
+  .chat-input input[type=number]{width:120px;border-radius:16px;padding:12px 14px;border:2px solid #e8e8e8;font-size:14px;transition:border-color 0.3s;}
+  .chat-input input[type=number]:focus{outline:none;border-color:#667eea;}
+  
+  /* Bouton envoyer stylé */
+  .chat-send-btn{background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;border:none;border-radius:16px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:8px;}
+  .chat-send-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(102,126,234,0.4);}
+  .chat-send-btn:active{transform:translateY(0);}
+  
+  .btn-danger-soft{background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:12px;padding:8px 14px;font-size:13px;transition:all 0.3s;}
+  .btn-danger-soft:hover{background:rgba(255,255,255,0.3);}
+  
+  /* Empty state moderne */
+  .empty-chat{text-align:center;padding:40px 20px;}
+  .empty-chat-icon{font-size:48px;margin-bottom:16px;animation:bounce 2s infinite;}
+  @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+  .empty-chat-title{font-size:16px;font-weight:600;color:#333;margin:0 0 8px 0;}
+  .empty-chat-sub{font-size:13px;color:#888;margin:0;}
+  
+  /* Responsive */
+  @media (max-width: 480px){
+    .chat-bubble{max-width:90%;}
+    .negociation-produit-card{flex-direction:column;text-align:center;}
+    .negociation-produit-img{width:80px;height:80px;}
+    .input-row{flex-direction:column;}
+    .chat-input input[type=number]{width:100%;}
+    .quick-prices{justify-content:center;}
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="account-container">
+  <div class="chat-wrap">
+    <div class="chat-card">
+<div class="chat-header">
+        <div class="chat-head-main">
+          <h3>💬 {{ negociation.client_nom|default:'Client' }} ↔ {{ negociation.vendeur.nom_boutique }}</h3>
+          <div class="chat-sub">Produit : {{ negociation.produit.nom }} • Fil partagé client/vendeur</div>
+        </div>
+
+        <div class="chat-actions">
+          <form method="post" action="{% url 'effacer_discussion' negociation.pk %}" onsubmit="return confirm('Effacer toute la discussion ?');">
+            {% csrf_token %}
+<button type="submit" class="account-btn btn-danger-soft">🗑️ Effacer discussion</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Produit en négociation -->
+      <div class="negociation-produit">
+        <div class="negociation-produit-card">
+          {% if negociation.produit.image %}
+          <img src="{{ negociation.produit.image.url }}" alt="{{ negociation.produit.nom }}" class="negociation-produit-img">
+          {% else %}
+          <div class="negociation-produit-img" style="background:#ddd;display:flex;align-items:center;justify-content:center;font-size:24px;">📦</div>
+          {% endif %}
+          <div class="negociation-produit-info">
+            <p class="negociation-produit-nom">{{ negociation.produit.nom }}</p>
+            <p class="negociation-produit-prix">{{ negociation.produit.prix }} GNF</p>
+            <p class="negociation-produit-vendeur">🏪 {{ negociation.vendeur.nom_boutique }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="chat-messages" class="chat-messages">
+        <!-- Afficher le message initial de proposition de prix -->
+        <div class="chat-bubble bubble-client">
+          <div class="chat-text">
+            <strong>💰 Proposition de prix: {{ negociation.prix_propose }} GNF</strong>
+            {% if negociation.message %}<br>{{ negociation.message }}{% endif %}
+          </div>
+          <div class="bubble-meta">{{ negociation.date|date:"d/m/Y H:i" }} • Message initial</div>
+        </div>
+        
+        <!-- Afficher les messages du chat échangés -->
+        {% if messages %}
+          {% for m in messages %}
+            <div class="chat-bubble {% if m.sender_type == 'vendeur' %}bubble-vendeur{% else %}bubble-client{% endif %}">
+              <div class="chat-text">{{ m.content|default:'...' }}</div>
+              <div class="bubble-meta">
+                {% if m.prix_propose %}Prix proposé: {{ m.prix_propose }} GNF{% if m.content %} • {% endif %}{% endif %}{{ m.created_at|date:"d/m/Y H:i" }}
+                {% if m.sender_type == sender_type %}
+                  <span class="message-status {% if sender_type == 'vendeur' and negociation.client_lu or sender_type == 'client' and negociation.vendor_lu %}read{% else %}sent{% endif %}">
+                    {% if sender_type == 'vendeur' and negociation.client_lu or sender_type == 'client' and negociation.vendor_lu %}✓✓{% else %}✓{% endif %}
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-chat-message" style="text-align:center;color:#999;padding:20px;">
+            <p>Aucun message encore échangé.</p>
+            <p style="font-size:12px;">Commencez la discussion ci-dessous.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="chat-input">
+        <textarea id="chat-message" rows="2" placeholder="Écrire un message..."></textarea>
+        <input id="chat-prix" type="number" placeholder="Prix (GNF)" min="0">
+        <button id="chat-send" class="account-btn account-btn-primary" type="button" style="flex:0; padding:10px 16px;">Envoyer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="account-buttons-single">
+    {% if sender_type == 'vendeur' %}
+      <a href="{% url 'messages_vendeur' %}" class="account-btn account-btn-secondary account-btn-block">← Retour Messages vendeur</a>
+    {% else %}
+      <a href="{% url 'mes_messages_client' %}" class="account-btn account-btn-secondary account-btn-block">← Retour Mes messages</a>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  const negId = Number("{{ negociation.pk|escapejs }}");
+  const chatMessagesEl = document.getElementById('chat-messages');
+  const msgEl = document.getElementById('chat-message');
+  const prixEl = document.getElementById('chat-prix');
+  const sendBtn = document.getElementById('chat-send');
+
+  // WebSocket connection with better error handling
+  const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  const wsUrl = `${protocol}://${window.location.host}/ws/negociation/${negId}/`;
+  let socket = null;
+  let wsConnected = false;
+  let reconnectAttempts = 0;
+  const maxReconnectAttempts = 3;
+
+  function connectWebSocket() {
+    try {
+      socket = new WebSocket(wsUrl);
+      
+      socket.onopen = function(e) {
+        console.log('WebSocket connecté');
+        wsConnected = true;
+        reconnectAttempts = 0;
+      };
+
+      socket.onclose = function(e) {
+        console.log('WebSocket déconnecté, code:', e.code);
+        wsConnected = false;
+        
+        // Try reconnect if not intentionally closed
+        if (e.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
+          reconnectAttempts++;
+          console.log(`Reconnection attempt ${reconnectAttempts}/${maxReconnectAttempts}`);
+          setTimeout(connectWebSocket, 2000 * reconnectAttempts);
+        }
+      };
+
+      socket.onerror = function(e) {
+        console.error('WebSocket error:', e);
+        // Error will be handled by onclose
+      };
+
+      socket.onmessage = function(e){
+        try {
+          const data = JSON.parse(e.data);
+          if (data && data.message) {
+            appendMessage(data.message);
+          }
+        } catch (err) {
+          console.error('Error parsing message:', err);
+        }
+      };
+    } catch (err) {
+      console.error('Error creating WebSocket:', err);
+    }
+  }
+
+  // Initial connection
+  connectWebSocket();
+
+  function appendMessage(m) {
+    const wrap = document.createElement('div');
+    const isVendeur = m.sender_type === 'vendeur';
+    wrap.className = 'chat-bubble ' + (isVendeur ? 'bubble-vendeur' : 'bubble-client');
+
+    const text = document.createElement('div');
+    text.className = 'chat-text';
+    text.textContent = m.content || '';
+    wrap.appendChild(text);
+
+    const meta = document.createElement('div');
+    meta.className = 'bubble-meta';
+    const dateText = m.created_at ? new Date(m.created_at).toLocaleString() : '';
+    if (m.prix_propose) {
+      meta.textContent = `Prix proposé: ${m.prix_propose} GNF${dateText ? ' • ' + dateText : ''}`;
+    } else {
+      meta.textContent = dateText;
+    }
+    wrap.appendChild(meta);
+
+    chatMessagesEl.appendChild(wrap);
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+  }
+
+  function send(){
+    const message = (msgEl.value || '').trim();
+    const prix = prixEl.value ? Number(prixEl.value) : null;
+
+    if (!message && (prix === null || Number.isNaN(prix))) {
+      alert("Veuillez écrire un message ou proposer un prix.");
+      return;
+    }
+    
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+      // Fallback: Send via HTTP POST
+      console.log('Using HTTP fallback...');
+      sendViaHttpFallback(message, prix);
+      return;
+    }
+
+    const payload = {
+      message: message,
+      prix_propose: (prix === null || Number.isNaN(prix)) ? null : prix,
+      sender_type: "{{ sender_type|default:'client'|escapejs }}"
+    };
+
+    socket.send(JSON.stringify(payload));
+    
+    // Show confirmation immediately
+    showSendConfirmation(message, prix);
+
+    msgEl.value = '';
+    prixEl.value = '';
+    msgEl.focus();
+  }
+  
+function sendViaHttpFallback(message, prix) {
+    const formData = new FormData();
+    formData.append('message', message);
+    formData.append('prix_propose', prix || '');
+    formData.append('sender_type', "{{ sender_type|default:'client'|escapejs }}");
+    formData.append('negociation_id', negId);
+
+    // Show sending indicator
+    const btn = document.getElementById('chat-send');
+    const origText = btn.textContent;
+    btn.textContent = 'Envoi...';
+    btn.disabled = true;
+
+    fetch("{% url 'envoyer_message' %}", {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: formData,
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}'
+      }
+    })
+    .then(response => {
+      btn.textContent = origText;
+      btn.disabled = false;
+      
+      // Check response type first
+      const contentType = response.headers.get('content-type');
+      if (!response.ok) {
+        if (response.status === 403 || response.status === 302) {
+          alert("Session expiree. Reconnectez-vous.");
+          return;
+        }
+        alert("Erreur lors de l'envoi. Veuillez reessayer.");
+        return;
+      }
+      // If not JSON, it's probably a redirect to login
+      if (!contentType || contentType.indexOf('application/json') === -1) {
+        alert("Session expiree. Reconnectez-vous.");
+        return;
+      }
+      
+      if (response.ok) {
+        showSendConfirmation(message, prix);
+      } else {
+        alert("Erreur lors de l'envoi. Veuillez reessayer.");
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      btn.textContent = origText;
+      btn.disabled = false;
+      alert("Erreur de connexion: " + error.message);
+    });
+  }
+  
+  function showSendConfirmation(message, prix) {
+    // Add message locally to show it was sent
+    const wrap = document.createElement('div');
+    const isVendeur = "{{ sender_type|default:'client'|escapejs }}" === 'vendeur';
+    wrap.className = 'chat-bubble ' + (isVendeur ? 'bubble-vendeur' : 'bubble-client');
+
+    const text = document.createElement('div');
+    text.className = 'chat-text';
+    text.textContent = message || (prix ? 'Prix proposé: ' + prix + ' GNF' : '');
+    wrap.appendChild(text);
+
+    const meta = document.createElement('div');
+    meta.className = 'bubble-meta';
+    const now = new Date();
+    meta.textContent = now.toLocaleString('fr-FR') + ' • Envoyé';
+    wrap.appendChild(meta);
+
+    chatMessagesEl.appendChild(wrap);
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+  }
+
+  sendBtn.addEventListener('click', send);
+  msgEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
+  });
+
+  chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% comment %}
+  Snippet réutilisable : liste des produits vendeur en grille horizontale.
+  Variables attendues :
+    - produits : queryset des produits du vendeur
+{% endcomment %}
+
+{% if produits %}
+<div class="dashboard-products-grid">
+    {% for p in produits %}
+      <div class="dashboard-product-card">
+        <div class="dashboard-product-media">
+          {% if p.photo %}
+            <img src="{{ p.photo.url }}" alt="{{ p.nom }}">
+          {% else %}
+            <div class="placeholder">📦</div>
+          {% endif %}
+
+          <div class="dashboard-product-badges">
+            {% if p.visible %}
+              <span class="dashboard-product-badge on">En ligne</span>
+            {% else %}
+              <span class="dashboard-product-badge off">Masqué</span>
+            {% endif %}
+          </div>
+
+          <div class="dashboard-product-actions-block">
+            <a href="{% url 'modifier_produit' p.id %}" class="btn-modifier-db">Modifier</a>
+            <a href="{% url 'supprimer_produit' p.id %}" class="btn-supprimer-db" onclick="return confirm('Supprimer ce produit ?')">Supprimer</a>
+          </div>
+        </div>
+
+        <div class="dashboard-product-info">
+          <h5 class="dashboard-product-name">{{ p.nom }}</h5>
+          <p class="dashboard-product-meta">{{ p.description|truncatechars:80 }}</p>
+
+          <div class="dashboard-product-footer">
+            <div class="dashboard-product-price">{{ p.prix|floatformat:0 }} GNF</div>
+            <div class="dashboard-stock {% if p.quantite == 0 %}zero{% elif p.quantite <= 2 %}low{% else %}ok{% endif %}">
+              {% if p.quantite == 0 %}Rupture
+              {% elif p.quantite <= 2 %}{{ p.quantite }} rest.
+              {% else %}{{ p.quantite }} en stock
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="account-empty-state" style="margin-top:14px; padding:18px; background:rgba(255,255,255,0.75); border-radius:14px; text-align:center; color:#666;">
+    Vous n'avez pas encore de produits.
+  </div>
+{% endif %}
+

@@ -1,0 +1,37 @@
+body { font-family: 'Segoe UI', sans-serif;
+        margin: 0; 
+        background: #1a1a2e ;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        height: 100vh; }
+        .container { text-align: center; 
+        width: 90%; 
+        max-width: 400px;
+       }
+         h1 { color: #0000fa; 
+          margin-bottom: 80px;
+          transition: 2s;
+         }
+
+        .choice-card { 
+            background:rgb(243, 233, 220); 
+            padding: 30px; 
+            margin-bottom: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            cursor: pointer; 
+            transition: 0.3s;
+            text-decoration: none; 
+            display: block;
+        }
+        .choice-card:hover { transform: translateY(-5px); 
+          box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .choice-card h2 { 
+          margin: 0; 
+          color: #3498db; }
+        .choice-card p { 
+          color: #666; 
+          margin: 10px 0 0; }
+        .vendre h2 { 
+          color: #2ecc71; } /* Couleur différente pour différencier */

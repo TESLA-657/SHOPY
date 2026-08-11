@@ -1,0 +1,147 @@
+{% extends "core/base.html" %}
+
+{% block title %}Politique de Confidentialité - SHOPY{% endblock %}
+
+{% block content %}
+<div class="legal-container">
+    <h1>🔒 Politique de Confidentialité</h1>
+    <p class="last-update">Dernière mise à jour: {% now "d F Y" %}</p>
+
+    <section>
+        <h2>1. Introduction</h2>
+        <p>Chez SHOPY, nous prenant la protection de vos données personnelles au sérieux. Cette politique de confidentialité explique comment nous recueillons, utilisons et protégeons vos informations.</p>
+    </section>
+
+    <section>
+        <h2>2. Données collectées</h2>
+        <h3>2.1 Lors de l'inscription</h3>
+        <ul>
+            <li><strong>Vendeur:</strong> Nom de boutique, numéro de téléphone, ville, email</li>
+            <li><strong>Client:</strong> Nom, numéro de téléphone, ville, email</li>
+        </ul>
+        
+        <h3>2.2 Données de navigation</h3>
+        <ul>
+            <li>Adresse IP</li>
+            <li>Type de navigateur</li>
+            <li>Pages visitées</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>3. Utilisation des données</h2>
+        <ul>
+            <li>Gestion des comptes utilisateurs</li>
+            <li>Traitement des commandes</li>
+            <li>Communication sur les commandes</li>
+            <li>Amélioration de nos services</li>
+            <li>Prévention des fraudes</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>4. Partage des données</h2>
+        <p>Vos données ne sont PAS vendues à des tiers. Elles sont partagées uniquement:</p>
+        <ul>
+            <li>Avec le vendeur concerné pour les commandes</li>
+            <li>Avec les autorités légales si requis par la loi</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>5. Sécurité</h2>
+        <ul>
+            <li>Mot de passe encrypté</li>
+            <li>Connexions sécurisées (HTTPS)</li>
+            <li>Accès restreint aux données</li>
+            <li>Serveur protégé</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>6.Cookies</h2>
+        <p>SHOPY utilise des cookies pour:</p>
+        <ul>
+            <li>Garder la session ouverte</li>
+            <li>Mémoriser vos préférences</li>
+            <li>Analyser le trafic du site</li>
+        </ul>
+        <p>Vous pouvez désactiver les cookies dans votre navigateur.</p>
+    </section>
+
+    <section>
+        <h2>7. Conservation des données</h2>
+        <ul>
+            <li>Comptes actifs: durée de vie du compte</li>
+            <li>Données de commande: 2 ans pour la comptabilité</li>
+            <li>Logs de connexion: 1 an</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>8. Vos droits</h2>
+        <ul>
+            <li><strong>Droit d'accès:</strong> Demander vos données</li>
+            <li><strong>Droit de rectification:</strong> Corriger vos infos</li>
+            <li><strong>Droit de suppression:</strong> Supprimer votre compte</li>
+            <li><strong>Droit d'opposition:</strong> S'opposer au traitement</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>9. Mineurs</h2>
+        <p>SHOPY est réservé aux personnes majeures (18 ans et plus). Si nous incontournons un mineur utilisant我们的 plateforme, le compte sera fermé.</p>
+    </section>
+
+    <section>
+        <h2>10. Modifications</h2>
+        <p>Cette politique peut être modifiée à tout moment. Veuillez la consulter régulièrement.</p>
+    </section>
+
+    <section>
+        <h2>11. Contact</h2>
+        <p>Pour toute question sur cette politique, contactez: <strong>privacy@shopy-guinee.com</strong></p>
+    </section>
+</div>
+
+<style>
+.legal-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    font-family: Arial, sans-serif;
+    line-height: 1.8;
+}
+.legal-container h1 {
+    color: #1a73e8;
+    margin-bottom: 10px;
+}
+.last-update {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 30px;
+}
+section {
+    margin-bottom: 30px;
+}
+section h2 {
+    color: #333;
+    border-bottom: 2px solid #1a73e8;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+section h3 {
+    color: #555;
+    margin-top: 15px;
+}
+section ul {
+    padding-left: 20px;
+}
+section li {
+    margin-bottom: 8px;
+}
+strong {
+    color: #1a73e8;
+}
+</style>
+{% endblock %}

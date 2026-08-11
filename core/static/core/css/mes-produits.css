@@ -1,0 +1,616 @@
+/* ============================================
+   MES PRODUITS - Style Moderne Premium
+   ============================================ */
+
+:root {
+  /* Palette principale - Dark Theme Premium */
+  --mp-bg: #0d1117;
+  --mp-bg-2: #161b22;
+  --mp-bg-3: #21262d;
+  --mp-card: rgba(255, 255, 255, 0.06);
+  --mp-card-2: rgba(255, 255, 255, 0.10);
+  --mp-border: rgba(255, 255, 255, 0.12);
+  --mp-border-2: rgba(255, 255, 255, 0.20);
+  
+  /* Texte */
+  --mp-text: rgba(255, 255, 255, 0.92);
+  --mp-text-2: rgba(255, 255, 255, 0.72);
+  --mp-text-muted: rgba(255, 255, 255, 0.50);
+  
+  /* Accents */
+  --mp-primary: #238636;
+  --mp-primary-hover: #2ea043;
+  --mp-primary-glow: rgba(35, 134, 54, 0.4);
+  --mp-blue: #388bfd;
+  --mp-yellow: #d29922;
+  --mp-red: #f85149;
+  --mp-orange: #f0883e;
+  --mp-purple: #a371f7;
+  
+  /* Ombres */
+  --mp-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --mp-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --mp-shadow-glow: 0 0 30px var(--mp-primary-glow);
+  
+  /* Border radius */
+  --mp-radius: 12px;
+  --mp-radius-2: 16px;
+  --mp-radius-full: 9999px;
+  
+  /* Transitions */
+  --mp-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   CONTAINER PRINCIPAL
+   ============================================ */
+
+.mpc-container {
+  background: radial-gradient(1000px 600px at 15% 0%, rgba(35, 134, 54, 0.12), transparent 50%),
+              radial-gradient(800px 500px at 85% 25%, rgba(56, 139, 253, 0.08), transparent 50%),
+              linear-gradient(180deg, rgba(13, 17, 23, 0.98), rgba(10, 14, 20, 0.98));
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.mpc-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   HEADER SECTION
+   ============================================ */
+
+.mpc-header {
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-2);
+  padding: 24px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mpc-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--mp-purple), var(--mp-blue), var(--mp-primary));
+}
+
+.mpc-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.mpc-title-section h1 {
+  color: var(--mp-text);
+  font-weight: 800;
+  font-size: 28px;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.mpc-title-section p {
+  color: var(--mp-text-muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+.mpc-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--mp-primary), #1a7f2e);
+  border: none;
+  border-radius: var(--mp-radius);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: var(--mp-transition);
+  box-shadow: var(--mp-shadow-glow);
+}
+
+.mpc-add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--mp-primary-glow);
+  color: white;
+}
+
+.mpc-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius);
+  color: var(--mp-text-2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--mp-transition);
+}
+
+.mpc-back-btn:hover {
+  background: var(--mp-card-2);
+  border-color: var(--mp-border-2);
+  color: var(--mp-text);
+  transform: translateX(-3px);
+}
+
+/* ============================================
+   SEARCH BAR
+   ============================================ */
+
+.mpc-search {
+  max-width: 500px;
+  margin: 0 auto 24px;
+}
+
+.mpc-search-input {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--mp-bg-2);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-full);
+  color: var(--mp-text);
+  font-size: 15px;
+  transition: var(--mp-transition);
+  outline: none;
+}
+
+.mpc-search-input::placeholder {
+  color: var(--mp-text-muted);
+}
+
+.mpc-search-input:focus {
+  border-color: var(--mp-primary);
+  box-shadow: 0 0 0 3px var(--mp-primary-glow),
+              var(--mp-shadow-2);
+}
+
+/* ============================================
+   PRODUCTS GRID
+   ============================================ */
+
+.mpc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.mpc-product-card {
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-2);
+  overflow: hidden;
+  transition: var(--mp-transition);
+  position: relative;
+}
+
+.mpc-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--mp-shadow);
+  border-color: var(--mp-border-2);
+}
+
+/* Image container */
+.mpc-product-image {
+  position: relative;
+  padding-top: 75%;
+  background: var(--mp-bg-2);
+  display: block;
+}
+
+.mpc-product-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mpc-product-image .mpc-image-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  z-index: 1;
+}
+
+/* Gradient overlay for better badge visibility */
+.mpc-product-image::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+  pointer-events: none;
+}
+
+.mpc-product-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  background: var(--mp-bg-2);
+}
+
+/* Badges - always visible at bottom of image */
+.mpc-badges {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 1;
+}
+
+.mpc-badge {
+  padding: 6px 12px;
+  border-radius: var(--mp-radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mpc-badge-status {
+  background: var(--mp-primary);
+  color: white;
+}
+
+.mpc-badge-status.masquer {
+  background: var(--mp-bg-3);
+  color: var(--mp-text-muted);
+}
+
+.mpc-badge-stock {
+  color: #111;
+}
+
+.mpc-badge-stock.rupture {
+  background: var(--mp-red);
+  color: white;
+}
+
+.mpc-badge-stock.low {
+  background: var(--mp-yellow);
+  color: #111;
+}
+
+.mpc-badge-stock.ok {
+  background: var(--mp-primary);
+  color: white;
+}
+
+/* Product info */
+.mpc-product-info {
+  padding: 16px;
+}
+
+.mpc-product-name {
+  color: var(--mp-text);
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.mpc-product-price {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--mp-primary);
+  margin-bottom: 8px;
+}
+
+.mpc-product-desc {
+  color: var(--mp-text-muted);
+  font-size: 13px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Action buttons */
+.mpc-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.mpc-btn-action {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: var(--mp-radius);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: var(--mp-transition);
+  cursor: pointer;
+}
+
+.mpc-btn-edit {
+  background: rgba(56, 139, 253, 0.15);
+  border: 1px solid var(--mp-blue);
+  color: var(--mp-blue);
+}
+
+.mpc-btn-edit:hover {
+  background: rgba(56, 139, 253, 0.25);
+  color: white;
+}
+
+.mpc-btn-delete {
+  background: rgba(248, 81, 73, 0.15);
+  border: 1px solid var(--mp-red);
+  color: var(--mp-red);
+}
+
+.mpc-btn-delete:hover {
+  background: rgba(248, 81, 73, 0.25);
+  color: white;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+
+.mpc-empty {
+  background: var(--mp-card);
+  border: 1px dashed var(--mp-border);
+  border-radius: var(--mp-radius-2);
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.mpc-empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.mpc-empty-text {
+  color: var(--mp-text-muted);
+  font-size: 16px;
+}
+
+.mpc-empty-btn {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 12px 24px;
+  background: var(--mp-primary);
+  border-radius: var(--mp-radius);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--mp-transition);
+}
+
+.mpc-empty-btn:hover {
+  background: var(--mp-primary-hover);
+  color: white;
+}
+
+/* ============================================
+   ALERTE SUSPENDU
+   ============================================ */
+
+.mpc-suspended-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mpc-suspended-modal {
+  background: var(--mp-bg-2);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-2);
+  padding: 40px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+}
+
+.mpc-suspended-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.mpc-suspended-title {
+  color: var(--mp-red);
+  font-weight: 800;
+  font-size: 24px;
+  margin: 0 0 12px 0;
+}
+
+.mpc-suspended-text {
+  color: var(--mp-text-2);
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+
+.mpc-suspended-btn {
+  display: block;
+  padding: 14px 24px;
+  background: var(--mp-primary);
+  border-radius: var(--mp-radius);
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  transition: var(--mp-transition);
+}
+
+.mpc-suspended-btn:hover {
+  background: var(--mp-primary-hover);
+  color: white;
+}
+
+.mpc-suspended-btn-contact {
+  display: block;
+  padding: 14px 24px;
+  background: var(--mp-red);
+  border-radius: var(--mp-radius);
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .mpc-container {
+    padding: 16px;
+  }
+  
+  .mpc-header {
+    padding: 20px;
+  }
+  
+  .mpc-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .mpc-title-section h1 {
+    font-size: 22px;
+  }
+  
+  .mpc-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mpc-product-info {
+    padding: 14px;
+  }
+  
+  .mpc-actions {
+    flex-direction: column;
+  }
+  
+  .mpc-btn-action {
+    padding: 12px;
+  }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mpc-product-card {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.mpc-product-card:nth-child(1) { animation-delay: 0.05s; }
+.mpc-product-card:nth-child(2) { animation-delay: 0.1s; }
+.mpc-product-card:nth-child(3) { animation-delay: 0.15s; }
+.mpc-product-card:nth-child(4) { animation-delay: 0.2s; }
+.mpc-product-card:nth-child(5) { animation-delay: 0.25s; }
+.mpc-product-card:nth-child(6) { animation-delay: 0.3s; }
+
+/* ============================================
+   TABS - PROMO / NON-PROMO
+   ============================================ */
+
+.mpc-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: var(--mp-bg-2);
+  padding: 6px;
+  border-radius: var(--mp-radius);
+  border: 1px solid var(--mp-border);
+}
+
+.mpc-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--mp-text-2);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--mp-transition);
+}
+
+.mpc-tab:hover {
+  background: var(--mp-card);
+  color: var(--mp-text);
+}
+
+.mpc-tab.active {
+  background: var(--mp-primary);
+  color: white;
+  box-shadow: var(--mp-shadow-glow);
+}
+
+.mpc-tab-count {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: var(--mp-radius-full);
+  font-size: 12px;
+}
+
+.mpc-tab:not(.active) .mpc-tab-count {
+  background: var(--mp-bg-3);
+}
+
+/* Badge Promo spécifique */
+.mpc-badge-promo {
+  background: linear-gradient(135deg, #f0883e, #e74c3c);
+  color: white;
+  font-weight: 700;
+}
+
+/* Responsive tabs */
+@media (max-width: 600px) {
+  .mpc-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .mpc-tab {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Flash Sales - SHOPY{% endblock %}
+
+{% block content %}
+<div class="flash-container">
+    <div class="flash-header">
+        <h1>Flash Sales Du Jour</h1>
+        <p class="subtitle">Profitez des offres limitees - Hasta nel temps!</p>
+    </div>
+    
+    {% if not flash_sales %}
+        <div class="alert alert-info">
+            <p>Aucune flash sale active actuellement. Revenez plus tard!</p>
+        </div>
+    {% else %}
+        <div class="countdown-banner">
+            <span>Prochine fin: </span>
+            <span id="countdown">Loading...</span>
+        </div>
+        
+        <div class="produits-grid">
+            {% for fs in flash_sales %}
+            <div class="produit-card flash-card">
+                <div class="flash-badge">-{{ fs.reduction_pourcentage }}%</div>
+                
+                <img src="{{ fs.produit.photo.url }}" alt="{{ fs.produit.nom }}">
+                
+                <h3>{{ fs.produit.nom }}</h3>
+                <p class="vendeur">par {{ fs.produit.vendeur.nom_boutique }}</p>
+                
+                <div class="prix">
+                    <span class="ancien-prix">{{ fs.produit.prix }} GNF</span>
+                    <span class="nouveau-prix">{{ fs.prix_flash }} GNF</span>
+                </div>
+                
+                <div class="stock">
+                    <span>{{ fs.quantite_vendue }}/{{ fs.quantite_disponible }} vendus</span>
+                </div>
+                
+                <div class="compte-rebours" data-fin="{{ fs.date_fin|date:'U' }}">
+                    <span class="timer">Loading...</span>
+                </div>
+                
+                <a href="{% url 'acheter_flash_sale' fs.pk %}" class="btn btn-primary">
+                    Acheter maintenant
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function updateCountdowns() {
+    var timers = document.querySelectorAll('.compte-rebours');
+    var maintenant = new Date().getTime() / 1000;
+    
+    for (var i = 0; i < timers.length; i++) {
+        var timer = timers[i];
+        var fin = parseInt(timer.getAttribute('data-fin'));
+        var restant = fin - maintenant;
+        
+        if (restant <= 0) {
+            timer.innerHTML = '<span>Expire!</span>';
+        } else {
+            var heures = Math.floor(restant / 3600);
+            var minutes = Math.floor((restant % 3600) / 60);
+            var secondes = Math.floor(restant % 60);
+            timer.innerHTML = heures + 'h ' + minutes + 'min ' + secondes + 's';
+        }
+    }
+}
+
+setInterval(updateCountdowns, 1000);
+updateCountdowns();
+</script>
+{% endblock %}

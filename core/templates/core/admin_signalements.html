@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signalements — Admin Shopy</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#0f0f1a; font-family:'Segoe UI',sans-serif; color:white; min-height:100vh; }
+    .header { padding:16px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); }
+    .back-link { color:#667eea; text-decoration:none; font-size:14px; }
+    .section-title { font-size:20px; font-weight:700; }
+    .signal-card { background:#1a1a2e; border-radius:12px; padding:16px; margin-bottom:12px; border:1px solid rgba(231,76,60,0.2); }
+    .signal-vendeur { font-weight:600; font-size:15px; }
+    .signal-info { color:rgba(255,255,255,0.5); font-size:12px; margin-top:4px; }
+    .signal-raison { color:#e74c3c; font-size:12px; margin-top:8px; }
+    .btn-action { border:none; border-radius:8px; padding:8px 16px; font-size:12px; font-weight:600; cursor:pointer; }
+    .btn-suspendre { background:#e74c3c; color:white; }
+    .btn-ignore { background:rgba(255,255,255,0.1); color:white; }
+    .empty-state { text-align:center; padding:60px 20px; color:rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a href="{% url 'admin_dashboard' %}" class="back-link">← Dashboard</a>
+  <span class="section-title">Signalements</span>
+  <span></span>
+</div>
+
+<div style="padding:20px;">
+
+  {% for s in signalements %}
+  <div class="signal-card">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <p class="signal-vendeur">{{ s.vendeur.nom_boutique }}</p>
+        <p class="signal-info">Par: {{ s.client_nom }} — {{ s.client_numero }}</p>
+        <p class="signal-raison">Raison: {{ s.get_raison_display }}</p>
+        <p style="color:rgba(255,255,255,0.4); font-size:12px; margin-top:8px;">{{ s.description }}</p>
+        <p style="color:rgba(255,255,255,0.3); font-size:11px; margin-top:8px;">{{ s.date|date:"d/m/Y H:i" }}</p>
+      </div>
+    </div>
+    
+    <div class="d-flex gap-2 mt-3">
+      <form method="post" action="{% url 'admin_traiter_signalement' s.pk %}" style="flex:1;">
+        {% csrf_token %}
+        <button name="action" value="suspendre" class="btn-action btn-suspendre" style="width:100%;">
+          ⏸️ Suspendre Vendeur
+        </button>
+      </form>
+      <form method="post" action="{% url 'admin_traiter_signalement' s.pk %}" style="flex:1;">
+        {% csrf_token %}
+        <button name="action" value="ignorer" class="btn-action btn-ignore" style="width:100%;">
+          ✓ Ignorer
+        </button>
+      </form>
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty-state">
+    <p style="font-size:50px;">✅</p>
+    <p>Aucun signalement non traité.</p>
+  </div>
+  {% endfor %}
+
+</div>
+
+</body>
+</html>

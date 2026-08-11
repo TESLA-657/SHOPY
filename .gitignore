@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Environnement
+.env
+.env.*
+.venv/
+venv/
+env/
+
+# Django
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Scripts de debug (générés pendant le développement)
+check_*.py
+fix_*.py
+find_*.py
+show_*.py
+debug_*.py
+slice_*.py
+slice_*.txt
+run_check.py
+run_migrate.py
+restore_views.py
+rewrite_section.py
+tmp_*.py
+full_check.py
+get_exact.py
+analyze_views.py
+improve_assistant_ia.py
+add_buttons*.py
+add_marque*.py
+add_new_ia_responses.py
+add_smart_ia.py
+add_debug_error.py
+test_ia_responses.py
+test_import.py
+test_syntax.py
+tests_shopy.py
+check_output.txt

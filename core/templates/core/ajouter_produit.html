@@ -1,0 +1,196 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/modifier-produit.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="mp-container">
+
+  <div class="mp-wrapper">
+
+    <!-- Header Stylisé -->
+    <div class="mp-header">
+      <div class="mp-header-content">
+        <div class="mp-header-title">
+          <div class="mp-header-icon">
+            {% if form.instance.pk %}✏️{% else %}➕{% endif %}
+          </div>
+          <div class="mp-header-text">
+            <h2>{% if form.instance.pk %}Modifier le produit{% else %}Ajouter un produit{% endif %}</h2>
+            <p>{% if form.instance.pk %}Mettez à jour les informations de votre produit{% else %}Créez une nouvelle annonce pour votre boutique{% endif %}</p>
+          </div>
+        </div>
+        <a href="{% url 'liste_produits_vendeur' %}" class="mp-back-btn">
+          ← Mes produits
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="mp-card">
+      <div class="mp-card-inner">
+
+        <!-- Errors Alert -->
+        {% if form.errors %}
+        <div class="mp-alert">
+          <div class="mp-alert-title">
+            ⚠️ Corrigez les erreurs suivantes
+          </div>
+          <ul class="mp-alert-list">
+            {% for field, errors in form.errors.items %}
+              {% for error in errors %}
+                <li><strong>{{ field|title }}</strong>: {{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <!-- Form -->
+        <form method="post" action="{% if form.instance.pk %}{% url 'modifier_produit' form.instance.pk %}{% else %}{% url 'ajouter_produit' %}{% endif %}" enctype="multipart/form-data" autocomplete="off">
+
+          {% csrf_token %}
+
+          <!-- Nom -->
+          <div class="mp-form-group">
+            <label class="mp-label">
+              <span class="mp-label-icon">📦</span> Nom du produit
+            </label>
+            {{ form.nom }}
+          </div>
+
+          <!-- Catégorie -->
+          <div class="mp-form-group">
+            <label class="mp-label">
+              <span class="mp-label-icon">🏷️</span> Catégorie
+            </label>
+            {{ form.categorie }}
+          </div>
+
+          <!-- Photo -->
+          <div class="mp-form-group">
+            <label class="mp-label">
+              <span class="mp-label-icon">📸</span> Photo du produit
+            </label>
+            <div class="mp-photo-section">
+              <div class="d-flex align-items-center gap-3 flex-wrap">
+                <a href="{% url 'choisir_photo_produit' %}?next={{ request.path|urlencode }}" class="mp-photo-btn">
+                  🖼️ Choisir une photo
+                </a>
+                <input type="hidden" name="photo_name" id="id_photo_name" value="">
+                <div id="photo_preview_wrap" class="mp-photo-preview" style="display:none;">
+                  <img id="photo_preview" src="" alt="Prévisualisation">
+                </div>
+              </div>
+              <label for="id_photo" class="mp-photo-label">
+                ou uploader une photo depuis votre appareil
+              </label>
+              {{ form.photo }}
+            </div>
+          </div>
+
+          <!-- Prix & Stock -->
+          <div class="mp-row">
+            <div class="mp-col">
+              <div class="mp-form-group mb-0">
+                <label class="mp-label">
+                  <span class="mp-label-icon">💰</span> Prix (GNF)
+                </label>
+                {{ form.prix }}
+              </div>
+            </div>
+            <div class="mp-col">
+              <div class="mp-form-group mb-0">
+                <label class="mp-label">
+                  <span class="mp-label-icon">📊</span> Stock disponible
+                </label>
+                {{ form.quantite }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="mp-form-group">
+            <label class="mp-label">
+              <span class="mp-label-icon">📝</span> Description / Caractéristiques
+            </label>
+            {{ form.description }}
+          </div>
+
+          <!-- Promo Box -->
+          <div class="mp-promo-box">
+            <div class="mp-promo-header">
+              <input type="checkbox" name="promo" id="id_promo" class="mp-promo-checkbox"
+                     {% if form.instance.promo %}checked{% endif %}
+                     onchange="togglePromo(this)">
+              <label for="id_promo" class="mp-promo-label">🔥 Promotion spéciale</label>
+            </div>
+            <div id="section-promo" class="mp-promo-content {% if form.instance.promo %}active{% endif %}">
+              <div class="mp-row">
+                <div class="mp-col">
+                  <div class="mp-form-group mb-0">
+                    <label class="mp-label">💵 Prix promo (GNF)</label>
+                    {{ form.prix_promo }}
+                  </div>
+                </div>
+                <div class="mp-col">
+                  <div class="mp-form-group mb-0">
+                    <label class="mp-label">⏱️ Durée (jours)</label>
+                    {{ form.jours_promo }}
+                  </div>
+                </div>
+              </div>
+              <p class="mp-promo-hint">⚡ La promotion sera automatiquement désactivée après la durée définie.</p>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="mp-submit-btn">
+            {% if form.instance.pk %}💾 Sauvegarder les modifications{% else %}✅ Publier le produit{% endif %}
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function togglePromo(checkbox) {
+      const content = document.getElementById('section-promo');
+      if (checkbox.checked) {
+        content.classList.add('active');
+      } else {
+        content.classList.remove('active');
+      }
+    }
+
+    // Pré-remplissage photo + prévisualisation
+    (function(){
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var photo = params.get('photo');
+        if (!photo) return;
+
+        var input = document.getElementById('id_photo_name');
+        var previewWrap = document.getElementById('photo_preview_wrap');
+        var previewImg = document.getElementById('photo_preview');
+
+        if (input) input.value = photo;
+        if (previewImg) {
+          previewImg.src = '/media/' + photo;
+        }
+        if (previewWrap) previewWrap.style.display = 'inline-block';
+      } catch(e) {}
+    })();
+  </script>
+
+</div>
+
+{% endblock %}

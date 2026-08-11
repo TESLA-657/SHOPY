@@ -1,0 +1,493 @@
+/* ============================================
+   CHOIX PAIEMENT - Style Premium Moderne
+   ============================================ */
+@charset "UTF-8";
+
+:root {
+  /* Palette principale - Dark Premium Theme */
+  --cp-bg: #0a0a0f;
+  --cp-bg-2: #12121a;
+  --cp-bg-3: #1a1a24;
+  --cp-card: #16161f;
+  --cp-card-hover: #1c1c28;
+  --cp-border: rgba(255, 255, 255, 0.08);
+  --cp-border-2: rgba(255, 255, 255, 0.15);
+  
+  /* Texte */
+  --cp-text: #ffffff;
+  --cp-text-2: rgba(255, 255, 255, 0.85);
+  --cp-text-3: rgba(255, 255, 255, 0.6);
+  --cp-text-muted: rgba(255, 255, 255, 0.45);
+  
+  /* Accents principaux */
+  --cp-primary: #22c55e;
+  --cp-primary-hover: #16a34a;
+  --cp-primary-glow: rgba(34, 197, 94, 0.35);
+  --cp-primary-subtle: rgba(34, 197, 94, 0.12);
+  
+  /* Couleurs par mode de paiement */
+  --cp-orange: #FF6600;
+  --cp-orange-light: #FF8533;
+  --cp-mobile: #3b82f6;
+  --cp-mobile-light: #60a5fa;
+  --cp-livraison: #22c55e;
+  --cp-livraison-light: #4ade80;
+  
+  /* Effets */
+  --cp-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --cp-shadow-2: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --cp-shadow-glow: 0 0 40px var(--cp-primary-glow);
+  
+  /* Border radius */
+  --cp-radius: 20px;
+  --cp-radius-2: 14px;
+  --cp-radius-3: 10px;
+  --cp-radius-full: 9999px;
+  
+  /* Transitions */
+  --cp-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   BACKGROUND PRINCIPAL
+   ============================================ */
+
+body {
+  background: var(--cp-bg);
+}
+
+.choix-paiement-wrap {
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 102, 0, 0.08), transparent 60%),
+              radial-gradient(ellipse 60% 40% at 80% 60%, rgba(59, 130, 246, 0.06), transparent 50%),
+              radial-gradient(ellipse 50% 30% at 20% 80%, rgba(34, 197, 94, 0.05), transparent 50%),
+              var(--cp-bg);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.choix-paiement-wrap .page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--cp-text), rgba(255, 102, 0, 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.choix-paiement-wrap .page-subtitle {
+  color: var(--cp-text-muted);
+  font-size: 1rem;
+}
+
+/* ============================================
+   SUMMARY CARD
+   ============================================ */
+
+.choix-paiement-wrap .summary-card {
+  background: var(--cp-card);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-2);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.choix-paiement-wrap .summary-chip {
+  background: rgba(255, 102, 0, 0.15);
+  color: var(--cp-orange);
+  padding: 8px 14px;
+  border-radius: var(--cp-radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 102, 0, 0.3);
+}
+
+/* ============================================
+   INFO CARDS
+   ============================================ */
+
+.choix-paiement-wrap .info {
+  background: var(--cp-card);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-2);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.choix-paiement-wrap .info p {
+  color: var(--cp-text-3);
+  margin-bottom: 4px;
+}
+
+.choix-paiement-wrap .info strong {
+  color: var(--cp-text);
+}
+
+.choix-paiement-wrap .info .section-title {
+  color: var(--cp-text);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.choix-paiement-wrap .info .page-text-muted {
+  color: var(--cp-text-muted);
+}
+
+.choix-paiement-wrap .info .page-note {
+  color: var(--cp-text-3);
+  font-size: 0.9rem;
+}
+
+/* ============================================
+   PAYMENT OPTIONS GRID
+   ============================================ */
+
+.payment-options-grid {
+  display: grid;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+/* ============================================
+   PAYMENT OPTION CARD
+   ============================================ */
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: var(--cp-card);
+  border: 2px solid var(--cp-border);
+  border-radius: var(--cp-radius-2);
+  text-decoration: none;
+  color: inherit;
+  transition: var(--cp-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.payment-option::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  opacity: 0;
+  transition: var(--cp-transition);
+}
+
+.payment-option:hover {
+  background: var(--cp-card-hover);
+  border-color: var(--cp-border-2);
+  transform: translateY(-4px);
+  box-shadow: var(--cp-shadow);
+}
+
+.payment-option:hover::before {
+  opacity: 1;
+}
+
+/* ============================================
+   ORANGE MONEY - Specific Style
+   ============================================ */
+
+.payment-option.orange-money {
+  border-color: rgba(255, 102, 0, 0.2);
+}
+
+.payment-option.orange-money:hover {
+  border-color: var(--cp-orange);
+  box-shadow: 0 8px 32px rgba(255, 102, 0, 0.25);
+}
+
+.payment-option.orange-money .payment-icon-wrap {
+  background: linear-gradient(135deg, var(--cp-orange), var(--cp-orange-light));
+}
+
+/* ============================================
+   MOBILE MONEY - Specific Style
+   ============================================ */
+
+.payment-option.mobile-money {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.payment-option.mobile-money:hover {
+  border-color: var(--cp-mobile);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.25);
+}
+
+.payment-option.mobile-money .payment-icon-wrap {
+  background: linear-gradient(135deg, var(--cp-mobile), var(--cp-mobile-light));
+}
+
+/* ============================================
+   PAIEMENT À LA LIVRAISON - Specific Style
+   ============================================ */
+
+.payment-option.livraison {
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.payment-option.livraison:hover {
+  border-color: var(--cp-livraison);
+  box-shadow: 0 8px 32px rgba(34, 197, 94, 0.25);
+}
+
+.payment-option.livraison .payment-icon-wrap {
+  background: linear-gradient(135deg, var(--cp-livraison), var(--cp-livraison-light));
+}
+
+/* ============================================
+   PAYMENT ICON
+   ============================================ */
+
+.payment-icon-wrap {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--cp-radius-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.payment-icon {
+  font-size: 28px;
+  margin: 0;
+}
+
+/* ============================================
+   PAYMENT CONTENT
+   ============================================ */
+
+.payment-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.payment-content h5 {
+  color: var(--cp-text);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.payment-content .page-text-muted {
+  color: var(--cp-text-muted);
+  font-size: 0.9rem;
+  margin: 0 0 4px 0;
+}
+
+.payment-content .page-note {
+  color: var(--cp-text-3);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ============================================
+   ARROW ICON
+   ============================================ */
+
+.payment-arrow {
+  color: var(--cp-text-muted);
+  font-size: 1.2rem;
+  transition: var(--cp-transition);
+}
+
+.payment-option:hover .payment-arrow {
+  transform: translateX(4px);
+  color: var(--cp-text);
+}
+
+/* ============================================
+   BACK LINK
+   ============================================ */
+
+.choix-paiement-wrap .ret {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cp-text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 12px 20px;
+  border-radius: var(--cp-radius-3);
+  background: var(--cp-card);
+  border: 1px solid var(--cp-border);
+  transition: var(--cp-transition);
+}
+
+.choix-paiement-wrap .ret:hover {
+  background: var(--cp-card-hover);
+  border-color: var(--cp-border-2);
+  color: var(--cp-text);
+  transform: translateX(-4px);
+}
+
+/* ============================================
+   MONTANT DISPLAY
+   ============================================ */
+
+.montant-display {
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--cp-orange), #ff8533);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.payment-option {
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.payment-option:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.payment-option:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.payment-option:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* Tablette */
+@media (max-width: 768px) {
+  .choix-paiement-wrap {
+    padding: 30px 15px;
+  }
+  
+  .choix-paiement-wrap .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .payment-option {
+    padding: 16px;
+    gap: 12px;
+  }
+  
+  .payment-icon-wrap {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .payment-icon {
+    font-size: 24px;
+  }
+  
+  .payment-content h5 {
+    font-size: 1rem;
+  }
+}
+
+/* Grand mobile */
+@media (max-width: 576px) {
+  .choix-paiement-wrap {
+    padding: 20px 12px;
+  }
+  
+  .choix-paiement-wrap .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .choix-paiement-wrap .summary-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .payment-option {
+    padding: 14px;
+    gap: 10px;
+  }
+  
+  .payment-icon-wrap {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .payment-icon {
+    font-size: 20px;
+  }
+  
+  .payment-content h5 {
+    font-size: 0.95rem;
+  }
+  
+  .payment-content .page-text-muted,
+  .payment-content .page-note {
+    font-size: 0.8rem;
+  }
+  
+  .montant-display {
+    font-size: 1.5rem;
+  }
+}
+
+/* Petit mobile */
+@media (max-width: 400px) {
+  .choix-paiement-wrap {
+    padding: 15px 8px;
+  }
+  
+  .choix-paiement-wrap .page-title {
+    font-size: 1.35rem;
+  }
+  
+  .payment-option {
+    padding: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .payment-icon-wrap {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .payment-icon {
+    font-size: 18px;
+  }
+  
+  .payment-content {
+    flex: 0 0 calc(100% - 56px);
+  }
+  
+  .payment-arrow {
+    display: none;
+  }
+}

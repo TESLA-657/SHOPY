@@ -1,0 +1,727 @@
+/* ============================================
+   CHOISIR ABONNEMENT - Style Premium Moderne
+   ============================================ */
+@charset "UTF-8";
+
+:root {
+  /* Palette principale - Dark Premium Theme */
+  --ca-bg: #0a0a0f;
+  --ca-bg-2: #12121a;
+  --ca-bg-3: #1a1a24;
+  --ca-card: #16161f;
+  --ca-card-hover: #1c1c28;
+  --ca-border: rgba(255, 255, 255, 0.08);
+  --ca-border-2: rgba(255, 255, 255, 0.15);
+  
+  /* Texte */
+  --ca-text: #ffffff;
+  --ca-text-2: rgba(255, 255, 255, 0.85);
+  --ca-text-3: rgba(255, 255, 255, 0.6);
+  --ca-text-muted: rgba(255, 255, 255, 0.45);
+  
+  /* Accents principaux */
+  --ca-primary: #22c55e;
+  --ca-primary-hover: #16a34a;
+  --ca-primary-glow: rgba(34, 197, 94, 0.35);
+  --ca-primary-subtle: rgba(34, 197, 94, 0.12);
+  
+  /* Couleurs par plan */
+  --ca-essentiel: #3b82f6;
+  --ca-pro: #8b5cf6;
+  --ca-business: #f59e0b;
+  
+  /* Effets */
+  --ca-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --ca-shadow-2: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --ca-shadow-glow: 0 0 40px var(--ca-primary-glow);
+  
+  /* Border radius */
+  --ca-radius: 20px;
+  --ca-radius-2: 14px;
+  --ca-radius-3: 10px;
+  --ca-radius-full: 9999px;
+  
+  /* Transitions */
+  --ca-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   BACKGROUND PRINCIPAL
+   ============================================ */
+
+body {
+  background: var(--ca-bg);
+}
+
+.abonnement-plans-wrap {
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34, 197, 94, 0.08), transparent 60%),
+              radial-gradient(ellipse 60% 40% at 80% 60%, rgba(139, 92, 246, 0.06), transparent 50%),
+              radial-gradient(ellipse 50% 30% at 20% 80%, rgba(59, 130, 246, 0.05), transparent 50%),
+              var(--ca-bg);
+  min-height: 100vh;
+  padding: 50px 20px;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.abonnement-plans-wrap .text-center h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--ca-text), rgba(34, 197, 94, 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.abonnement-plans-wrap .text-center .text-muted {
+  color: var(--ca-text-muted) !important;
+  font-size: 1.1rem;
+}
+
+/* ============================================
+   PLAN CARDS
+   ============================================ */
+
+.abonnement-plans-wrap .card {
+  background: var(--ca-card);
+  border: 1px solid var(--ca-border);
+  border-radius: var(--ca-radius);
+  transition: var(--ca-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.abonnement-plans-wrap .card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  opacity: 0;
+  transition: var(--ca-transition);
+}
+
+.abonnement-plans-wrap .card:hover {
+  background: var(--ca-card-hover);
+  border-color: var(--ca-border-2);
+  transform: translateY(-8px);
+  box-shadow: var(--ca-shadow);
+}
+
+.abonnement-plans-wrap .card:hover::before {
+  opacity: 1;
+}
+
+/* ============================================
+   ESSENTIEL PLAN
+   ============================================ */
+
+.abonnement-plans-wrap .col-md-4:first-child .card {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.abonnement-plans-wrap .col-md-4:first-child .card:hover {
+  border-color: var(--ca-essentiel);
+  box-shadow: 0 8px 40px rgba(59, 130, 246, 0.25);
+}
+
+.abonnement-plans-wrap .col-md-4:first-child .card h4 {
+  color: var(--ca-essentiel);
+}
+
+/* ============================================
+   PRO PLAN (Recommended)
+   ============================================ */
+
+.abonnement-plans-wrap .col-md-4:nth-child(2) .card {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.03));
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(2) .card:hover {
+  border-color: var(--ca-pro);
+  box-shadow: 0 8px 40px rgba(139, 92, 246, 0.3);
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(2) .card h4 {
+  color: var(--ca-pro);
+}
+
+/* ============================================
+   BUSINESS PLAN
+   ============================================ */
+
+.abonnement-plans-wrap .col-md-4:last-child .card {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.03));
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.abonnement-plans-wrap .col-md-4:last-child .card:hover {
+  border-color: var(--ca-business);
+  box-shadow: 0 8px 40px rgba(245, 158, 11, 0.3);
+}
+
+.abonnement-plans-wrap .col-md-4:last-child .card h4 {
+  color: var(--ca-business);
+}
+
+/* ============================================
+   PLAN HEADER
+   ============================================ */
+
+.abonnement-plans-wrap .card h4 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.abonnement-plans-wrap .card .text-muted.small {
+  color: var(--ca-text-muted) !important;
+  font-size: 0.9rem;
+}
+
+/* ============================================
+   PRICE SECTION
+   ============================================ */
+
+.abonnement-plans-wrap .card > div:nth-child(2) {
+  margin-bottom: 20px;
+}
+
+.abonnement-plans-wrap .card span[style*="font-size:36px"] {
+  font-size: 2.8rem !important;
+  font-weight: 900;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--ca-text), var(--ca-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.abonnement-plans-wrap .card .text-muted {
+  color: var(--ca-text-muted);
+}
+
+.abonnement-plans-wrap .card .text-muted.small {
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.abonnement-plans-wrap .btn {
+  border-radius: var(--ca-radius-3) !important;
+  padding: 14px 24px !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  transition: var(--ca-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.abonnement-plans-wrap .btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.abonnement-plans-wrap .btn:hover::before {
+  left: 100%;
+}
+
+/* Essentiel Button */
+.abonnement-plans-wrap .col-md-4:first-child .btn {
+  background: transparent;
+  border: 2px solid var(--ca-essentiel) !important;
+  color: var(--ca-essentiel) !important;
+}
+
+.abonnement-plans-wrap .col-md-4:first-child .btn:hover {
+  background: var(--ca-essentiel);
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Pro Button */
+.abonnement-plans-wrap .col-md-4:nth-child(2) .btn {
+  background: linear-gradient(135deg, var(--ca-pro), #7c3aed) !important;
+  border: none !important;
+  color: white !important;
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(2) .btn:hover {
+  background: linear-gradient(135deg, #9f6ff0, var(--ca-pro)) !important;
+  box-shadow: 0 4px 24px rgba(139, 92, 246, 0.5);
+  transform: scale(1.02);
+}
+
+/* Business Button */
+.abonnement-plans-wrap .col-md-4:last-child .btn {
+  background: linear-gradient(135deg, var(--ca-business), #d97706) !important;
+  border: none !important;
+  color: #111 !important;
+}
+
+.abonnement-plans-wrap .col-md-4:last-child .btn:hover {
+  background: linear-gradient(135deg, #fbbf24, var(--ca-business)) !important;
+  box-shadow: 0 4px 24px rgba(245, 158, 11, 0.5);
+  transform: scale(1.02);
+}
+
+/* ============================================
+   POPULAR BADGE
+   ============================================ */
+
+.abonnement-plans-wrap .card > div[style*="position:absolute"] {
+  background: linear-gradient(135deg, var(--ca-pro), #7c3aed) !important;
+  border: none !important;
+  padding: 6px 16px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 25px rgba(139, 92, 246, 0.6);
+  }
+}
+
+/* ============================================
+   FEATURES LIST
+   ============================================ */
+
+.abonnement-plans-wrap .card > div:last-child {
+  padding-top: 15px;
+  border-top: 1px solid var(--ca-border);
+}
+
+.abonnement-plans-wrap .card .fw-bold.small {
+  color: var(--ca-text-2);
+  font-weight: 600 !important;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.abonnement-plans-wrap .card .small:not(.fw-bold) {
+  font-size: 0.9rem;
+  color: var(--ca-text-3);
+}
+
+.abonnement-plans-wrap .card .small.text-muted {
+  color: var(--ca-text-muted) !important;
+}
+
+/* ============================================
+   BACK BUTTON
+   ============================================ */
+
+.account-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--ca-card);
+  border: 1px solid var(--ca-border);
+  border-radius: var(--ca-radius-3);
+  color: var(--ca-text-2);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--ca-transition);
+}
+
+.account-btn:hover {
+  background: var(--ca-card-hover);
+  border-color: var(--ca-border-2);
+  color: var(--ca-text);
+  transform: translateX(-3px);
+}
+
+.account-btn-primary {
+  background: var(--ca-primary);
+  border-color: var(--ca-primary);
+  color: white;
+}
+
+.account-btn-primary:hover {
+  background: var(--ca-primary-hover);
+  border-color: var(--ca-primary-hover);
+  box-shadow: 0 4px 20px var(--ca-primary-glow);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.abonnement-plans-wrap .col-md-4 {
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ============================================
+   RESPONSIVE - Disposition horizontale
+   ============================================ */
+
+/* Grille horizontale - meme sur mobile */
+.abonnement-plans-wrap .row.g-4 {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: center;
+  gap: 16px !important;
+}
+
+.abonnement-plans-wrap .row.g-4 > .col-md-4 {
+  flex: 1 1 0 !important;
+  max-width: calc(33.333% - 11px);
+  min-width: 240px;
+}
+
+/* Grands ecrans */
+@media (max-width: 1400px) {
+  .abonnement-plans-wrap .row.g-4 > .col-md-4 {
+    max-width: calc(33.333% - 11px);
+    min-width: 220px;
+  }
+}
+
+/* Tablette paysage */
+@media (max-width: 1200px) {
+  .abonnement-plans-wrap {
+    padding: 40px 20px;
+  }
+  
+  .abonnement-plans-wrap .text-center h2 {
+    font-size: 2.2rem;
+  }
+  
+  .abonnement-plans-wrap .row.g-4 > .col-md-4 {
+    max-width: calc(33.333% - 11px);
+    min-width: 200px;
+  }
+  
+  .abonnement-plans-wrap .card span[style*="font-size:36px"] {
+    font-size: 2.2rem !important;
+  }
+  
+  .abonnement-plans-wrap .card h4 {
+    font-size: 1.25rem;
+  }
+  
+  .abonnement-plans-wrap .card .small {
+    font-size: 0.8rem;
+  }
+}
+
+/* Tablette portrait */
+@media (max-width: 992px) {
+  .abonnement-plans-wrap {
+    padding: 30px 15px;
+  }
+  
+  .abonnement-plans-wrap .text-center h2 {
+    font-size: 2rem;
+  }
+  
+  .abonnement-plans-wrap .text-center .text-muted {
+    font-size: 1rem;
+  }
+  
+  .abonnement-plans-wrap .row.g-4 {
+    gap: 12px !important;
+  }
+  
+  .abonnement-plans-wrap .row.g-4 > .col-md-4 {
+    min-width: 180px;
+  }
+  
+  .abonnement-plans-wrap .card {
+    padding: 18px !important;
+  }
+  
+  .abonnement-plans-wrap .card h4 {
+    font-size: 1.15rem;
+  }
+  
+  .abonnement-plans-wrap .card span[style*="font-size:36px"] {
+    font-size: 1.75rem !important;
+  }
+  
+  .abonnement-plans-wrap .card .small {
+    font-size: 0.75rem;
+  }
+  
+  .abonnement-plans-wrap .btn {
+    padding: 10px 12px !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Grand mobile */
+@media (max-width: 768px) {
+  .abonnement-plans-wrap {
+    padding: 20px 12px;
+  }
+  
+  .abonnement-plans-wrap .text-center h2 {
+    font-size: 1.75rem;
+  }
+  
+  .abonnement-plans-wrap .text-center .text-muted {
+    font-size: 0.95rem;
+  }
+  
+  .abonnement-plans-wrap .row.g-4 {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+  
+  .abonnement-plans-wrap .row.g-4 > .col-md-4 {
+    flex: 0 0 calc(50% - 5px) !important;
+    max-width: calc(50% - 5px);
+    min-width: 140px;
+  }
+  
+  .abonnement-plans-wrap .row.g-4 > .col-md-4:nth-child(2) {
+    flex: 0 0 calc(50% - 5px) !important;
+    max-width: calc(50% - 5px);
+  }
+  
+  .abonnement-plans-wrap .row.g-4 > .col-md-4:nth-child(3) {
+    flex: 0 0 100% !important;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  .abonnement-plans-wrap .card {
+    padding: 14px !important;
+  }
+  
+  .abonnement-plans-wrap .card h4 {
+    font-size: 1.1rem;
+  }
+  
+  .abonnement-plans-wrap .card span[style*="font-size:36px"] {
+    font-size: 1.5rem !important;
+  }
+  
+  .abonnement-plans-wrap .card .small {
+    font-size: 0.7rem;
+  }
+  
+  .abonnement-plans-wrap .card > div:last-child p {
+    margin-bottom: 4px !important;
+  }
+  
+  .abonnement-plans-wrap .btn {
+    padding: 8px 10px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* Petit mobile */
+@media (max-width: 480px) {
+  .abonnement-plans-wrap {
+    padding: 15px 8px;
+  }
+  
+  .abonnement-plans-wrap .text-center h2 {
+    font-size: 1.5rem;
+  }
+  
+  .abonnement-plans-wrap .row.g-4 {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .abonnement-plans-wrap .row.g-4 > .col-md-4 {
+    flex: 0 0 100% !important;
+    max-width: 100%;
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .abonnement-plans-wrap .row.g-4 > .col-md-4:nth-child(3) {
+    max-width: 100%;
+  }
+  
+  .abonnement-plans-wrap .card {
+    padding: 16px 14px !important;
+  }
+  
+  .abonnement-plans-wrap .card h4 {
+    font-size: 1.2rem;
+  }
+  
+  .abonnement-plans-wrap .card span[style*="font-size:36px"] {
+    font-size: 1.75rem !important;
+  }
+  
+  .abonnement-plans-wrap .card > div:first-child {
+    margin-bottom: 12px !important;
+  }
+  
+  .abonnement-plans-wrap .card > div:nth-child(2) {
+    margin-bottom: 12px !important;
+  }
+  
+  .abonnement-plans-wrap .card .small {
+    font-size: 0.8rem;
+  }
+  
+  .abonnement-plans-wrap .btn {
+    padding: 10px 14px !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .abonnement-plans-wrap a[href*="Retour"] {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+  }
+}
+
+/* ============================================
+   DYNAMIC PLAN STYLES
+   ============================================ */
+
+/* Plan name colors */
+.plan-name {
+  text-transform: capitalize;
+}
+
+/* Essential plan specific */
+.abonnement-plans-wrap .col-md-4:nth-child(1) .plan-name {
+  color: var(--ca-essentiel);
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(1) .plan-price {
+  color: var(--ca-essentiel) !important;
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(1) .btn-essentiel {
+  background: transparent !important;
+  border: 2px solid var(--ca-essentiel) !important;
+  color: var(--ca-essentiel) !important;
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(1) .btn-essentiel:hover {
+  background: var(--ca-essentiel) !important;
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(1) .card {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(1) .card:hover {
+  border-color: var(--ca-essentiel);
+  box-shadow: 0 8px 40px rgba(59, 130, 246, 0.25);
+}
+
+/* Pro plan specific */
+.abonnement-plans-wrap .col-md-4.featured-plan .plan-name,
+.abonnement-plans-wrap .col-md-4:nth-child(2) .plan-name {
+  color: var(--ca-pro);
+}
+
+.abonnement-plans-wrap .col-md-4.featured-plan .plan-price,
+.abonnement-plans-wrap .col-md-4:nth-child(2) .plan-price {
+  color: var(--ca-pro) !important;
+}
+
+.abonnement-plans-wrap .col-md-4.featured-plan .btn-pro,
+.abonnement-plans-wrap .col-md-4:nth-child(2) .btn-pro {
+  background: linear-gradient(135deg, var(--ca-pro), #7c3aed) !important;
+  border: none !important;
+  color: white !important;
+}
+
+.abonnement-plans-wrap .col-md-4.featured-plan .btn-pro:hover,
+.abonnement-plans-wrap .col-md-4:nth-child(2) .btn-pro:hover {
+  background: linear-gradient(135deg, #9f6ff0, var(--ca-pro)) !important;
+  box-shadow: 0 4px 24px rgba(139, 92, 246, 0.5);
+  transform: scale(1.02);
+}
+
+.abonnement-plans-wrap .col-md-4.featured-plan .card,
+.abonnement-plans-wrap .col-md-4:nth-child(2) .pro-card {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.03));
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.abonnement-plans-wrap .col-md-4.featured-plan .card:hover,
+.abonnement-plans-wrap .col-md-4:nth-child(2) .card:hover {
+  border-color: var(--ca-pro);
+  box-shadow: 0 8px 40px rgba(139, 92, 246, 0.3);
+}
+
+/* Business plan specific */
+.abonnement-plans-wrap .col-md-4:nth-child(3) .plan-name {
+  color: var(--ca-business);
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(3) .plan-price {
+  color: var(--ca-business) !important;
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(3) .btn-business {
+  background: linear-gradient(135deg, var(--ca-business), #d97706) !important;
+  border: none !important;
+  color: #111 !important;
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(3) .btn-business:hover {
+  background: linear-gradient(135deg, #fbbf24, var(--ca-business)) !important;
+  box-shadow: 0 4px 24px rgba(245, 158, 11, 0.5);
+  transform: scale(1.02);
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(3) .card {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.03));
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.abonnement-plans-wrap .col-md-4:nth-child(3) .card:hover {
+  border-color: var(--ca-business);
+  box-shadow: 0 8px 40px rgba(245, 158, 11, 0.3);
+}

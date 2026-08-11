@@ -1,0 +1,481 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+<style>
+  /* === PAGE PROPOSER PRIX ULTRA STYLÉE === */
+  .proposer-wrap{padding:0 12px 20px;}
+  
+  /* Header principal avec gradient */
+  .proposer-header{
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding:20px;
+    border-radius:20px 20px 0 0;
+    color:white;
+  }
+  .proposer-header h2{
+    margin:0 0 8px 0;
+    font-size:20px;
+    font-weight:700;
+  }
+  .proposer-header p{
+    margin:0;
+    opacity:0.9;
+    font-size:13px;
+  }
+  
+  /* Carte produit élégante */
+  .proposer-produit-card{
+    background:white;
+    border-radius:16px;
+    padding:16px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    box-shadow:0 4px 20px rgba(102,126,234,0.15);
+  }
+  .proposer-produit-img{
+    width:80px;
+    height:80px;
+    border-radius:12px;
+    object-fit:cover;
+    border:3px solid #f0f2f5;
+  }
+  .proposer-produit-info{flex:1;}
+  .proposer-produit-info h4{
+    margin:0 0 6px 0;
+    font-size:15px;
+    font-weight:600;
+    color:#333;
+  }
+  .proposer-prix-actuel{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .proposer-prix-actuel .prix-label{
+    font-size:12px;
+    color:#666;
+  }
+  .proposer-prix-actuel .prix-value{
+    font-size:18px;
+    font-weight:800;
+    background:linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .proposer-vendeur{
+    font-size:12px;
+    color:#888;
+  }
+  
+  /* Badge promo */
+  .badge-promo{
+    display:inline-block;
+    background:linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+    color:white;
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:20px;
+    margin-left:8px;
+  }
+  
+  /* Formulaire moderne */
+  .proposer-form-card{
+    background:white;
+    border-radius:0 0 20px 20px;
+    padding:20px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+  }
+  
+  /* Section infos client */
+  .client-info-section{
+    background:linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:20px;
+    border:1px solid #e8ecf0;
+  }
+  .client-info-section .label{
+    font-size:11px;
+    color:#888;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:4px;
+  }
+  .client-info-section .value{
+    font-size:14px;
+    font-weight:600;
+    color:#333;
+  }
+  
+  /* Input groupe moderne */
+  .input-group-modern{
+    margin-bottom:20px;
+  }
+  .input-group-modern label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:#444;
+    margin-bottom:8px;
+  }
+  .input-group-modern input,
+  .input-group-modern textarea{
+    width:100%;
+    padding:14px 16px;
+    border:2px solid #e8ecf0;
+    border-radius:12px;
+    font-size:14px;
+    transition:all 0.3s ease;
+    background:#fafbfd;
+  }
+  .input-group-modern input:focus,
+  .input-group-modern textarea:focus{
+    outline:none;
+    border-color:#667eea;
+    background:white;
+    box-shadow:0 0 0 4px rgba(102,126,234,0.1);
+  }
+  .input-group-modern textarea{
+    resize:none;
+    min-height:100px;
+  }
+  .input-group-modern input::placeholder,
+  .input-group-modern textarea::placeholder{
+    color:#aaa;
+  }
+  
+  /* Indicateur visuel de prix */
+  .prix-indicator{
+    background:linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:20px;
+    border:1px solid #e8ecf0;
+  }
+  .prix-indicator-title{
+    font-size:12px;
+    color:#666;
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .prix-indicator-title span{font-size:16px;}
+  .prix-indicator-bars{
+    display:flex;
+    gap:8px;
+    align-items:flex-end;
+    height:60px;
+  }
+  .prix-indicator-bar{
+    flex:1;
+    border-radius:6px;
+    transition:all 0.3s ease;
+  }
+  .bar-actuel{
+    height:100%;
+    background:linear-gradient(180deg, #11998e 0%, #38ef7d 100%);
+  }
+  .bar-propose{
+    height:0%;
+    background:linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    position:relative;
+  }
+  .bar-propose::after{
+    content:attr(data-value);
+    position:absolute;
+    top:-24px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:11px;
+    font-weight:700;
+    color:#667eea;
+    white-space:nowrap;
+  }
+  .bar-label{
+    font-size:10px;
+    color:#888;
+    text-align:center;
+    margin-top:8px;
+  }
+  
+  /* Quick price buttons */
+  .quick-prices{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:16px;
+  }
+  .quick-price-btn{
+    flex:1;
+    min-width:80px;
+    padding:10px 14px;
+    border:2px solid #e8ecf0;
+    border-radius:10px;
+    background:white;
+    color:#555;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+  }
+  .quick-price-btn:hover{
+    border-color:#667eea;
+    background:linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
+    transform:translateY(-2px);
+  }
+  .quick-price-btn .discount{
+    font-size:14px;
+    font-weight:800;
+    color:#667eea;
+  }
+  
+  /* Bouton envoyer moderne */
+  .submit-btn{
+    width:100%;
+    padding:16px 24px;
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color:white;
+    border:none;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    box-shadow:0 4px 15px rgba(102,126,234,0.3);
+  }
+  .submit-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 25px rgba(102,126,234,0.4);
+  }
+  .submit-btn:active{
+    transform:translateY(0);
+  }
+  .submit-btn .icon{
+    font-size:18px;
+  }
+  
+  /* Retour lien */
+  .retour-lien{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    color:#666;
+    font-size:13px;
+    text-decoration:none;
+    padding:10px 16px;
+    border-radius:10px;
+    transition:all 0.3s ease;
+    margin-top:12px;
+  }
+  .retour-lien:hover{
+    background:#f5f5f5;
+    color:#333;
+  }
+  
+  /* Note info */
+  .info-note{
+    font-size:12px;
+    color:#888;
+    text-align:center;
+    margin-top:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+  }
+  
+  /* Animations */
+  @keyframes slideUp{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .proposer-header,
+  .proposer-form-card{
+    animation:slideUp 0.5s ease-out;
+  }
+  .proposer-form-card{animation-delay:0.1s;}
+  
+  /* Responsive */
+  @media (max-width: 480px){
+    .proposer-produit-card{flex-direction:column;text-align:center;}
+    .proposer-produit-img{width:100px;height:100px;}
+    .proposer-prix-actuel{justify-content:center;}
+    .quick-prices{gap:8px;}
+    .quick-price-btn{min-width:70px;padding:8px 10px;}
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="account-container">
+  <div class="proposer-wrap">
+    <!-- Header -->
+    <div class="proposer-header">
+      <h2>💬 Proposer un prix</h2>
+      <p>Négociez le meilleur prix pour ce produit</p>
+    </div>
+    
+    <!-- Carte Produit -->
+    <div style="padding:16px;background:linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(118,75,162,0.08) 100%);">
+      <div class="proposer-produit-card">
+        {% if produit.photo %}
+        <img src="{{ produit.photo.url }}" alt="{{ produit.nom }}" class="proposer-produit-img">
+        {% else %}
+        <div class="proposer-produit-img" style="background:linear-gradient(135deg, #e8ecf0 0%, #dde1e7 100%);display:flex;align-items:center;justify-content:center;font-size:32px;">
+          📦
+        </div>
+        {% endif %}
+        <div class="proposer-produit-info">
+          <h4>{{ produit.nom }}</h4>
+          <div class="proposer-prix-actuel">
+            <span class="prix-label">Prix actuel:</span>
+            <span class="prix-value">{{ produit.prix|format_prix }} GNF</span>
+            {% if produit.promo and produit.prix_promo %}
+            <span class="badge-promo">PROMO -{{ produit.prix|sub:produit.prix_promo|div:produit.prix|mul:100|floatformat:0 }}%</span>
+            {% endif %}
+          </div>
+          <p class="proposer-vendeur">🏪 {{ produit.vendeur.nom_boutique }} • 📍 {{ produit.vendeur.ville }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Formulaire -->
+    <div class="proposer-form-card">
+      <form method="post">
+        {% csrf_token %}
+        
+        {% if not client_connecte %}
+        <div class="input-group-modern">
+          <label>👤 Vos informations</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <input type="text" name="nom" placeholder="Votre nom" required style="flex:1;min-width:140px;">
+            <input type="text" name="numero" placeholder="WhatsApp" required style="flex:1;min-width:140px;">
+          </div>
+        </div>
+        {% else %}
+        <div class="client-info-section">
+          <div class="label">Client connecté</div>
+          <div class="value">👤 {{ client_connecte.nom }}</div>
+          <div style="margin-top:8px;font-size:13px;color:#666;">📱 {{ client_connecte.numero }}</div>
+        </div>
+        {% endif %}
+        
+        <!-- Indicateur visuel -->
+        <div class="prix-indicator">
+          <div class="prix-indicator-title">
+            <span>📊</span> Comparaison de prix
+          </div>
+          <div class="prix-indicator-bars">
+            <div style="flex:1;">
+              <div class="prix-indicator-bar bar-actuel"></div>
+              <div class="bar-label">{{ produit.prix|format_prix }}</div>
+            </div>
+            <div style="flex:1;">
+              <div class="prix-indicator-bar bar-propose" id="bar-propose" data-value="?"></div>
+              <div class="bar-label">Votre prix</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Quick price buttons -->
+        <div class="quick-prices">
+          <button type="button" class="quick-price-btn" onclick="setQuickPrice(0.9)">
+            <span class="discount">-10%</span>
+            <span>{{ produit.prix|mul:0.9|floatformat:0 }}</span>
+          </button>
+          <button type="button" class="quick-price-btn" onclick="setQuickPrice(0.8)">
+            <span class="discount">-20%</span>
+            <span>{{ produit.prix|mul:0.8|floatformat:0 }}</span>
+          </button>
+          <button type="button" class="quick-price-btn" onclick="setQuickPrice(0.7)">
+            <span class="discount">-30%</span>
+            <span>{{ produit.prix|mul:0.7|floatformat:0 }}</span>
+          </button>
+          <button type="button" class="quick-price-btn" onclick="setQuickPrice(0.6)">
+            <span class="discount">-40%</span>
+            <span>{{ produit.prix|mul:0.6|floatformat:0 }}</span>
+          </button>
+        </div>
+        
+        <div class="input-group-modern">
+          <label>💰 Votre prix proposé (GNF)</label>
+          <input type="number" name="prix_propose" id="prix-propose" 
+                 placeholder="Ex: {{ produit.prix|floatformat:0 }}" required
+                 min="1" max="{{ produit.prix|add:produit.prix }}">
+          <div class="form-text" style="font-size:12px;color:#888;margin-top:6px;">
+            Le vendeur recevra votre offre et pourra vous répondre
+          </div>
+        </div>
+        
+        <div class="input-group-modern">
+          <label>💬 Message (optionnel)</label>
+          <textarea name="message" placeholder="Ex: Je peux prendre 2 unités à ce prix..."></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+          <span class="icon">📨</span>
+          Envoyer ma proposition
+        </button>
+        
+        <div class="info-note">
+          <span>💡</span> Après envoi, vous pourrez discuter directement avec le vendeur dans vos messages
+        </div>
+      </form>
+      
+      <div style="text-align:center;">
+        <a href="{% url 'detail_produit' produit.pk %}" class="retour-lien">
+          ← Retour au produit
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* Quick price function */
+  function setQuickPrice(multiplier) {
+    var currentPrice = parseInt("{{ produit.prix|escapejs }}");
+    var newPrice = Math.round(currentPrice * multiplier);
+    document.getElementById('prix-propose').value = newPrice;
+    updatePriceIndicator(newPrice);
+  }
+  
+  /* Update price indicator */
+  function updatePriceIndicator(proposedPrice) {
+    var currentPrice = parseInt("{{ produit.prix|escapejs }}");
+    var bar = document.getElementById('bar-propose');
+    
+    if (proposedPrice > 0 && currentPrice > 0) {
+      var percentage = (proposedPrice / currentPrice) * 100;
+      bar.style.height = Math.min(percentage, 100) + '%';
+      bar.setAttribute('data-value', proposedPrice.toLocaleString() + ' GNF');
+    } else {
+      bar.style.height = '0%';
+      bar.setAttribute('data-value', '?');
+    }
+  }
+  
+  /* Listen to input changes */
+  document.getElementById('prix-propose').addEventListener('input', function(e) {
+    updatePriceIndicator(parseInt(e.target.value) || 0);
+  });
+  
+  /* Initialize */
+  document.getElementById('prix-propose').focus();
+</script>
+{% endblock %}

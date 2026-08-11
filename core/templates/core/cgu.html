@@ -1,0 +1,137 @@
+{% extends "core/base.html" %}
+
+{% block title %}Conditions Générales d'Utilisation - SHOPY{% endblock %}
+
+{% block content %}
+<div class="legal-container">
+    <h1>📜 Conditions Générales d'Utilisation</h1>
+    <p class="last-update">Dernière mise à jour: {% now "d F Y" %}</p>
+
+    <section>
+        <h2>1. Introduction</h2>
+        <p>Bienvenue sur SHOPY, la plateforme marketplace guinéenne. Les présentes Conditions Générales d'Utilisation (CGU) définissent les modalités d'accès et d'utilisation de notre plateforme.</p>
+    </section>
+
+    <section>
+        <h2>2. Acceptance des conditions</h2>
+        <p>En accédant et en utilisant SHOPY, vous acceptez d'être lié par ces CGU. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre plateforme.</p>
+    </section>
+
+    <section>
+        <h2>3. Inscription des utilisateurs</h2>
+        <h3>3.1 Compte vendeur</h3>
+        <ul>
+            <li>Les vendeurs doivent créer un compte avec un nom de boutique unique</li>
+            <li>Un numéro de téléphone valide est requis pour la vérification</li>
+            <li>Les boutiques sont soumises à validation administrative avant activation</li>
+            <li>Chaque vendeur peut avoir un seul compte</li>
+        </ul>
+        
+        <h3>3.2 Compte client</h3>
+        <ul>
+            <li>Les clients peuvent s'inscrire avec leur email et numéro WhatsApp</li>
+            <li>Le numéro de téléphone permet de suivre les commandes</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>4. Produits et services</h2>
+        <ul>
+            <li>Les vendeurs proposent leurs produits à la vente</li>
+            <li>Les prix sont displayed en francs guinéens (GNF)</li>
+            <li>Les promotions ont une durée limitée</li>
+            <li>Les flash sales ont des stocks limités</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>5. Commandes et paiements</h2>
+        <ul>
+            <li>Les commandes sont validées après paiement confirmé</li>
+            <li>Modes de paiement: Orange Money, Mobile Money, Paiement à la livraison</li>
+            <li>Le vendeur dispose de 48h pour accepter ou refuser une commande</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>6. Livraison</h2>
+        <p>Les modalités de livraison sont convenues entre le client et le vendeur. SHOPY ne propose pas de livraison intégrée pour le moment.</p>
+    </section>
+
+    <section>
+        <h2>7. Retours et remboursements</h2>
+        <ul>
+            <li>Le client peut demander un remboursement sous 7 jours</li>
+            <li>La Garantie Acheteur offre une protection supplémentaire (30 jours)</li>
+            <li>Les retours sont soumis à l'approbation du vendeur</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>8. Signalements et litiges</h2>
+        <p>Les clients peuvent signaler un vendeur en cas de litige. Après 3 signalements, le vendeur est automatiquement suspendu en attendant une enquête.</p>
+    </section>
+
+    <section>
+        <h2>9. Responsabilités</h2>
+        <ul>
+            <li>SHOPY agit comme intermédiaire entre vendeurs et acheteurs</li>
+            <li>Chaque vendeur est responsable de ses produits et services</li>
+            <li>SHOPY n'est pas responsable des transactions directes</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>10. Propriété intellectuelle</h2>
+        <p>Tout le contenu SHOPY (logo, design, code) est la propriété de SHOPY. Toute reproduction est interdite sans autorisation.</p>
+    </section>
+
+    <section>
+        <h2>11. Modification des CGU</h2>
+        <p>SHOPY se réserve le droit de modifier ces CGU à tout moment. Les modifications entrent en vigueur dès leur publication.</p>
+    </section>
+
+    <section>
+        <h2>12. Contact</h2>
+        <p>Pour toute question concernant ces CGU, contactez-nous à: <strong>contact@shopy-guinee.com</strong></p>
+    </section>
+</div>
+
+<style>
+.legal-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    font-family: Arial, sans-serif;
+    line-height: 1.8;
+}
+.legal-container h1 {
+    color: #1a73e8;
+    margin-bottom: 10px;
+}
+.last-update {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 30px;
+}
+section {
+    margin-bottom: 30px;
+}
+section h2 {
+    color: #333;
+    border-bottom: 2px solid #1a73e8;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+section h3 {
+    color: #555;
+    margin-top: 15px;
+}
+section ul {
+    padding-left: 20px;
+}
+section li {
+    margin-bottom: 8px;
+}
+</style>
+{% endblock %}

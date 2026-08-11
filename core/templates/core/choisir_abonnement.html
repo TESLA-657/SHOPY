@@ -1,0 +1,130 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/choisir-abonnement.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid px-4 abonnement-plans-wrap">
+
+  <div class="text-center mb-5 pb-3">
+    <h2 class="fw-bold">Choisissez votre forfait</h2>
+    <p class="text-muted mb-0">Developpez votre boutique avec le plan qui vous convient</p>
+  </div>
+
+  <div class="row g-4 justify-content-center align-stretch">
+
+    <!-- Plans dynamiques bases sur le modele PlanAbonnement -->
+    {% for plan in plans %}
+    <div class="col-md-4 {% if plan.nom == 'pro' %}featured-plan{% endif %}">
+      <div class="card h-100 p-4 {% if plan.nom == 'pro' %}pro-card{% endif %}">
+        
+        {% if plan.nom == 'pro' %}
+        <div style="position:absolute; top:-14px; left:50%; transform:translateX(-50%); white-space:nowrap;
+             background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:white; padding:6px 20px; border-radius:20px;
+             font-size:12px; font-weight:bold; box-shadow:0 4px 15px rgba(139, 92, 246, 0.4);">
+          ⭐ LE PLUS POPULAIRE
+        </div>
+        {% endif %}
+        
+        <div class="mb-3 {% if plan.nom == 'pro' %}mt-2{% endif %}">
+          <h4 class="fw-bold mb-1 plan-name">{{ plan.nom|capfirst }}</h4>
+          <p class="text-muted small mb-0">
+            {% if plan.nom == 'essentiel' %}
+              Pour demarrer votre boutique
+            {% elif plan.nom == 'pro' %}
+              Pour les vendeurs actifs
+            {% elif plan.nom == 'business' %}
+              Pour les grandes boutiques
+            {% else %}
+              Plan disponible
+            {% endif %}
+          </p>
+        </div>
+        
+        <div class="mb-4">
+          <span class="d-block plan-price" style="font-size:36px; font-weight:bold;">
+            {{ plan.prix|floatformat:0 }}
+          </span>
+          <span class="text-muted">GNF/mois</span>
+          <p class="text-muted small mt-1 mb-0">Facturation mensuelle</p>
+        </div>
+        
+        <a href="{% url 'payer_abonnement' plan.nom %}"
+           class="btn fw-bold w-100 mb-4 {% if plan.nom == 'pro' %}btn-pro{% elif plan.nom == 'business' %}btn-business{% else %}btn-essentiel{% endif %}">
+          Obtenir {{ plan.nom|capfirst }}
+        </a>
+        
+        <div class="pt-3 border-top">
+          <p class="fw-bold small mb-2">Ce qui est inclus :</p>
+          
+          {% if plan.nom == 'essentiel' %}
+            {% if plan.limite_produits == -1 %}
+            <p class="small mb-2">✅ Produits illimites</p>
+            {% else %}
+            <p class="small mb-2">✅ Jusqu'a {{ plan.limite_produits }} produits</p>
+            {% endif %}
+            <p class="small mb-2">✅ Dashboard complet</p>
+            <p class="small mb-2">✅ Gestion des commandes</p>
+            <p class="small mb-2">✅ Support standard</p>
+            <p class="small mb-2 text-muted">❌ Statistiques avancees</p>
+            <p class="small mb-0 text-muted">❌ Priorite catalogue</p>
+            
+          {% elif plan.nom == 'pro' %}
+            {% if plan.limite_produits == -1 %}
+            <p class="small mb-2">✅ Produits illimites</p>
+            {% else %}
+            <p class="small mb-2">✅ Jusqu'a {{ plan.limite_produits }} produits</p>
+            {% endif %}
+            <p class="small mb-2">✅ Dashboard complet</p>
+            <p class="small mb-2">✅ Gestion des commandes</p>
+            <p class="small mb-2">✅ Statistiques avancees</p>
+            <p class="small mb-2">✅ Support prioritaire</p>
+            <p class="small mb-0 text-muted">❌ Priorite catalogue</p>
+            
+          {% elif plan.nom == 'business' %}
+            {% if plan.limite_produits == -1 %}
+            <p class="small mb-2">✅ Produits illimites</p>
+            {% else %}
+            <p class="small mb-2">✅ Jusqu'a {{ plan.limite_produits }} produits</p>
+            {% endif %}
+            <p class="small mb-2">✅ Dashboard complet</p>
+            <p class="small mb-2">✅ Gestion des commandes</p>
+            <p class="small mb-2">✅ Statistiques avancees</p>
+            <p class="small mb-2">✅ Priorite dans le catalogue</p>
+            <p class="small mb-0">✅ Support dedie 24/7</p>
+            
+          {% else %}
+            {% if plan.limite_produits == -1 %}
+            <p class="small mb-2">✅ Produits illimites</p>
+            {% else %}
+            <p class="small mb-2">✅ {{ plan.limite_produits }} produits maximum</p>
+            {% endif %}
+            <p class="small mb-0">✅ Acces au tableau de bord</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+
+  <div class="text-center mt-5 pt-3">
+    <a href="{% url 'dashboard_vendeur' %}" class="account-btn account-btn-primary fw-bold text-white">
+      ← Retour au Dashboard
+    </a>
+  </div>
+
+</div>
+
+<style>
+.abonnement-plans-wrap .col-md-4 {
+  max-width: 360px;
+}
+.abonnement-plans-wrap .featured-plan {
+  max-width: 380px;
+}
+</style>
+
+{% endblock %}

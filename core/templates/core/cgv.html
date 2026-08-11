@@ -1,0 +1,163 @@
+{% extends "core/base.html" %}
+
+{% block title %}Conditions Générales de Vente - SHOPY{% endblock %}
+
+{% block content %}
+<div class="legal-container">
+    <h1>📋 Conditions Générales de Vente</h1>
+    <p class="last-update">Dernière mise à jour: {% now "d F Y" %}</p>
+
+    <section>
+        <h2>1. Objet</h2>
+        <p>Les présentes Conditions Générales de Vente (CGV) régissent les relations entre les vendedores et les acheteurs sur la plateforme SHOPY.</p>
+    </section>
+
+    <section>
+        <h2>2. Produits</h2>
+        <ul>
+            <li>Les produits sont décrits avec précision par le vendeur</li>
+            <li>Les photos sont indicatives</li>
+            <li>Les prix peuvent inclure ou non la livraison</li>
+            <li>Les promotions ont une durée limitée</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>3. Commandes</h2>
+        <ul>
+            <li>La commande devient effective après paiement confirmé</li>
+            <li>Le vendeur a 48h pour accepter la commande</li>
+            <li>En cas de refus, le client est remboursé</li>
+            <li>Le client peut annuler avant acceptation du vendeur</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>4. Prix et paiement</h2>
+        <ul>
+            <li>Les prix sont affichés en GNF (francs guinéens)</li>
+            <li>Le paiement valide la commande</li>
+            <li>Modes: Orange Money, Mobile Money, Espèces</li>
+            <li>Preuve de paiement conservée</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>5. Livraison</h2>
+        <ul>
+            <li>Les modalités sont convenues après commande</li>
+            <li>Le vendeur peut proposer un service livraison</li>
+            <li>Les frais de livraison sont à la charge du client (sauf indication)</li>
+            <li>Délai habituel: 3-7 jours selon localisation</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>6. Garanties</h2>
+        <h3>6.1 Garantie Acheteur SHOPY</h3>
+        <ul>
+            <li>Protection automatique pendant 30 jours</li>
+            <li>Couvre: non-conformité, arnaque, non-livraison</li>
+            <li>Demande via l'espace client</li>
+        </ul>
+        
+        <h3>6.2 Garantie vendeur</h3>
+        <ul>
+            <li>Chaque vendeur peut offrir ses propres garanties</li>
+            <li>Vérifiez les conditions avant achat</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>7. Retours et remboursements</h2>
+        <ul>
+            <li>Delai maximum: 7 jours après réception</li>
+            <li>Produit doit être dans son état original</li>
+            <li>Frais de retour à la charge du client</li>
+            <li>Remboursement sous 14 jours</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>8. Litiges</h2>
+        <p>En cas de litige:</p>
+        <ol>
+            <li>Contacter le vendeur directement</li>
+            <li>Signaler via le formulaire SHOPY</li>
+            <li>Demander intervention admin</li>
+            <li>Recours juridique en dernier recours</li>
+        </ol>
+    </section>
+
+    <section>
+        <h2>9. Obligations du vendeur</h2>
+        <ul>
+            <li>Décrire les produits fidèlement</li>
+            <li>Livrer dans les délais convenus</li>
+            <li>Répondre aux messages sous 24h</li>
+            <li>Honorer les commandes payées</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>10. Obligations de l'acheteur</h2>
+        <ul>
+            <li>Payer le prix convenu</li>
+            <li>Étre disponible pour la livraison</li>
+            <li>Vérifier le produit à réception</li>
+            <li>Communiquer de bonne foi</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>11. Force majeure</h2>
+        <p>En cas de force majeure (catastrophe, guerre, épidémie), les obligations sont suspendues sans responsabilité.</p>
+    </section>
+
+    <section>
+        <h2>12. Service client</h2>
+        <p>Pour toute question: <strong>support@shopy-guinee.com</strong></p>
+    </section>
+</div>
+
+<style>
+.legal-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    font-family: Arial, sans-serif;
+    line-height: 1.8;
+}
+.legal-container h1 {
+    color: #1a73e8;
+    margin-bottom: 10px;
+}
+.last-update {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 30px;
+}
+section {
+    margin-bottom: 30px;
+}
+section h2 {
+    color: #333;
+    border-bottom: 2px solid #1a73e8;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+section h3 {
+    color: #555;
+    margin-top: 15px;
+}
+section ul, section ol {
+    padding-left: 20px;
+}
+section li {
+    margin-bottom: 8px;
+}
+strong {
+    color: #1a73e8;
+}
+</style>
+{% endblock %}

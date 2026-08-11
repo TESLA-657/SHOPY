@@ -1,0 +1,93 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/choix-paiement.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="catalogue-container choix-paiement-wrap" style="display: flex; align-items: center; justify-content: center;">
+  <div class="page-content">
+    <div class="section-card mx-auto" style="max-width:520px;">
+      <div class="section-card-inner">
+        
+        <!-- Header -->
+        <div class="section-card-header">
+          <div>
+            <h1 class="page-title">💳 Choisir le mode de paiement</h1>
+            <p class="page-subtitle">{{ produit.nom }} × {{ commande.quantite }}</p>
+          </div>
+          <span class="summary-chip">Réf: CMD-{{ commande.pk }}-{{ commande.nom_client|upper }}</span>
+        </div>
+
+        <!-- Montant Principal -->
+        <div class="info" style="text-align: center; margin-bottom: 20px;">
+          <p class="section-title">💰 Montant à régler</p>
+          <p class="montant-display">{{ montant|floatformat:0 }} GNF</p>
+          <p class="page-note">Référence: <strong>CMD-{{ commande.pk }}-{{ commande.nom_client|upper }}</strong></p>
+        </div>
+
+        <!-- Détails Commande -->
+        <div class="info">
+          <p class="page-text-muted"><strong>Produit:</strong> {{ produit.nom }}</p>
+          <p class="page-text-muted"><strong>Boutique:</strong> {{ commande.vendeur.nom_boutique }}</p>
+          <p class="page-text-muted"><strong>Quantité:</strong> {{ commande.quantite }}</p>
+          <p class="page-text-muted"><strong>Total:</strong> {{ montant|floatformat:0 }} GNF</p>
+        </div>
+
+        <!-- Modes de Paiement -->
+        <p class="section-title" style="text-align: center; margin-bottom: 16px; color: var(--cp-text-2);">
+          📱 Choisissez votre mode de paiement
+        </p>
+        
+        <div class="payment-options-grid">
+          <!-- Orange Money -->
+          <a href="{% url 'payer_commande_orange' commande.pk %}" class="payment-option orange-money">
+            <div class="payment-icon-wrap">
+              <span class="payment-icon">🍊</span>
+            </div>
+            <div class="payment-content">
+              <h5>Orange Money</h5>
+              <p class="page-text-muted">Paiement rapide via Orange</p>
+              <p class="page-note">Envoyer au: <strong>{{ commande.vendeur.numero }}</strong></p>
+            </div>
+            <span class="payment-arrow">→</span>
+          </a>
+
+          <!-- Mobile Money -->
+          <a href="{% url 'payer_commande_mobile' commande.pk %}" class="payment-option mobile-money">
+            <div class="payment-icon-wrap">
+              <span class="payment-icon">📱</span>
+            </div>
+            <div class="payment-content">
+              <h5>Mobile Money</h5>
+              <p class="page-text-muted">Paiement via Mobile Money</p>
+              <p class="page-note">Numéro: <strong>{{ commande.vendeur.numero }}</strong></p>
+            </div>
+            <span class="payment-arrow">→</span>
+          </a>
+
+          <!-- Paiement à la livraison -->
+          <a href="{% url 'payer_commande_livraison' commande.pk %}" class="payment-option livraison">
+            <div class="payment-icon-wrap">
+              <span class="payment-icon">🚚</span>
+            </div>
+            <div class="payment-content">
+              <h5>Paiement à la livraison</h5>
+              <p class="page-text-muted">Payez lors de la réception</p>
+<p class="page-note">Paiement sécurisé à la réception</p>
+            </div>
+            <span class="payment-arrow">→</span>
+          </a>
+        </div>
+
+        <div class="text-center mt-4">
+          <a href="{% url 'passer_commande' produit.pk %}" class="ret">
+            ← Retour à la commande
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

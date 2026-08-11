@@ -1,0 +1,164 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/payer-abonnement.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="pa-container">
+  <div class="pa-wrapper">
+
+    <div class="pa-header">
+      <h2>💳 Paiement Abonnement</h2>
+      <div class="pa-plan-info">
+        <span class="plan-name">{{ plan.nom|upper }}</span>
+        <span class="plan-price">{{ plan.prix|floatformat:0 }} GNF<span style="font-weight:400; font-size:0.9rem; color:#888;">/mois</span></span>
+      </div>
+    </div>
+
+    <div class="pa-card-main">
+      <div class="pa-card-inner">
+        <h3 class="pa-card-title">💰 Choisir le mode de paiement</h3>
+        <p class="pa-card-subtitle">Plan <strong>{{ plan.nom|upper }}</strong> — <strong>{{ plan.prix|floatformat:0 }} GNF</strong> par mois</p>
+
+        <div class="payment-options">
+          <div class="pa-payment-option orange-money" onclick="showForm('orange')">
+            <div class="pa-payment-icon">🍊</div>
+            <div class="pa-payment-details">
+              <div class="pa-payment-title">Orange Money</div>
+              <div class="pa-payment-desc">Paiement via Orange Money</div>
+            </div>
+          </div>
+
+          <div class="pa-payment-option mobile-money" onclick="showForm('mobile')">
+            <div class="pa-payment-icon">📱</div>
+            <div class="pa-payment-details">
+              <div class="pa-payment-title">Mobile Money</div>
+              <div class="pa-payment-desc">Paiement via Mobile Money</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="orange-form" class="pa-payment-form" style="display:block;">
+          <div class="pa-instructions">
+            <div class="pa-instructions-title">📱 Instructions Orange Money</div>
+            <ol>
+              <li>Ouvrez l'application <strong>Orange Money</strong> sur votre téléphone</li>
+              <li>Envoyez <strong>{{ plan.prix|floatformat:0 }} GNF</strong> au numéro :</li>
+            </ol>
+            <p class="pa-phone-number">+224 612 97 16 10</p>
+            <ol>
+              <li>Utilisez la référence : <span class="pa-reference">SHOPY-{{ vendeur.nom_boutique|upper }}</span></li>
+            </ol>
+          </div>
+
+          <div class="pa-shop-info">
+<p><strong>Boutique :</strong> {{ vendeur.nom_boutique }}</p>
+            <p><strong>Ville :</strong> {{ vendeur.ville }}</p>
+            <p><strong>Plan :</strong> {{ plan.nom|upper }} — {{ plan.prix|floatformat:0 }} GNF/mois</p>
+          </div>
+
+          <form method="post" class="pa-form">
+            {% csrf_token %}
+            <input type="hidden" name="mode_paiement" value="orange_money">
+            
+            <div class="pa-form-group">
+              <label class="pa-form-label">Votre numéro Orange Money</label>
+              <input type="text" name="numero_paiement" class="pa-form-input" 
+                     placeholder="+224 6XX XX XX XX" required>
+            </div>
+
+            <div class="pa-form-group">
+              <label class="pa-form-label">Référence du paiement (Optionnel)</label>
+              <input type="text" name="reference" class="pa-form-input" 
+                     placeholder="Ex: OM2026041500123">
+            </div>
+
+            <button type="submit" class="pa-submit-btn orange">
+              ✅ J'ai effectué le paiement Orange Money
+            </button>
+          </form>
+        </div>
+
+        <div id="mobile-form" class="pa-payment-form" style="display:none;">
+          <div class="pa-instructions" style="border-color:rgba(139, 92, 246, 0.3); background:linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(139, 92, 246, 0.05));">
+            <div class="pa-instructions-title" style="color:#8b5cf6;">📱 Instructions Mobile Money</div>
+            <ol>
+              <li>Ouvrez l'application <strong>Mobile Money</strong></li>
+              <li>Envoyez <strong>{{ plan.prix|floatformat:0 }} GNF</strong> au numéro :</li>
+            </ol>
+            <p class="pa-phone-number" style="color:#8b5cf6;">+224 612 97 16 10</p>
+            <ol>
+              <li>Utilisez la référence : <span class="pa-reference">SHOPY-{{ vendeur.nom_boutique|upper }}</span></li>
+            </ol>
+          </div>
+
+          <div class="pa-shop-info">
+            <p><strong>Boutique :</strong> {{ vendeur.nom_boutique }}</p>
+            <p><strong>Ville :</strong> {{ vendeur.ville }}</p>
+            <p><strong>Plan :</strong> {{ plan.nom|upper }} — {{ plan.prix|floatformat:0 }} GNF/mois</p>
+          </div>
+
+          <form method="post" class="pa-form">
+            {% csrf_token %}
+            <input type="hidden" name="mode_paiement" value="mobile_money">
+            
+            <div class="pa-form-group">
+              <label class="pa-form-label">Votre numéro Mobile Money</label>
+              <input type="text" name="numero_paiement" class="pa-form-input" 
+                     placeholder="+224 6XX XX XX XX" required>
+            </div>
+
+            <div class="pa-form-group">
+              <label class="pa-form-label">Référence du paiement (Optionnel)</label>
+              <input type="text" name="reference" class="pa-form-input" 
+                     placeholder="Ex: MM2026041500123">
+            </div>
+
+            <button type="submit" class="pa-submit-btn mobile">
+              ✅ J'ai effectué le paiement Mobile Money
+            </button>
+          </form>
+        </div>
+
+        <div style="text-align:center;">
+          <a href="{% url 'choisir_abonnement' %}" class="pa-back-link">
+            ← Choisir un autre plan
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function showForm(mode) {
+  document.getElementById('orange-form').style.display = 'none';
+  document.getElementById('mobile-form').style.display = 'none';
+  
+  var options = document.querySelectorAll('.pa-payment-option');
+  options.forEach(function(el) {
+    el.classList.remove('active');
+  });
+  
+  if (mode === 'orange') {
+    document.getElementById('orange-form').style.display = 'block';
+    document.querySelector('.orange-money').classList.add('active');
+  } else if (mode === 'mobile') {
+    document.getElementById('mobile-form').style.display = 'block';
+    document.querySelector('.mobile-money').classList.add('active');
+  }
+  
+  setTimeout(function() {
+    var form = document.querySelector('.pa-payment-form[style*="block"]');
+    if (form) form.scrollIntoView({behavior: 'smooth'});
+  }, 100);
+}
+</script>
+
+{% endblock %}

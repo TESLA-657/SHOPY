@@ -1,0 +1,193 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/statistiques-avancees.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div id="sa-stats-container">
+  <div id="sa-stats-wrapper">
+
+    <div class="sa-header">
+      <div class="sa-header-left">
+        <h4>Mes Statistiques</h4>
+        <div class="sa-shop-name">{{ vendeur.nom_boutique }}</div>
+      </div>
+      <a href="{% url 'dashboard_vendeur' %}" class="sa-back-btn">Retour au Dashboard</a>
+    </div>
+
+    <div class="sa-stats-grid">
+      <div class="sa-stat-card green">
+        <div class="sa-stat-icon">💰</div>
+        <div class="sa-stat-label">Ventes du mois</div>
+        <div class="sa-stat-value">{{ ventes_du_mois }} <span class="sa-stat-unit">GNF</span></div>
+      </div>
+
+      <div class="sa-stat-card blue">
+        <div class="sa-stat-icon">📦</div>
+        <div class="sa-stat-label">Total commandes</div>
+        <div class="sa-stat-value">{{ total_commandes }}</div>
+      </div>
+
+      <div class="sa-stat-card yellow">
+        <div class="sa-stat-icon">⏳</div>
+        <div class="sa-stat-label">En attente</div>
+        <div class="sa-stat-value">{{ commandes_attente }}</div>
+      </div>
+
+      <div class="sa-stat-card purple">
+        <div class="sa-stat-icon">🛒</div>
+        <div class="sa-stat-label">Produits en ligne</div>
+        <div class="sa-stat-value">{{ produits_en_ligne }}/{{ total_produits }}</div>
+      </div>
+    </div>
+
+<div class="sa-conversion-section">
+      <div class="sa-section-header">
+        <h5 class="sa-section-title">Evolution des ventes (12 derniers mois)</h5>
+        {% if evolution_pourcent is not None %}
+        <span style="margin-left:auto; font-size:13px; 
+          {% if evolution_pourcent > 0 %}color:#3fb950{% else %}color:#e74c3c{% endif %};">
+          {% if evolution_pourcent > 0 %}↑{% else %}↓{% endif %} {{ evolution_pourcent }}% vs mois dernier
+        </span>
+        {% endif %}
+      </div>
+      <div style="height:280px; background:rgba(255,255,255,0.03); border-radius:12px; padding:16px;">
+        <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+
+    <div class="sa-conversion-section">
+      <div class="sa-section-header">
+        <h5 class="sa-section-title">Analyse des commandes</h5>
+      </div>
+
+      {% if total_commandes > 0 %}
+      <div class="sa-chart-container">
+        <div class="sa-progress-bars">
+          <div class="sa-progress-group">
+            <div class="sa-progress-header">
+              <span class="sa-progress-label">Acceptees</span>
+              <span class="sa-progress-value">{{ commandes_acceptees }} / {{ total_commandes }}</span>
+            </div>
+            <div class="sa-progress-bar"><div class="sa-progress-fill green" style="width:60%;"></div></div>
+          </div>
+          <div class="sa-progress-group">
+            <div class="sa-progress-header">
+              <span class="sa-progress-label">En attente</span>
+              <span class="sa-progress-value">{{ commandes_attente }} / {{ total_commandes }}</span>
+            </div>
+            <div class="sa-progress-bar"><div class="sa-progress-fill yellow" style="width:25%;"></div></div>
+          </div>
+          <div class="sa-progress-group">
+            <div class="sa-progress-header">
+              <span class="sa-progress-label">Refusees</span>
+              <span class="sa-progress-value">{{ commandes_refusees }} / {{ total_commandes }}</span>
+            </div>
+            <div class="sa-progress-bar"><div class="sa-progress-fill red" style="width:15%;"></div></div>
+          </div>
+        </div>
+        <div class="sa-pie-chart-wrapper">
+          <div class="sa-stats-numbers">
+            <div class="sa-stat-number-item">
+              <span class="sa-stat-num green">{{ commandes_acceptees }}</span>
+              <span class="sa-stat-label">Acceptees</span>
+            </div>
+            <div class="sa-stat-number-item">
+              <span class="sa-stat-num yellow">{{ commandes_attente }}</span>
+              <span class="sa-stat-label">En attente</span>
+            </div>
+            <div class="sa-stat-number-item">
+              <span class="sa-stat-num red">{{ commandes_refusees }}</span>
+              <span class="sa-stat-label">Refusees</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="sa-empty-state">
+        <div class="sa-empty-icon">📊</div>
+        <p>Pas encore de donnees.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if meilleur_produit %}
+    <div class="sa-best-product">
+      <div class="sa-best-product-icon">🏆</div>
+      <div class="sa-best-product-info">
+        <h6>Produit le plus commande</h6>
+        <div class="sa-product-name">{{ meilleur_produit.produit__nom }}</div>
+        <div class="sa-best-product-count">{{ meilleur_produit.total }} commande(s)</div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{{ labels_graphique|json_script:"labels-data" }}
+{{ donnees_graphique|json_script:"data-data" }}
+<script>
+//<![CDATA[
+var ctx = document.getElementById("salesChart").getContext("2d");
+// Utiliser les données dynamiques de la vue
+var labels = JSON.parse(document.getElementById('labels-data').textContent);
+var data = JSON.parse(document.getElementById('data-data').textContent);
+new Chart(ctx, {
+  type: "line",
+  data: {
+    labels: labels,
+    datasets: [{
+      label: "Ventes (GNF)",
+      data: data,
+      borderColor: "#3fb950",
+      backgroundColor: "rgba(63,185,80,0.2)",
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: "#3fb950",
+      pointRadius: 4,
+      pointHoverRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: "rgba(0,0,0,0.8)",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        callbacks: {
+          label: function(context) {
+            return context.parsed.y.toLocaleString() + " GNF";
+          }
+        }
+      }
+    },
+    scales: {
+      x: { 
+        ticks: { color: "#aaa" }, 
+        grid: { color: "rgba(255,255,255,0.1)" } 
+      },
+      y: { 
+        ticks: { 
+          color: "#aaa",
+          callback: function(value) {
+            return value.toLocaleString();
+          }
+        }, 
+        grid: { color: "rgba(255,255,255,0.1)" }, 
+        beginAtZero: true
+      }
+    }
+  }
+});
+//]]>
+</script>
+
+{% endblock %}

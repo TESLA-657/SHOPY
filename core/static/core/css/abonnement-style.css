@@ -1,0 +1,475 @@
+/* ============================================
+   ABONNEMENT VENDEUR - Style Moderne Premium
+   ============================================ */
+
+:root {
+  /* Palette principale - Dark Theme Premium */
+  --ab-bg: #0d1117;
+  --ab-bg-2: #161b22;
+  --ab-bg-3: #21262d;
+  --ab-card: rgba(255, 255, 255, 0.06);
+  --ab-card-2: rgba(255, 255, 255, 0.10);
+  --ab-border: rgba(255, 255, 255, 0.12);
+  --ab-border-2: rgba(255, 255, 255, 0.20);
+  
+  /* Texte */
+  --ab-text: rgba(255, 255, 255, 0.92);
+  --ab-text-2: rgba(255, 255, 255, 0.72);
+  --ab-text-muted: rgba(255, 255, 255, 0.50);
+  
+  /* Accents */
+  --ab-primary: #238636;
+  --ab-primary-hover: #2ea043;
+  --ab-primary-glow: rgba(35, 134, 54, 0.4);
+  --ab-blue: #388bfd;
+  --ab-yellow: #d29922;
+  --ab-red: #f85149;
+  --ab-purple: #a371f7;
+  --ab-pink: #db61a2;
+  
+  /* Ombres */
+  --ab-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --ab-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --ab-shadow-glow: 0 0 30px var(--ab-primary-glow);
+  
+  /* Border radius */
+  --ab-radius: 12px;
+  --ab-radius-2: 16px;
+  --ab-radius-full: 9999px;
+  
+  /* Transitions */
+  --ab-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   CONTAINER PRINCIPAL
+   ============================================ */
+
+.ab-container {
+  background: radial-gradient(1000px 600px at 15% 0%, rgba(163, 113, 247, 0.12), transparent 50%),
+              radial-gradient(800px 500px at 85% 25%, rgba(56, 139, 253, 0.08), transparent 50%),
+              linear-gradient(180deg, rgba(13, 17, 23, 0.98), rgba(10, 14, 20, 0.98));
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.ab-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   BACK BUTTON
+   ============================================ */
+
+.ab-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--ab-card);
+  border: 1px solid var(--ab-border);
+  border-radius: var(--ab-radius);
+  color: var(--ab-text-2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--ab-transition);
+  margin-bottom: 20px;
+}
+
+.ab-back-btn:hover {
+  background: var(--ab-card-2);
+  border-color: var(--ab-border-2);
+  color: var(--ab-text);
+  transform: translateX(-3px);
+}
+
+/* ============================================
+   GRID LAYOUT
+   ============================================ */
+
+.ab-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 24px;
+}
+
+@media (max-width: 992px) {
+  .ab-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+.ab-card {
+  background: var(--ab-card);
+  border: 1px solid var(--ab-border);
+  border-radius: var(--ab-radius-2);
+  overflow: hidden;
+  position: relative;
+}
+
+.ab-card-header {
+  background: linear-gradient(90deg, var(--ab-purple), var(--ab-blue));
+  padding: 18px 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ab-card-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ab-purple), var(--ab-blue), var(--ab-primary));
+}
+
+.ab-card-header span {
+  color: var(--ab-text);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+}
+
+.ab-card-body {
+  padding: 22px;
+}
+
+/* ============================================
+   ABONNEMENT ACTUEL
+   ============================================ */
+
+.ab-current {
+  background: linear-gradient(135deg, rgba(35, 134, 54, 0.12), rgba(35, 134, 54, 0.05));
+  border: 1px solid rgba(35, 134, 54, 0.3);
+  border-radius: var(--ab-radius);
+  padding: 18px;
+}
+
+.ab-current-label {
+  color: var(--ab-text-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.ab-current-value {
+  color: var(--ab-text);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.ab-current-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--ab-radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ab-badge-success {
+  background: var(--ab-primary);
+  color: white;
+}
+
+.ab-badge-info {
+  background: var(--ab-blue);
+  color: white;
+}
+
+.ab-badge-warning {
+  background: var(--ab-yellow);
+  color: #111;
+}
+
+.ab-badge-danger {
+  background: var(--ab-red);
+  color: white;
+}
+
+.ab-days-remaining {
+  color: var(--ab-primary);
+  font-weight: 800;
+  font-size: 20px;
+}
+
+/* ============================================
+   HISTORIQUE PAIEMENTS
+   ============================================ */
+
+.ab-section-title {
+  color: var(--ab-text);
+  font-weight: 800;
+  font-size: 16px;
+  margin: 24px 0 16px;
+  letter-spacing: -0.3px;
+}
+
+.ab-payment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--ab-bg-2);
+  border: 1px solid var(--ab-border);
+  border-radius: var(--ab-radius);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  transition: var(--ab-transition);
+}
+
+.ab-payment-item:hover {
+  border-color: var(--ab-border-2);
+}
+
+.ab-payment-info {
+  flex: 1;
+}
+
+.ab-payment-name {
+  color: var(--ab-text);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.ab-payment-meta {
+  color: var(--ab-text-muted);
+  font-size: 12px;
+}
+
+.ab-payment-price {
+  color: var(--ab-text);
+  font-weight: 800;
+  font-size: 15px;
+  margin-right: 12px;
+}
+
+.ab-payment-status {
+  padding: 4px 10px;
+  border-radius: var(--ab-radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ab-status-valide {
+  background: rgba(35, 134, 54, 0.2);
+  color: var(--ab-primary);
+}
+
+.ab-status-refuse {
+  background: rgba(248, 81, 73, 0.2);
+  color: var(--ab-red);
+}
+
+.ab-status-en_attente {
+  background: rgba(210, 153, 34, 0.2);
+  color: var(--ab-yellow);
+}
+
+.ab-empty {
+  color: var(--ab-text-muted);
+  font-size: 14px;
+  padding: 16px;
+  text-align: center;
+  background: var(--ab-bg-2);
+  border: 1px dashed var(--ab-border);
+  border-radius: var(--ab-radius);
+}
+
+/* ============================================
+   PLAN CARDS
+   ============================================ */
+
+.ab-plan-card {
+  background: var(--ab-bg-2);
+  border: 1px solid var(--ab-border);
+  border-radius: var(--ab-radius);
+  padding: 20px;
+  transition: var(--ab-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.ab-plan-card:hover {
+  border-color: var(--ab-border-2);
+  transform: translateY(-2px);
+  box-shadow: var(--ab-shadow);
+}
+
+.ab-plan-card.featured {
+  background: linear-gradient(135deg, rgba(35, 134, 54, 0.08), rgba(35, 134, 54, 0.03));
+  border-color: rgba(35, 134, 54, 0.4);
+}
+
+.ab-plan-card.featured::before {
+  content: "⭐ Populaire";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--ab-primary);
+  color: white;
+  padding: 4px 10px;
+  border-radius: var(--ab-radius-full);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ab-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.ab-plan-name {
+  color: var(--ab-text);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.ab-plan-name span {
+  font-size: 11px;
+  vertical-align: middle;
+}
+
+.ab-plan-price {
+  text-align: right;
+}
+
+.ab-plan-price-value {
+  color: var(--ab-primary);
+  font-weight: 900;
+  font-size: 22px;
+}
+
+.ab-plan-price-period {
+  color: var(--ab-text-muted);
+  font-size: 12px;
+}
+
+.ab-plan-features {
+  color: var(--ab-text-muted);
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+.ab-plan-btn {
+  display: block;
+  width: 80%;
+  padding: 14px 20px;
+  background: var(--ab-card);
+  border: 1px solid var(--ab-border);
+  border-radius: var(--ab-radius);
+  color: var(--ab-text-2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  transition: var(--ab-transition);
+}
+
+.ab-plan-btn:hover {
+  background: var(--ab-primary);
+  border-color: var(--ab-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--ab-primary-glow);
+}
+
+.ab-plan-card.featured .ab-plan-btn {
+  background: linear-gradient(135deg, var(--ab-primary), #1a7f2e);
+  border-color: var(--ab-primary);
+  color: white;
+}
+
+.ab-plan-card.featured .ab-plan-btn:hover {
+  box-shadow: 0 8px 24px var(--ab-primary-glow);
+}
+
+/* ============================================
+   ROW & COL
+   ============================================ */
+
+.ab-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.ab-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .ab-container {
+    padding: 16px;
+  }
+  
+  .ab-card-body {
+    padding: 16px;
+  }
+  
+  .ab-plan-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .ab-plan-price {
+    text-align: left;
+  }
+  
+  .ab-payment-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .ab-payment-price {
+    margin-right: 0;
+  }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ab-card {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.ab-card:nth-child(1) { animation-delay: 0.05s; }
+.ab-card:nth-child(2) { animation-delay: 0.1s; }
+
+.ab-plan-card {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.ab-plan-card:nth-child(1) { animation-delay: 0.1s; }
+.ab-plan-card:nth-child(2) { animation-delay: 0.15s; }
+.ab-plan-card:nth-child(3) { animation-delay: 0.2s; }

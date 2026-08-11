@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+
+<div class="confirmation-screen" style="background-color: var(--shopy-bg-dark, #1e1e2e); border-radius:15px;">
+  <div class="confirmation-card">
+    <div class="confirmation-icon" style="color:#2ecc71;">✅</div>
+    <h2 class="fw-bold mt-3">Demande envoyée !</h2>
+    <p class="text-muted">Merci <strong>{{ vendeur.nom_boutique }}</strong>.</p>
+    <p class="text-muted">Votre compte est actuellement <strong>En attente d'approbation</strong>.</p>
+    <p class="text-muted">Vous recevrez une notification dès que l'administrateur aura validé votre boutique.</p>
+
+    <a href="{% url 'Welcome' %}" class="btn" style="background:#2ecc71; color:#fff; border-radius:10px; font-weight:800;">
+      Retour à l'accueil
+    </a>
+  </div>
+</div>
+
+{% endblock %}
+

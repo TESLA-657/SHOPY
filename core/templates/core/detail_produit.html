@@ -1,0 +1,390 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/detail-produit.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav">
+        <a href="{% url 'catalogue' %}">Catalogue</a>
+        <span class="breadcrumb-separator">›</span>
+        {% if produit.categorie %}
+            <a href="?categorie={{ produit.categorie.slug }}">{{ produit.categorie.nom }}</a>
+            <span class="breadcrumb-separator">›</span>
+        {% endif %}
+        <span class="breadcrumb-current">{{ produit.nom }}</span>
+    </nav>
+
+    <div class="product-main-grid">
+        <!-- Left Column - Image -->
+        <div class="product-image-section">
+            <div class="image-container">
+                {% if produit.photo %}
+                    <img src="{{ produit.photo.url }}" alt="{{ produit.nom }}" class="product-main-image" id="mainImage">
+                {% else %}
+                    <div class="image-placeholder">
+                        <span>📦</span>
+                        <p>Aucune image</p>
+                    </div>
+                {% endif %}
+                
+                {% if produit.promo and produit.prix_promo %}
+                    <div class="promo-badge-large">
+                        <span class="promo-text">PROMO</span>
+                        <span class="promo-discount">-{{ produit.reduction_pourcentage }}%</span>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                {% if user.is_authenticated %}
+                <button class="action-btn {% if est_favori %}active{% endif %}" onclick="toggleFavori({{ produit.pk }})" id="btn-favori-{{ produit.pk }}">
+                    {% if est_favori %}
+                        <span class="action-icon">❤️</span> <span>Retirer des favoris</span>
+                    {% else %}
+                        <span class="action-icon">🤍</span> <span>Ajouter aux favoris</span>
+                    {% endif %}
+                </button>
+                {% endif %}
+                <button class="action-btn share" onclick="shareProduct()">
+                    <span class="action-icon">📤</span> <span>Partager</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Column - Product Info -->
+        <div class="product-info-section">
+            <div class="product-header">
+                {% if produit.categorie %}
+                    <span class="category-tag">{{ produit.categorie.icone }} {{ produit.categorie.nom }}</span>
+                {% endif %}
+                <h1 class="product-title">{{ produit.nom }}</h1>
+            </div>
+
+            <!-- Seller Info Card -->
+            <div class="seller-card">
+                <div class="seller-info">
+                    <div class="seller-avatar">
+                        {{ produit.vendeur.nom_boutique|slice:":1"|upper }}
+                    </div>
+                    <div class="seller-details">
+                        <h3 class="seller-name">
+                            {{ produit.vendeur.nom_boutique }}
+                            {% if produit.vendeur.verifie %}
+                                <span class="verified-badge">✅</span>
+                            {% endif %}
+                        </h3>
+                        <p class="seller-location">📍 {{ produit.vendeur.ville }}</p>
+                    </div>
+                </div>
+                <div class="seller-contact">
+                    <a href="tel:{{ produit.vendeur.numero }}" class="contact-btn">
+                        <span>📱</span> Appeler
+                    </a>
+                    <a href="{% url 'signaler_vendeur' produit.vendeur.pk %}" class="report-btn">
+                        <span>🚨</span> Signaler
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pricing Card -->
+            <div class="pricing-card">
+                {% if produit.promo and produit.prix_promo %}
+                    <div class="price-current">
+                        <span class="price-label">Prix promo</span>
+                        <span class="price-value">{{ produit.prix_promo|format_prix }} GNF</span>
+                    </div>
+                    <div class="price-original">
+                        <span class="price-label">Prix normal</span>
+                        <span class="price-value">{{ produit.prix|format_prix }} GNF</span>
+                    </div>
+                    <div class="price-savings">
+                        Économisez {{ produit.prix|sub:produit.prix_promo|format_prix }} GNF ({{ produit.reduction_pourcentage }}% de réduction)
+                    </div>
+                {% else %}
+                    <div class="price-current">
+                        <span class="price-label">Prix</span>
+                        <span class="price-value">{{ produit.prix|format_prix }} GNF</span>
+                    </div>
+                {% endif %}
+                
+                <div class="stock-status">
+                    {% if produit.quantite == 0 %}
+                        <span class="stock-badge out-of-stock">❌ Rupture de stock</span>
+                    {% elif produit.quantite <= 3 %}
+                        <span class="stock-badge low-stock">⚠️ Plus que {{ produit.quantite }} en stock</span>
+                    {% else %}
+                        <span class="stock-badge in-stock">✅ En stock ({{ produit.quantite }} disponibles)</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                {% if produit.quantite > 0 %}
+                    <button class="btn-primary btn-large" onclick="ajouterAuPanier({{ produit.pk }})" id="btn-panier-{{ produit.pk }}">
+                        <span>🛒</span> Ajouter au panier
+                    </button>
+                    <a href="{% url 'passer_commande' produit.pk %}" class="btn-secondary btn-large">
+                        <span>💰</span> Commander maintenant
+                    </a>
+                    <a href="{% url 'proposer_prix' produit.pk %}" class="btn-outline btn-large">
+                        <span>💬</span> Négocier le prix
+                    </a>
+                {% else %}
+                    <button class="btn-disabled btn-large" disabled>
+                        ❌ Rupture de stock
+                    </button>
+                {% endif %}
+            </div>
+            
+            <!-- Message feedback -->
+            <div id="message-panier-{{ produit.pk }}" class="alert-message"></div>
+        </div>
+    </div>
+
+    <!-- Product Details Tabs -->
+    <div class="product-tabs">
+        <div class="tabs-header">
+            <button class="tab-btn active" data-tab="description">Description</button>
+            <button class="tab-btn" data-tab="avis">Avis clients</button>
+            <button class="tab-btn" data-tab="infos">Informations</button>
+        </div>
+        
+        <div class="tabs-content">
+            <!-- Description Tab -->
+            <div class="tab-panel active" id="description">
+                <h3>Description du produit</h3>
+                <div class="description-text">
+                    {{ produit.description|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Avis Tab -->
+            <div class="tab-panel" id="avis">
+                <h3>⭐ Avis clients</h3>
+                {% if produit.evaluations.all %}
+                    <div class="reviews-list">
+                        {% for eval in produit.evaluations.all %}
+                        <div class="review-card">
+                            <div class="review-header">
+                                <span class="review-author">{{ eval.client_nom }}</span>
+                                <span class="review-rating">
+                                    {% for i in "12345" %}{% if forloop.counter <= eval.note %}⭐{% endif %}{% endfor %}
+                                </span>
+                            </div>
+                            {% if eval.commentaire %}
+                                <p class="review-text">{{ eval.commentaire }}</p>
+                            {% endif %}
+                            <span class="review-date">{{ eval.date|date:"d/m/Y" }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="no-reviews">Aucun avis pour ce produit. {% if user.is_authenticated %}Soyez le premier à donner votre avis !{% endif %}</p>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <a href="{% url 'evaluer_produit' produit.pk %}" class="btn-outline">
+                        + Laisser un avis
+                    </a>
+                {% endif %}
+            </div>
+            
+            <!-- Infos Tab -->
+            <div class="tab-panel" id="infos">
+                <h3>Informations détaillées</h3>
+                <table class="infos-table">
+                    <tr>
+                        <th>Catégorie</th>
+                        <td>{% if produit.categorie %}{{ produit.categorie.icone }} {{ produit.categorie.nom }}{% else %}Non catégorisé{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th>Vendeur</th>
+                        <td>{{ produit.vendeur.nom_boutique }}</td>
+                    </tr>
+                    <tr>
+                        <th>Localisation</th>
+                        <td>📍 {{ produit.vendeur.ville }}</td>
+                    </tr>
+                    <tr>
+                        <th>Contact vendeur</th>
+                        <td>{{ produit.vendeur.numero }}</td>
+                    </tr>
+                    <tr>
+                        <th>Quantité disponible</th>
+                        <td>{{ produit.quantite }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="back-section">
+        <a href="{% url 'catalogue' %}" class="back-link">
+            ← Retour au catalogue
+        </a>
+    </div>
+</div>
+
+<script>
+// Tab functionality
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+});
+
+// Add to cart
+function ajouterAuPanier(produitPk) {
+    var btn = document.getElementById('btn-panier-' + produitPk);
+    var messageDiv = document.getElementById('message-panier-' + produitPk);
+    var originalText = btn.innerHTML;
+    
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Ajout en cours...';
+    
+    var csrfToken = getCookie('csrftoken');
+    
+    fetch('/panier/ajouter/' + produitPk + '/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        credentials: 'same-origin',
+    })
+    .then(async response => {
+        const text = await response.text();
+        let data = {};
+
+        try {
+            data = text ? JSON.parse(text) : {};
+        } catch (err) {
+            if (response.redirected) {
+                window.location.href = response.url;
+                throw new Error('Redirection vers la page de connexion...');
+            }
+            throw new Error('Réponse inattendue du serveur.');
+        }
+
+        if (data.redirect) {
+            window.location.href = data.redirect;
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Erreur serveur. Veuillez réessayer.');
+        }
+
+        return data;
+    })
+    .then(data => {
+        if (!data) {
+            return;
+        }
+
+        btn.disabled = false;
+        if (data.success) {
+            btn.innerHTML = '✅ Ajouté !';
+            messageDiv.className = 'alert-message success';
+            messageDiv.textContent = data.message + ' ';
+            const viewLink = document.createElement('a');
+            viewLink.href = '/panier/';
+            viewLink.textContent = 'Voir le panier';
+            messageDiv.appendChild(viewLink);
+            messageDiv.style.display = 'block';
+            updatePanierCount();
+            setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+        } else {
+            btn.innerHTML = originalText;
+            messageDiv.className = 'alert-message error';
+            messageDiv.textContent = data.error || 'Erreur lors de l\'ajout';
+            messageDiv.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        messageDiv.className = 'alert-message error';
+        messageDiv.textContent = error.message;
+        messageDiv.style.display = 'block';
+    });
+}
+
+// Toggle Favori
+function toggleFavori(produitPk) {
+    var btn = document.getElementById('btn-favori-' + produitPk);
+    var csrfToken = getCookie('csrftoken');
+    
+    btn.disabled = true;
+    
+    fetch('/favori/' + produitPk + '/toggle/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Accept': 'application/json',
+        },
+        credentials: 'same-origin',
+    })
+    .then(response => response.json())
+    .then(data => {
+        btn.disabled = false;
+        if (data.is_favori) {
+            btn.innerHTML = '<span class="action-icon">❤️</span> <span>Retirer des favoris</span>';
+            btn.classList.add('active');
+        } else {
+            btn.innerHTML = '<span class="action-icon">🤍</span> <span>Ajouter aux favoris</span>';
+            btn.classList.remove('active');
+        }
+    })
+    .catch(error => console.error('Erreur:', error));
+}
+
+// Share
+function shareProduct() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ produit.nom }}',
+            text: 'Découvrez ce produit: {{ produit.nom }} à {{ produit.prix|format_prix }} GNF',
+            url: window.location.href,
+        });
+    } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Lien copié dans le presse-papiers !');
+    }
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function updatePanierCount() {
+    fetch('/api/panier/count/')
+    .then(response => response.json())
+    .then(data => {
+        var countElement = document.getElementById('panier-count');
+        if (countElement) countElement.innerHTML = data.count;
+    });
+}
+</script>
+{% endblock %}

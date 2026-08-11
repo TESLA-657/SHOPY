@@ -1,0 +1,271 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+<style>
+  .msg-layout{display:grid;grid-template-columns:360px 1fr;gap:14px;padding:12px;}
+  .msg-list,.msg-preview{background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden}
+  .msg-list-header,.msg-preview-header{padding:14px 16px;border-bottom:1px solid #eee;font-weight:800;}
+  .msg-item{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-bottom:1px solid #f3f3f3;text-decoration:none;color:#222}
+  .msg-item:hover{background:#f8fafc}
+  .msg-delete{opacity:0;background:none;border:none;cursor:pointer;color:#999;font-size:16px;padding:4px 8px;border-radius:8px;transition:all .2s}
+  .msg-item:hover .msg-delete{opacity:1}
+  .msg-delete:hover{background:#ffe8e8;color:#b42318}
+  .msg-avatar{width:38px;height:38px;border-radius:50%;background:#e8f7ef;color:#1f7a46;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .msg-main{flex:1;min-width:0}
+  .msg-top{display:flex;justify-content:space-between;gap:8px}
+  .msg-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .msg-time{font-size:12px;color:#666;white-space:nowrap}
+  .msg-line{font-size:13px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .msg-tag{display:inline-block;margin-top:6px;padding:3px 8px;border-radius:999px;background:#f1f5f9;font-size:11px;font-weight:700}
+  .preview-body{padding:16px}
+  @media (max-width: 900px){.msg-layout{grid-template-columns:1fr}}
+  .msg-delete{background:none;border:none;color:#999;cursor:pointer;padding:4px 8px;border-radius:8px;font-size:16px;line-height:1;transition:all .2s}
+  .msg-delete:hover{background:#fee2e2;color:#dc2626}
+  .msg-item-row{display:flex;justify-content:space-between;align-items:flex-start;width:100%;gap:4px}
+  .msg-item-row .msg-main{flex:1;min-width:0}
+  .unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#dc2626;color:#fff;font-size:11px;font-weight:700;margin-left:6px;}
+  .msg-list:hover{transform: scale(1.1); transition: 0.5s;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="account-container">
+
+  <!-- Header Premium Messages Client -->
+  <div class="messages-header-client">
+    <div class="dashboard-stats-row">
+      <div class="dashboard-stat-item">
+        <span class="dashboard-stat-icon">💬</span>
+        <div>
+          <p class="dashboard-stat-label">Mes messages</p>
+          <p class="dashboard-stat-value">{{ conversations|length }}</p>
+        </div>
+      </div>
+    </div>
+    <a href="{% url 'espace_client' %}" class="messages-back-btn-client">
+      ← Retour
+    </a>
+  </div>
+
+<style>
+.messages-header-client {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.messages-header-client::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+}
+.messages-back-btn-client {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+}
+.messages-back-btn-client:hover {
+  background: rgba(255,255,255,0.3);
+  transform: translateX(-3px);
+}
+</style>
+
+  <!-- Conversations List -->
+  <div class="msg-layout">
+    <div class="msg-list-client">
+      <div class="msg-list-header-client">
+        💬 Conversations
+        <span class="msg-list-count-client">{{ conversations|length }}</span>
+      </div>
+{% if conversations %}
+        {% for c in conversations %}
+          <a href="{% url 'chat_negociation' c.negociation.pk %}" class="msg-item-client">
+            <div class="msg-avatar-client">{{ c.avatar_letter }}</div>
+            <div class="msg-content-client">
+              <div class="msg-header-client">
+                <span class="msg-name-client">{{ c.display_name }}</span>
+                <span class="msg-time-client">{{ c.last_date|date:"d/m H:i" }}</span>
+              </div>
+              <div class="msg-preview-client">{{ c.produit_nom }} • {{ c.last_preview }}</div>
+              <div class="msg-footer-client">
+                <span class="msg-tag-client {{ c.statut|default:'en_attente' }}">{{ c.statut|default:"en_attente"|capfirst }}</span>
+                {% if c.unread_count > 0 %}
+                <span class="unread-badge-client">{{ c.unread_count }}</span>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state-client">
+          <div class="empty-icon-client">💬</div>
+          <p class="empty-title-client">Aucune conversation</p>
+          <p class="empty-subtitle-client">Proposez un prix pour démarrer une discussion.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="msg-preview">
+      <div class="msg-preview-header">💬 Aperçu</div>
+      <div class="preview-body">
+        <div class="preview-icon">💬</div>
+        <p style="margin:0;color:#666; text-align:center;">
+          Sélectionnez une conversation pour ouvrir le chat.
+          <br><br>
+          Vous et le vendeur voyez le même fil de discussion.
+        </p>
+      </div>
+    </div>
+  </div>
+
+<style>
+.msg-list-client {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  overflow: hidden;
+}
+.msg-list-header-client {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.msg-list-count-client {
+  background: #10b981;
+  color: white;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+.msg-item-client {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f3f3f3;
+  text-decoration: none;
+  color: #222;
+  transition: all 0.2s;
+}
+.msg-item-client:hover {
+  background: linear-gradient(90deg, #f0fdf4 0%, #dcfce7 100%);
+}
+.msg-avatar-client {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.msg-content-client {
+  flex: 1;
+  min-width: 0;
+}
+.msg-header-client {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.msg-name-client {
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.msg-time-client {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+}
+.msg-preview-client {
+  font-size: 13px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 4px;
+}
+.msg-footer-client {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.msg-tag-client {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.msg-tag-client.en_attente {
+  background: #fef3c7;
+  color: #b45309;
+}
+.msg-tag-client.accepte {
+  background: #dcfce7;
+  color: #15803d;
+}
+.msg-tag-client.refuse {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.unread-badge-client {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.empty-state-client {
+  padding: 40px 20px;
+  text-align: center;
+}
+.empty-icon-client {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+.empty-title-client {
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 6px 0;
+}
+.empty-subtitle-client {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+</style>
+</div>
+{% endblock %}

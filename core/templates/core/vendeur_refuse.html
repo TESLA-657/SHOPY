@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+
+<div class="confirmation-screen" style="background-color: var(--shopy-bg-dark, #1e1e2e); border-radius:15px;">
+  <div class="confirmation-card">
+    <div class="confirmation-icon" style="color:#e74c3c;">✕</div>
+    <h2 class="fw-bold" style="color:#fff;">Demande non approuvée</h2>
+
+    <p class="text-muted" style="color:rgba(255,255,255,0.75)!important;">
+      Désolé, votre demande d'ouverture de boutique sur <strong>SHOPY GUINEE</strong> n'a pas été acceptée pour le moment.
+    </p>
+
+    {% if vendeur.raison_refus %}
+      <div class="reason-box" style="background:#fff5f5; border:1px solid #feb2b2; color:#c53030; text-align:left; border-radius:12px; padding:14px;">
+        <strong>Motif du refus :</strong><br>
+        {{ vendeur.raison_refus }}
+      </div>
+    {% endif %}
+
+    <p class="text-muted" style="color:rgba(255,255,255,0.75)!important;">
+      Vous pouvez modifier vos informations et soumettre une nouvelle demande.
+    </p>
+
+    <div class="d-grid" style="gap:10px; margin-top:14px;">
+      <a href="{% url 'inscription_vendeur' %}" class="btn" style="background:#2ecc71; color:#fff; border-radius:10px; font-weight:800;">
+        Modifier ma demande
+      </a>
+      <a href="https://wa.me/224655213214" class="btn" style="background:#95a5a6; color:#fff; border-radius:10px; font-weight:800;">
+        Contacter le support
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

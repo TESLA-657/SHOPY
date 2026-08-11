@@ -1,0 +1,209 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/catalogue-style.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="catalogue-container">
+
+<!-- Header recherche sticky -->
+  <div class="catalogue-header">
+    <div class="catalogue-header-content">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="recherche-input" value="{{ recherche }}"
+               class="search-input"
+               placeholder="Chercher produits, marques...">
+      </div>
+      <select id="ville-select" class="location-select">
+        <option value="">🌍 Toutes villes</option>
+        {% for v in villes %}
+          <option value="{{ v }}" {% if v == ville_selectionnee %}selected{% endif %}>{{ v }}</option>
+        {% endfor %}
+      </select>
+      {% if user.is_authenticated %}
+      <a href="{% url 'voir_panier' %}" class="cart-icon-btn" title="Mon panier">
+        🛒 <span id="panier-count-catalog">Panier</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Catégories scroll horizontal -->
+  <div class="categories-section">
+    <div class="categories-scroll">
+      <a href="{% url 'catalogue' %}"
+         class="category-tag {% if not categorie_selectionnee %}category-tag-active{% endif %}"
+         data-category="">
+        <span class="category-icon">📦</span>
+        <span>Tous</span>
+      </a>
+      {% for cat in categories %}
+      <a href="?categorie={{ cat.slug }}"
+         class="category-tag {% if cat.slug == categorie_selectionnee %}category-tag-active{% endif %}"
+         data-category="{{ cat.slug }}">
+        <span class="category-icon">{{ cat.icone }}</span>
+        <span>{{ cat.nom }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Bannière promos -->
+  {% if promos and not recherche and not categorie_selectionnee %}
+  <div class="promos-section">
+    <div class="promos-header">
+      <div>
+        <span class="promos-title">🔥 Flash Deals</span>
+        <span class="promos-subtitle">Offres limitées</span>
+      </div>
+    </div>
+    <div class="promos-scroll">
+      {% for produit in promos %}
+      <a href="{% url 'detail_produit' produit.pk %}" class="promo-card">
+        <div class="promo-card-image">
+          {% if produit.photo %}
+            <img src="{{ produit.photo.url }}" alt="{{ produit.nom }}">
+          {% else %}
+            <div class="promo-placeholder">📦</div>
+          {% endif %}
+          {% if produit.prix_promo %}
+          <div class="promo-badge">PROMO</div>
+          {% endif %}
+        </div>
+        <div class="promo-card-content">
+          <p class="promo-name">{{ produit.nom }}</p>
+          {% if produit.prix_promo %}
+            <div class="promo-pricing">
+              <span class="promo-price">{{ produit.prix_promo|floatformat:0 }} GNF</span>
+              <span class="promo-old-price">{{ produit.prix|format_prix }} GNF</span>
+            </div>
+          {% else %}
+            <p class="promo-price-single">{{ produit.prix|format_prix }} GNF</p>
+          {% endif %}
+          <p class="promo-seller">📍 {{ produit.vendeur.ville }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Grille produits style AliExpress -->
+  <div class="products-section">
+    <div class="products-grid" id="grille-produits">
+      {% for produit in produits %}
+      <div class="product-card" 
+           data-nom="{{ produit.nom|lower }}"
+           data-ville="{{ produit.vendeur.ville|lower }}">
+        <a href="{% url 'detail_produit' produit.pk %}" class="product-link">
+          
+          <!-- Image Container -->
+              <div class="product-image-container">
+            {% if produit.photo %}
+              <img src="{{ produit.photo.url }}" alt="{{ produit.nom }}" class="product-image">
+            {% else %}
+              <div class="product-image-placeholder">📦</div>
+            {% endif %}
+
+            {% if produit.vendeur.statut == 'actif' %}
+              <span class="vendor-online-dot-inline" aria-label="Vendeur en ligne"></span>
+            {% endif %}
+            
+<!-- Badges -->
+            <div class="product-badges">
+              {% if produit.promo %}
+                <span class="badge-promo">PROMO</span>
+              {% endif %}
+              {% if produit.vendeur.est_certifie %}
+                <span class="badge-verified badge-tiktok">✓ Certifié</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Info Container -->
+          <div class="product-info">
+            <h3 class="product-name">{{ produit.nom }}</h3>
+            
+<!-- Rating (dynamique basé sur les évaluations réelles) -->
+            <div class="product-rating">
+              {% if produit.evaluation_count > 0 %}
+                <span class="stars">{{ produit.evaluation_note|floatformat:1 }}/5</span>
+                <span class="rating-count">({{ produit.evaluation_count }} avis)</span>
+              {% else %}
+                <span class="stars">Nouveau</span>
+                <span class="rating-count">(0)</span>
+              {% endif %}
+            </div>
+            
+            <!-- Pricing -->
+            <div class="product-pricing">
+              {% if produit.promo and produit.prix_promo %}
+                <div class="pricing-row">
+                  <span class="price-current">{{ produit.prix_promo|floatformat:0 }} GNF</span>
+                  <span class="price-old">{{ produit.prix|format_prix }} GNF</span>
+                </div>
+              {% else %}
+                <span class="price-current">{{ produit.prix|format_prix }} GNF</span>
+              {% endif %}
+            </div>
+
+<!-- Location & Seller -->
+            <div class="product-seller">
+              <span class="seller-location">📍 {{ produit.vendeur.ville }}</span>
+              {% if produit.vendeur.est_certifie %}
+                <span class="seller-badge badge-tiktok">✓ Certifié</span>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Aucun produit -->
+    <div id="msg-aucun-produit" class="empty-state" style="display:none;">
+      <div class="empty-state-icon">🔍</div>
+      <p class="empty-state-title">Aucun produit trouvé</p>
+      <p class="empty-state-subtitle">Essayez avec d'autres mots-clés ou une autre ville</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const rechercheInput = document.getElementById('recherche-input');
+const villeSelect = document.getElementById('ville-select');
+const cards = document.querySelectorAll('.product-card');
+const msgAucun = document.getElementById('msg-aucun-produit');
+
+function filtrer() {
+  const terme = rechercheInput.value.toLowerCase().trim();
+  const ville = villeSelect.value.toLowerCase();
+  let visible = 0;
+
+  cards.forEach(card => {
+    const nom = card.dataset.nom || '';
+    const villeCard = card.dataset.ville || '';
+    const matchNom = terme === '' || nom.includes(terme);
+    const matchVille = ville === '' || villeCard.includes(ville);
+
+    if (matchNom && matchVille) {
+      card.style.display = 'block';
+      visible++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  if (msgAucun) {
+    msgAucun.style.display = (visible === 0 && (terme || ville)) ? 'block' : 'none';
+  }
+}
+
+rechercheInput.addEventListener('input', filtrer);
+villeSelect.addEventListener('change', filtrer);
+</script>
+{% endblock %}

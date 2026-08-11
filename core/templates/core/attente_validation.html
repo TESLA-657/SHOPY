@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compte en attente — Shopy</title>
+  <link href="{% static 'core/css/attente-validation.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<div class="wait-container">
+  <div class="wait-card">
+    
+    <!-- Icon -->
+    <div class="wait-icon">⏳</div>
+    
+    <!-- Title -->
+    <h3 class="wait-title">Demande envoyée !</h3>
+    
+    <!-- Message -->
+    <p class="wait-message">
+      Votre boutique <strong>{{ nom_boutique }}</strong> a bien été créée.<br>
+      Un administrateur va vérifier vos informations et activer votre compte sous peu.
+    </p>
+    
+    <!-- Info Card -->
+    <div class="wait-info-card">
+      <p class="wait-info-label">📧 Vous serez notifié par email à :</p>
+      <p class="wait-info-email">{{ email }}</p>
+    </div>
+    
+    <!-- Features -->
+    <div class="wait-features">
+      <div class="wait-feature">
+        <div class="wait-feature-icon">📧</div>
+        <p class="wait-feature-text">Notification</p>
+      </div>
+      <div class="wait-feature">
+        <div class="wait-feature-icon">✓</div>
+        <p class="wait-feature-text">Vérification</p>
+      </div>
+      <div class="wait-feature">
+        <div class="wait-feature-icon">🔒</div>
+        <p class="wait-feature-text">Activation</p>
+      </div>
+    </div>
+    
+    <!-- Buttons -->
+    <div style="margin-top: 24px;">
+      <a href="{% url 'connexion_vendeur' %}" class="wait-button">
+        Se connecter à ma boutique
+      </a>
+    </div>
+    
+    <div style="margin-top: 12px;">
+      <a href="{% url 'Welcome' %}" class="wait-return">
+        ← Retour à l'accueil
+      </a>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

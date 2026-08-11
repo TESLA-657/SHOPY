@@ -1,0 +1,161 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/abonnement-style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="ab-container">
+  <div class="ab-wrapper">
+
+    <!-- Back Button -->
+    <a href="{% url 'dashboard_vendeur' %}" class="ab-back-btn">
+      ← Retour au Dashboard
+    </a>
+
+    <div class="ab-grid">
+
+      <!-- Abonnement actuel -->
+      <div class="ab-card">
+        <div class="ab-card-header">
+          <span>💳 Mon Abonnement</span>
+        </div>
+        <div class="ab-card-body">
+          {% if abonnement %}
+            <div class="ab-current">
+              <div class="ab-current-label">Plan actuel</div>
+              <div class="ab-current-value">{{ abonnement.plan.nom|upper }}</div>
+              
+              <div class="ab-current-label" style="margin-top:14px;">Statut</div>
+              <div>
+                {% if abonnement.statut == 'essai' %}
+                  <span class="ab-current-badge ab-badge-info">Essai gratuit</span>
+                {% elif abonnement.statut == 'actif' %}
+                  <span class="ab-current-badge ab-badge-success">Actif</span>
+                {% else %}
+                  <span class="ab-current-badge ab-badge-danger">Suspendu</span>
+                {% endif %}
+              </div>
+              
+              <div class="ab-current-label" style="margin-top:14px;">Expire le</div>
+              <div class="ab-current-value">{{ abonnement.date_fin|date:"d/m/Y" }}</div>
+              
+              <div class="ab-current-label" style="margin-top:14px;">Jours restants</div>
+              <div class="ab-days-remaining">{{ abonnement.jours_restants }} jour(s)</div>
+            </div>
+          {% else %}
+            <div class="ab-empty">
+              <span style="font-size:28px; display:block; margin-bottom:8px;">📦</span>
+              Aucun abonnement actif
+            </div>
+          {% endif %}
+
+          <!-- Historique paiements -->
+          <h6 class="ab-section-title">Historique des paiements</h6>
+          {% if paiements %}
+            {% for p in paiements %}
+              <div class="ab-payment-item">
+                <div class="ab-payment-info">
+                  <div class="ab-payment-name">{{ p.plan.nom|upper }}</div>
+                  <div class="ab-payment-meta">{{ p.date_soumission|date:"d/m/Y H:i" }}</div>
+                </div>
+                <div class="ab-payment-price">{{ p.montant|floatformat:0 }} GNF</div>
+                <span class="ab-payment-status 
+                  {% if p.statut == 'valide' %}ab-status-valide
+                  {% elif p.statut == 'refuse' %}ab-status-refuse
+                  {% else %}ab-status-en_attente{% endif %}">
+                  {{ p.statut|upper }}
+                </span>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="ab-empty">
+              Aucun paiement effectué
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Changer de plan -->
+      <div class="ab-card">
+        <div class="ab-card-header">
+          <span>🚀 Changer de plan</span>
+        </div>
+        <div class="ab-card-body">
+          <div class="ab-row">
+
+            <!-- Plan Essentiel -->
+            <div class="ab-col">
+              <div class="ab-plan-card">
+                <div class="ab-plan-header">
+                  <div class="ab-plan-name">Essentiel</div>
+                  <div class="ab-plan-price">
+                    <div class="ab-plan-price-value">30 000</div>
+                    <div class="ab-plan-price-period">GNF/mois</div>
+                  </div>
+                </div>
+                <div class="ab-plan-features">
+                  📦 10 produits max<br>
+                  📊 Catalogue de base<br>
+                  💬 Support standard
+                </div>
+                <a href="{% url 'payer_abonnement' 'essentiel' %}" class="ab-plan-btn">
+                  Choisir ce plan
+                </a>
+              </div>
+            </div>
+
+            <!-- Plan Pro -->
+            <div class="ab-col">
+              <div class="ab-plan-card featured">
+                <div class="ab-plan-header">
+                  <div class="ab-plan-name">⭐ Pro</div>
+                  <div class="ab-plan-price">
+                    <div class="ab-plan-price-value">60 000</div>
+                    <div class="ab-plan-price-period">GNF/mois</div>
+                  </div>
+                </div>
+                <div class="ab-plan-features">
+                  📦 60 produits max<br>
+                  📊 Statistiques avancées<br>
+                  💬 Support prioritaire
+                </div>
+                <a href="{% url 'payer_abonnement' 'pro' %}" class="ab-plan-btn">
+                  Choisir ce plan
+                </a>
+              </div>
+            </div>
+
+            <!-- Plan Business -->
+            <div class="ab-col">
+              <div class="ab-plan-card">
+                <div class="ab-plan-header">
+                  <div class="ab-plan-name">🚀 Business</div>
+                  <div class="ab-plan-price">
+                    <div class="ab-plan-price-value">120 000</div>
+                    <div class="ab-plan-price-period">GNF/mois</div>
+                  </div>
+                </div>
+                <div class="ab-plan-features">
+                  📦 Produits illimités<br>
+                  📊 Stats complètes<br>
+                  💬 Support premium
+                </div>
+                <a href="{% url 'payer_abonnement' 'business' %}" class="ab-plan-btn">
+                  Choisir ce plan
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

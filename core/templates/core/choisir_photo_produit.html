@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+<style>
+  .photo-chooser-wrap{max-width:980px;margin:0 auto;padding:24px 12px;}
+  .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;}
+  .photo-item{border:1px solid rgba(0,0,0,0.08);border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 10px 20px rgba(0,0,0,0.04);} 
+  .photo-item img{width:100%;height:140px;object-fit:cover;display:block;}
+  .photo-meta{padding:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .photo-name{font-size:12px;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;}
+  .choose-btn{background:#28a745;color:#fff;border:none;border-radius:10px;padding:8px 10px;cursor:pointer;}
+  .choose-btn:hover{background:#218838;}
+  .top-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+  .muted{color:#6c757d;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="photo-chooser-wrap">
+  <div class="top-actions">
+    <div>
+      <h4 style="margin:0 0 4px 0;">Choisir une photo de produit</h4>
+      <div class="muted" style="font-size:14px;">Dossier : <b>media/produits/</b></div>
+    </div>
+    <a href="{{ return_url }}" class="account-btn account-btn-secondary" style="text-decoration:none;white-space:nowrap;">← Retour</a>
+  </div>
+
+  {% if images %}
+    <form method="post" action="{% url 'set_photo_produit' %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ return_url }}">
+      <div class="photo-grid">
+        {% for img in images %}
+          <div class="photo-item">
+            <img src="/media/produits/{{ img }}" alt="{{ img }}">
+            <div class="photo-meta">
+              <div class="photo-name" title="{{ img }}">{{ img }}</div>
+              <button class="choose-btn" type="submit" name="photo_name" value="{{ img }}">Choisir</button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </form>
+  {% else %}
+    <div class="alert alert-warning">Aucune image trouvée dans media/produits/.</div>
+  {% endif %}
+</div>
+{% endblock %}
+

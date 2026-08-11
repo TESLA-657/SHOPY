@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block content %}
+
+<div class="catalogue-container page-shell">
+  <div class="page-content">
+    <div class="section-card mx-auto" style="max-width:520px;">
+      <div class="section-card-inner text-center">
+        <div style="font-size:64px;">✅</div>
+        <h1 class="page-title mt-3" style="font-size:32px;">Commande envoyée !</h1>
+        <p class="page-subtitle mt-2">Le vendeur a été notifié et vous contactera bientôt.</p>
+        <a href="{% url 'catalogue' %}" class="page-action-btn primary mt-4" style="display:inline-flex; margin-top:24px;">Continuer mes achats</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

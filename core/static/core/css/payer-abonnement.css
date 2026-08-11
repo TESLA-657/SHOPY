@@ -1,0 +1,409 @@
+/* ============================================
+   PAYER ABONNEMENT - Style Premium Choix Paiement
+   ============================================ */
+@charset "UTF-8";
+
+:root {
+  --pa-bg: #0a0a0f;
+  --pa-bg-2: #12121a;
+  --pa-card: #16161f;
+  --pa-card-hover: #1c1c28;
+  --pa-border: rgba(255, 255, 255, 0.08);
+  --pa-border-2: rgba(255, 255, 255, 0.15);
+  
+  --pa-text: #ffffff;
+  --pa-text-2: rgba(255, 255, 255, 0.85);
+  --pa-text-3: rgba(255, 255, 255, 0.6);
+  --pa-text-muted: rgba(255, 255, 255, 0.45);
+  
+  --pa-orange: #FF6600;
+  --pa-orange-light: #ff8533;
+  --pa-mobile: #8b5cf6;
+  --pa-livraison: #22c55e;
+  
+  --pa-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --pa-radius: 14px;
+  --pa-radius-2: 10px;
+}
+
+body {
+  background: var(--pa-bg);
+}
+
+/* ============================================
+   CONTAINER
+   ============================================ */
+
+.pa-container {
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 102, 0, 0.08), transparent 60%),
+              radial-gradient(ellipse 60% 40% at 20% 80%, rgba(139, 92, 246, 0.06), transparent 50%),
+              var(--pa-bg);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.pa-wrapper {
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.pa-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.pa-header h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--pa-text);
+  margin-bottom: 8px;
+}
+
+.pa-plan-info {
+  display: inline-block;
+  background: var(--pa-card);
+  border: 1px solid var(--pa-border);
+  border-radius: var(--pa-radius);
+  padding: 12px 24px;
+}
+
+.pa-plan-info .plan-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--pa-orange);
+}
+
+.pa-plan-info .plan-price {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--pa-text);
+}
+
+/* ============================================
+   MAIN CARD
+   ============================================ */
+
+.pa-card-main {
+  background: var(--pa-card);
+  border: 1px solid var(--pa-border);
+  border-radius: var(--pa-radius);
+  overflow: hidden;
+}
+
+.pa-card-inner {
+  padding: 28px;
+}
+
+.pa-card-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--pa-text);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.pa-card-subtitle {
+  font-size: 0.95rem;
+  color: var(--pa-text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* ============================================
+   PAYMENT OPTIONS
+   ============================================ */
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pa-payment-option {
+  display: flex;
+  align-items: center;
+  background: var(--pa-bg-2);
+  border: 2px solid transparent;
+  border-radius: var(--pa-radius);
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.pa-payment-option:hover {
+  background: var(--pa-card-hover);
+  border-color: var(--pa-border-2);
+  transform: translateY(-2px);
+  box-shadow: var(--pa-shadow);
+}
+
+.pa-payment-option.selected,
+.pa-payment-option.active {
+  border-color: var(--pa-orange);
+  background: rgba(255, 102, 0, 0.1);
+}
+
+.pa-payment-icon {
+  font-size: 2.2rem;
+  margin-right: 16px;
+  width: 48px;
+  text-align: center;
+}
+
+.pa-payment-details {
+  flex: 1;
+}
+
+.pa-payment-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--pa-text);
+  margin-bottom: 4px;
+}
+
+.pa-payment-desc {
+  font-size: 0.85rem;
+  color: var(--pa-text-muted);
+}
+
+/* Orange Money */
+.pa-payment-option.orange-money {
+  border-color: rgba(255, 102, 0, 0.3);
+}
+
+.pa-payment-option.orange-money:hover {
+  border-color: var(--pa-orange);
+  box-shadow: 0 4px 20px rgba(255, 102, 0, 0.25);
+}
+
+.pa-payment-option.orange-money .pa-payment-title {
+  color: var(--pa-orange);
+}
+
+/* Mobile Money */
+.pa-payment-option.mobile-money {
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.pa-payment-option.mobile-money:hover {
+  border-color: var(--pa-mobile);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.25);
+}
+
+.pa-payment-option.mobile-money .pa-payment-title {
+  color: var(--pa-mobile);
+}
+
+/* Paiement livraison */
+.pa-payment-option.livraison {
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.pa-payment-option.livraison:hover {
+  border-color: var(--pa-livraison);
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.25);
+}
+
+.pa-payment-option.livraison .pa-payment-title {
+  color: var(--pa-livraison);
+}
+
+/* ============================================
+   INSTRUCTIONS BOX
+   ============================================ */
+
+.pa-instructions {
+  background: linear-gradient(135deg, rgba(255, 102, 0, 0.12), rgba(255, 102, 0, 0.05));
+  border: 1px solid rgba(255, 102, 0, 0.3);
+  border-radius: var(--pa-radius);
+  padding: 18px 20px;
+  margin-top: 20px;
+}
+
+.pa-instructions-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--pa-orange);
+  margin-bottom: 12px;
+}
+
+.pa-instructions ol {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--pa-text-3);
+  font-size: 0.9rem;
+}
+
+.pa-instructions li {
+  margin-bottom: 8px;
+}
+
+.pa-instructions strong {
+  color: var(--pa-orange);
+  font-weight: 700;
+}
+
+.pa-phone-number {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--pa-orange) !important;
+  letter-spacing: 1px;
+}
+
+.pa-reference {
+  font-family: monospace;
+  background: var(--pa-bg);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* ============================================
+   SHOP INFO
+   ============================================ */
+
+.pa-shop-info {
+  background: var(--pa-bg-2);
+  border: 1px solid var(--pa-border);
+  border-radius: var(--pa-radius);
+  padding: 16px 20px;
+  margin-top: 16px;
+}
+
+.pa-shop-info p {
+  margin: 0 0 8px;
+  color: var(--pa-text-3);
+  font-size: 0.9rem;
+}
+
+.pa-shop-info p:last-child {
+  margin-bottom: 0;
+}
+
+.pa-shop-info strong {
+  color: var(--pa-text-2);
+}
+
+/* ============================================
+   FORM
+   ============================================ */
+
+.pa-form {
+  margin-top: 24px;
+}
+
+.pa-form-group {
+  margin-bottom: 16px;
+}
+
+.pa-form-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pa-text-2);
+  margin-bottom: 8px;
+}
+
+.pa-form-input {
+  width: 100%;
+  background: var(--pa-bg-2);
+  border: 1px solid var(--pa-border);
+  border-radius: var(--pa-radius-2);
+  padding: 14px 16px;
+  font-size: 1rem;
+  color: var(--pa-text);
+  transition: all 0.25s ease;
+}
+
+.pa-form-input:focus {
+  outline: none;
+  border-color: var(--pa-orange);
+  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
+}
+
+.pa-form-input::placeholder {
+  color: var(--pa-text-muted);
+}
+
+.pa-submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--pa-orange), #e55a00);
+  border: none;
+  border-radius: var(--pa-radius);
+  padding: 16px 24px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-top: 20px;
+}
+
+.pa-submit-btn:hover {
+  background: linear-gradient(135deg, var(--pa-orange-light), var(--pa-orange));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 102, 0, 0.35);
+}
+
+/* ============================================
+   BACK LINK
+   ============================================ */
+
+.pa-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--pa-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 12px 20px;
+  background: var(--pa-card);
+  border: 1px solid var(--pa-border);
+  border-radius: var(--pa-radius-2);
+  transition: all 0.25s ease;
+  margin-top: 16px;
+}
+
+.pa-back-link:hover {
+  background: var(--pa-card-hover);
+  border-color: var(--pa-border-2);
+  color: var(--pa-text);
+  transform: translateX(-3px);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 576px) {
+  .pa-container {
+    padding: 20px 12px;
+  }
+  
+  .pa-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .pa-card-inner {
+    padding: 20px 16px;
+  }
+  
+  .pa-payment-option {
+    padding: 14px 16px;
+  }
+  
+  .pa-payment-icon {
+    font-size: 1.8rem;
+    margin-right: 12px;
+  }
+  
+  .pa-phone-number {
+    font-size: 1.2rem;
+  }
+}

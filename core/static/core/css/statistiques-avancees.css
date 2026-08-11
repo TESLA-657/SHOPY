@@ -1,0 +1,462 @@
+/* ============================================
+   STATISTIQUES VENDEUR - Style Avancé Premium
+   ============================================ */
+
+:root {
+  --sa-bg: #0d1117;
+  --sa-bg-2: #161b22;
+  --sa-bg-3: #21262d;
+  --sa-card: rgba(255, 255, 255, 0.06);
+  --sa-border: rgba(255, 255, 255, 0.12);
+  --sa-text: rgba(255, 255, 255, 0.92);
+  --sa-text-2: rgba(255, 255, 255, 0.72);
+  --sa-text-muted: rgba(255, 255, 255, 0.50);
+  
+  --sa-primary: #238636;
+  --sa-green: #3fb950;
+  --sa-blue: #58a6ff;
+  --sa-yellow: #d29922;
+  --sa-red: #f85149;
+  --sa-purple: #a371f7;
+  --sa-pink: #db61a2;
+  --sa-orange: #f0883e;
+  
+  --sa-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --sa-radius: 16px;
+  --sa-radius-sm: 12px;
+}
+
+/* ============================================
+   MAIN CONTAINER
+   ============================================ */
+
+#sa-stats-container {
+  background: radial-gradient(1200px 700px at 10% 0%, rgba(163, 113, 247, 0.10), transparent 50%),
+              radial-gradient(900px 500px at 90% 30%, rgba(56, 139, 253, 0.08), transparent 50%),
+              linear-gradient(180deg, #0d1117, #0a0e14);
+  min-height: 100vh;
+  padding: 24px;
+}
+
+#sa-stats-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.sa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.sa-header-left h4 {
+  color: var(--sa-text);
+  font-weight: 900;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.sa-header-left .sa-shop-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--sa-card);
+  border: 1px solid var(--sa-border);
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--sa-text-2);
+  font-size: 14px;
+}
+
+.sa-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--sa-card);
+  border: 1px solid var(--sa-border);
+  border-radius: 999px;
+  color: var(--sa-text-2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.sa-back-btn:hover {
+  background: rgba(35, 134, 54, 0.15);
+  border-color: var(--sa-primary);
+  color: var(--sa-green);
+}
+
+/* ============================================
+   STATS GRID - 4 cards
+   ============================================ */
+
+.sa-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 992px) {
+  .sa-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 576px) {
+  .sa-stats-grid { grid-template-columns: 1fr; }
+}
+
+.sa-stat-card {
+  background: var(--sa-card);
+  border: 1px solid var(--sa-border);
+  border-radius: var(--sa-radius);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.sa-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sa-shadow);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.sa-stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.sa-stat-card.green::before { background: var(--sa-primary); }
+.sa-stat-card.blue::before { background: var(--sa-blue); }
+.sa-stat-card.yellow::before { background: var(--sa-yellow); }
+.sa-stat-card.purple::before { background: var(--sa-purple); }
+
+.sa-stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 14px;
+}
+
+.sa-stat-card.green .sa-stat-icon { background: rgba(35, 134, 54, 0.15); }
+.sa-stat-card.blue .sa-stat-icon { background: rgba(88, 166, 255, 0.15); }
+.sa-stat-card.yellow .sa-stat-icon { background: rgba(210, 153, 34, 0.15); }
+.sa-stat-card.purple .sa-stat-icon { background: rgba(163, 113, 247, 0.15); }
+
+.sa-stat-label {
+  color: var(--sa-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sa-stat-value {
+  color: var(--sa-text);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.sa-stat-card.green .sa-stat-value { color: var(--sa-primary); }
+.sa-stat-card.blue .sa-stat-value { color: var(--sa-blue); }
+.sa-stat-card.yellow .sa-stat-value { color: var(--sa-yellow); }
+.sa-stat-card.purple .sa-stat-value { color: var(--sa-purple); }
+
+.sa-stat-unit {
+  color: var(--sa-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ============================================
+   CONVERSION SECTION
+   ============================================ */
+
+.sa-conversion-section {
+  background: var(--sa-card);
+  border: 1px solid var(--sa-border);
+  border-radius: var(--sa-radius);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.sa-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sa-section-title {
+  color: var(--sa-text);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.sa-chart-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .sa-chart-container { grid-template-columns: 1fr; }
+}
+
+/* Progress Bars */
+.sa-progress-group {
+  margin-bottom: 20px;
+}
+
+.sa-progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.sa-progress-label {
+  color: var(--sa-text-2);
+  font-size: 14px;
+}
+
+.sa-progress-value {
+  color: var(--sa-text);
+  font-weight: 700;
+}
+
+.sa-progress-bar {
+  height: 12px;
+  background: var(--sa-bg-3);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.sa-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 1s ease;
+  position: relative;
+}
+
+.sa-progress-fill.green { background: linear-gradient(90deg, var(--sa-primary), var(--sa-green)); }
+.sa-progress-fill.yellow { background: linear-gradient(90deg, #b8860b, var(--sa-yellow)); }
+.sa-progress-fill.red { background: linear-gradient(90deg, #c0392b, var(--sa-red)); }
+.sa-progress-fill.blue { background: linear-gradient(90deg, var(--sa-blue), #79c0ff); }
+
+.sa-progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================
+   PIE CHART (CSS Only)
+   ============================================ */
+
+.sa-pie-chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sa-pie-chart {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--sa-primary) 0deg,
+    var(--sa-primary) var(--accepted-deg, 0deg),
+    var(--sa-yellow) var(--accepted-deg, 0deg),
+    var(--sa-yellow) var(--pending-deg, 120deg),
+    var(--sa-red) var(--pending-deg, 120deg),
+    var(--sa-red) 360deg
+  );
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.sa-pie-chart::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 90px;
+  background: var(--sa-bg-2);
+  border-radius: 50%;
+}
+
+.sa-pie-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.sa-pie-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.sa-pie-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.sa-pie-dot.green { background: var(--sa-primary); }
+.sa-pie-dot.yellow { background: var(--sa-yellow); }
+.sa-pie-dot.red { background: var(--sa-red); }
+
+/* ============================================
+   BEST PRODUCT CARD
+   ============================================ */
+
+.sa-best-product {
+  background: linear-gradient(135deg, rgba(163, 113, 247, 0.10), rgba(88, 166, 255, 0.05));
+  border: 1px solid rgba(163, 113, 247, 0.3);
+  border-radius: var(--sa-radius);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.sa-best-product-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--sa-purple), var(--sa-blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.sa-best-product-info h6 {
+  color: var(--sa-text-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.sa-best-product-info .sa-product-name {
+  color: var(--sa-text);
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.sa-best-product-count {
+  color: var(--sa-primary);
+  font-size: 15px;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+
+.sa-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--sa-text-muted);
+}
+
+.sa-empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sa-stat-card {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.sa-stat-card:nth-child(1) { animation-delay: 0.05s; }
+.sa-stat-card:nth-child(2) { animation-delay: 0.1s; }
+.sa-stat-card:nth-child(3) { animation-delay: 0.15s; }
+.sa-stat-card:nth-child(4) { animation-delay: 0.2s; }
+
+.sa-conversion-section {
+  animation: fadeInUp 0.4s ease forwards;
+  animation-delay: 0.25s;
+  opacity: 0;
+}
+
+.sa-best-product {
+  animation: fadeInUp 0.4s ease forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  #sa-stats-container { padding: 16px; }
+  
+  .sa-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .sa-best-product {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .sa-stat-value {
+    font-size: 24px;
+  }
+}

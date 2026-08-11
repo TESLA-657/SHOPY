@@ -1,0 +1,137 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'core/css/catalogue-style.css' %}">
+<style>
+  .payment-header {
+    background: linear-gradient(135deg, #00b894, #00cec9);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .payment-header h1 {
+    color: white;
+    margin: 0;
+    font-size: 1.8rem;
+  }
+  .payment-header .icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+  }
+  .info-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  .info-card h3 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #00b894;
+    padding-bottom: 10px;
+  }
+  .form-control {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+  }
+  .form-control:focus {
+    border-color: #00b894;
+    outline: none;
+    box-shadow: 0 0 10px rgba(0,184,148,0.2);
+  }
+  .submit-btn {
+    background: linear-gradient(135deg, #00b894, #00cec9);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    transition: all 0.3s;
+  }
+  .submit-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 20px rgba(0,184,148,0.4);
+  }
+  .delivery-note {
+    background: #e8f8f5;
+    border-left: 4px solid #00b894;
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+  }
+  .delivery-note p {
+    margin: 5px 0;
+    color: #555;
+  }
+</style>
+<div class="catalogue-container page-shell" style="display: flex; align-items: center;">
+  <div class="page-content">
+    <div class="section-card mx-auto" style="max-width:520px;">
+      <div class="section-card-inner">
+        <!-- Payment Header -->
+        <div class="payment-header">
+          <div class="icon">🚚</div>
+          <h1>Paiement à la livraison</h1>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="info-card">
+          <h3>📦 Détails de la commande</h3>
+          <p><strong>Produit:</strong> {{ commande.produit.nom }}</p>
+          <p><strong>Boutique:</strong> {{ commande.vendeur.nom_boutique }}</p>
+          <p><strong>Quantité:</strong> {{ commande.quantite }}</p>
+          <p><strong>Total à payer:</strong> <span style="color:#00b894; font-size:1.3rem; font-weight:bold;">{{ montant|format_prix }} GNF</span></p>
+          <p><strong>Référence:</strong> CMD-{{ commande.pk }}-{{ commande.nom_client|upper }}</p>
+        </div>
+
+        <!-- Client Info -->
+        <div class="info-card">
+          <h3>👤 Informations client</h3>
+          <p><strong>Nom:</strong> {{ commande.nom_client }}</p>
+          <p><strong>Téléphone:</strong> {{ commande.numero_client }}</p>
+          <p><strong>Ville:</strong> {{ commande.ville_client }}</p>
+        </div>
+
+        <!-- Delivery Note -->
+        <div class="delivery-note">
+          <p><strong>💡 Comment ça marche:</strong></p>
+          <p>• Vous paierez <strong>{{ montant|format_prix }} GNF</strong> au livreur lors de la réception du colis</p>
+          <p>• Le vendeur vous contactera pour confirmer la livraison</p>
+          <p>• Veuillez être disponible au numéro fourni</p>
+        </div>
+
+        <!-- Payment Form -->
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="mode_paiement" value="paiement_livraison">
+          
+          <label class="form-label" for="adresse_livraison">Adresse de livraison complète</label>
+          <textarea name="adresse_livraison" id="adresse_livraison" class="form-control"
+                    placeholder="Quartier, rue, numéro de maison..." required></textarea>
+          
+          <label class="form-label" for="instructions">Instructions spéciales (optionnel)</label>
+          <textarea name="instructions" id="instructions" class="form-control"
+                    placeholder="Ex: Sonner au portail bleu, 2ème étage..."></textarea>
+          
+          <button type="submit" class="submit-btn">✅ Confirmer la commande</button>
+        </form>
+
+        <div class="text-center mt-3">
+          <a href="{% url 'passer_commande' commande.produit.pk %}" class="ret">← Changer de mode de paiement</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

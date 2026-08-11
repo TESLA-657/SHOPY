@@ -1,0 +1,139 @@
+/* Statistiques vendeur - style haute qualité */
+
+:root{
+  --sv-bg: #0b1220;
+  --sv-card: rgba(255,255,255,0.08);
+  --sv-card-2: rgba(255,255,255,0.12);
+  --sv-border: rgba(255,255,255,0.14);
+  --sv-text: rgba(255,255,255,0.92);
+  --sv-muted: rgba(255,255,255,0.68);
+  --sv-shadow: 0 18px 60px rgba(0,0,0,0.35);
+  --sv-primary: #28a745;
+  --sv-blue: #3498db;
+  --sv-yellow: #ffc107;
+  --sv-purple: #9b59b6;
+  --sv-danger: #e74c3c;
+}
+
+/* Wrapper */
+#sv-stats-wrap{
+  background: radial-gradient(900px 500px at 20% 0%, rgba(123,63,212,0.18), transparent 55%),
+              radial-gradient(900px 500px at 80% 20%, rgba(40,167,69,0.18), transparent 55%),
+              linear-gradient(180deg, rgba(13,20,34,0.98), rgba(9,14,25,0.98));
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 18px;
+  box-shadow: var(--sv-shadow);
+  padding: 22px;
+}
+
+.sv-topbar{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.sv-backlink{
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 13px;
+}
+.sv-backlink:hover{ color: rgba(255,255,255,0.95); }
+
+.sv-title{
+  color: var(--sv-text);
+  font-weight: 800;
+}
+
+/* Cards */
+.sv-card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+  border: 1px solid var(--sv-border);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+  color: var(--sv-text);
+}
+
+.sv-card-soft{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.sv-stat{
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sv-stat:before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background: radial-gradient(400px 120px at 20% 0%, rgba(255,255,255,0.10), transparent 55%);
+  pointer-events:none;
+}
+
+.sv-stat-label{
+  color: var(--sv-muted);
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.sv-stat-value{
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  margin: 0;
+}
+
+.sv-stat-sub{
+  color: var(--sv-muted);
+  font-size: 12px;
+}
+
+.sv-border-green{ border-left: 4px solid var(--sv-primary); }
+.sv-border-blue{ border-left: 4px solid var(--sv-blue); }
+.sv-border-yellow{ border-left: 4px solid var(--sv-yellow); }
+.sv-border-purple{ border-left: 4px solid var(--sv-purple); }
+
+/* Conversion */
+.sv-section-title{
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+
+.sv-progress{
+  height: 12px;
+  border-radius: 999px;
+  overflow:hidden;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+.sv-progress-bar{
+  height: 100%;
+  border-radius: 999px;
+}
+
+/* Gauge */
+.sv-gauges{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.sv-gauge{
+  padding: 14px;
+}
+
+/* Make bootstrap progress-bar look nice even if used */
+.progress{ background: rgba(255,255,255,0.10) !important; border-radius: 999px; }
+.progress-bar{ border-radius: 999px; }
+
+/* Responsive */
+@media (max-width: 768px){
+  #sv-stats-wrap{ padding: 14px; }
+  .sv-gauges{ grid-template-columns: 1fr; }
+}
+

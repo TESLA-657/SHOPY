@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+{% load humanize %}
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin — Shopy</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: linear-gradient(135deg, #060816 0%, #10162b 45%, #1b2238 100%);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      min-height: 100vh;
+    }
+    .shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
+    .hero {
+      padding: 22px 24px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      backdrop-filter: blur(16px);
+      margin-bottom: 18px;
+    }
+    .hero-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .hero-subtitle {
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      max-width: 700px;
+    }
+    .stat-card {
+      display: block;
+      text-decoration: none;
+      color: white;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px;
+      padding: 20px;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.10);
+      box-shadow: 0 16px 38px rgba(0,0,0,0.24);
+      color: white;
+    }
+    .stat-label { color: rgba(255,255,255,0.62); font-size: 12px; text-transform: uppercase; letter-spacing: 1.3px; }
+    .stat-value { font-size: 30px; font-weight: 800; margin-top: 6px; }
+    .menu-item {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      text-decoration:none;
+      color:white;
+      transition: background .2s ease, transform .2s ease;
+      margin-bottom: 10px;
+    }
+    .menu-item:hover { background: rgba(255,255,255,0.12); transform: translateX(2px); color:white; }
+    .menu-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+    .menu-arrow { color: rgba(255,255,255,0.44); font-size:20px; }
+    .badge-count {
+      background: linear-gradient(135deg, #ff5f6d, #ffc371);
+      color:#111;
+      border-radius:999px;
+      min-width: 26px;
+      height: 26px;
+      font-size: 12px;
+      font-weight: 800;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 0 8px;
+    }
+    .badge-warning { background: linear-gradient(135deg, #ffd54f, #ffb300); }
+    .logout-link { color: rgba(255,255,255,0.75); text-decoration:none; font-size:13px; }
+    .logout-link:hover { color: white; }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="hero d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <h4 class="hero-title mb-0" style="display: flex; text-align: center; justify-content: center;">Centre de contrôle admin</h4>
+      </div>
+      <p class="hero-subtitle">Supervision rapide de vos vendeurs, paiements et signalements. Cliquez sur les cartes pour ouvrir la liste filtrée correspondant à chaque statut.</p>
+    </div>
+    <a href="{% url 'deconnexion_vendeur' %}" class="logout-link" style="box-shadow: red; color: red;">↩ Déconnexion</a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="{% url 'admin_vendeurs' %}?statut=all" class="stat-card">
+        <p class="stat-label">Total vendeurs</p>
+        <h2 class="stat-value">{{ total_vendeurs }}</h2>
+        <p class="mb-0" style="color: rgba(255,255,255,0.6); font-size: 13px;">Voir la liste complète</p>
+      </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="{% url 'admin_vendeurs' %}?statut=actif" class="stat-card">
+        <p class="stat-label">Actifs</p>
+        <h2 class="stat-value" style="color:#4ade80;">{{ vendeurs_actifs }}</h2>
+        <p class="mb-0" style="color: rgba(255,255,255,0.6); font-size: 13px;">Vendeurs opérationnels</p>
+      </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="{% url 'admin_vendeurs' %}?statut=en_attente" class="stat-card">
+        <p class="stat-label">En attente</p>
+        <h2 class="stat-value" style="color:#fbbf24;">{{ vendeurs_en_attente }}</h2>
+        <p class="mb-0" style="color: rgba(255,255,255,0.6); font-size: 13px;">À vérifier et approuver</p>
+      </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="{% url 'admin_vendeurs' %}?statut=suspendu" class="stat-card">
+        <p class="stat-label">Suspendus</p>
+        <h2 class="stat-value" style="color:#fb7185;">{{ vendeurs_suspendus }}</h2>
+        <p class="mb-0" style="color: rgba(255,255,255,0.6); font-size: 13px;">À réactiver ou contrôler</p>
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="stat-card">
+        <p class="stat-label">Aperçu 7 derniers jours</p>
+        <div class="row g-3 mt-2">
+          <div class="col-6 col-md-3">
+            <p class="stat-label">Connexions</p>
+            <h3 class="fw-bold mt-1" style="color:#7ce0ff;">{{ logins_last_7 }}</h3>
+          </div>
+          <div class="col-6 col-md-3">
+            <p class="stat-label">Inscriptions</p>
+            <h3 class="fw-bold mt-1" style="color:#8bc34a;">{{ signups_last_7 }}</h3>
+          </div>
+          <div class="col-6 col-md-3">
+            <p class="stat-label">Vues produit</p>
+            <h3 class="fw-bold mt-1" style="color:#ffca28;">{{ product_views_last_7 }}</h3>
+          </div>
+          <div class="col-6 col-md-3">
+            <p class="stat-label">Commandes</p>
+            <h3 class="fw-bold mt-1" style="color:#ff6b6b;">{{ orders_last_7 }}</h3>
+          </div>
+          <div class="col-6 col-md-3">
+            <p class="stat-label">Paiements</p>
+            <h3 class="fw-bold mt-1" style="color:#4bc0c0;">{{ payments_last_7 }}</h3>
+          </div>
+          <div class="col-6 col-md-3">
+            <p class="stat-label">Revenu 7j</p>
+            <h3 class="fw-bold mt-1" style="color:#c788ff;">{{ revenus_7j|intcomma }} GNF</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column gap-2">
+    <a href="{% url 'admin_paiements' %}" class="menu-item">
+      <div class="d-flex align-items-center gap-3">
+        <div class="menu-icon" style="background:#1a472a;">💳</div>
+        <div>
+          <p class="fw-bold mb-0">Paiements Abonnements</p>
+          {% if paiements_abonnement %}
+            <p style="color:#4ade80; font-size:12px; margin:0;">{{ paiements_abonnement|length }} en attente</p>
+          {% else %}
+            <p style="color:rgba(255,255,255,0.45); font-size:12px; margin:0;">Aucun en attente</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        {% if paiements_abonnement %}<span class="badge-count">{{ paiements_abonnement|length }}</span>{% endif %}
+        <span class="menu-arrow">›</span>
+      </div>
+    </a>
+
+    <a href="{% url 'admin_paiements_commandes' %}" class="menu-item">
+      <div class="d-flex align-items-center gap-3">
+        <div class="menu-icon" style="background:#1565c0;">🛒</div>
+        <div>
+          <p class="fw-bold mb-0">Paiements Commandes</p>
+          {% if paiements_commandes %}
+            <p style="color:#fbbf24; font-size:12px; margin:0;">{{ paiements_commandes|length }} en attente</p>
+          {% else %}
+            <p style="color:rgba(255,255,255,0.45); font-size:12px; margin:0;">Aucun en attente</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        {% if paiements_commandes %}<span class="badge-count badge-warning">{{ paiements_commandes|length }}</span>{% endif %}
+        <span class="menu-arrow">›</span>
+      </div>
+    </a>
+
+    <a href="{% url 'admin_vendeurs' %}" class="menu-item">
+      <div class="d-flex align-items-center gap-3">
+        <div class="menu-icon" style="background:#7b1fa2;">🔒</div>
+        <div>
+          <p class="fw-bold mb-0">Gestion Vendeurs</p>
+          {% if vendeurs_en_attente > 0 %}
+            <p style="color:#fbbf24; font-size:12px; margin:0;">{{ vendeurs_en_attente }} en attente</p>
+          {% else %}
+            <p style="color:rgba(255,255,255,0.45); font-size:12px; margin:0;">Bloquer / débloquer</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        {% if vendeurs_en_attente > 0 %}<span class="badge-count badge-warning">{{ vendeurs_en_attente }}</span>{% endif %}
+        <span class="menu-arrow">›</span>
+      </div>
+    </a>
+
+    <a href="{% url 'admin_signalements' %}" class="menu-item">
+      <div class="d-flex align-items-center gap-3">
+        <div class="menu-icon" style="background:#b71c1c;">🚨</div>
+        <div>
+          <p class="fw-bold mb-0">Signalements</p>
+          {% if signalements %}
+            <p style="color:#fb7185; font-size:12px; margin:0;">{{ signalements|length }} non traités</p>
+          {% else %}
+            <p style="color:rgba(255,255,255,0.45); font-size:12px; margin:0;">Aucun signalement</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        {% if signalements %}<span class="badge-count">{{ signalements|length }}</span>{% endif %}
+        <span class="menu-arrow">›</span>
+      </div>
+    </a>
+
+    <a href="{% url 'admin_certifies' %}" class="menu-item">
+      <div class="d-flex align-items-center gap-3">
+        <div class="menu-icon" style="background:#f39c12;">🛡️</div>
+        <div>
+          <p class="fw-bold mb-0">Vendeurs Certifiés</p>
+          <p style="color:#fbbf24; font-size:12px; margin:0;">Certifications</p>
+        </div>
+      </div>
+      <span class="menu-arrow">›</span>
+    </a>
+
+    <a href="{% url 'admin_garanties' %}" class="menu-item">
+      <div class="d-flex align-items-center gap-3">
+        <div class="menu-icon" style="background:#00897b;">🧾</div>
+        <div>
+          <p class="fw-bold mb-0">Garanties Acheteur</p>
+          <p style="color:rgba(255,255,255,0.45); font-size:12px; margin:0;">Demandes remboursement</p>
+        </div>
+      </div>
+      <span class="menu-arrow">›</span>
+    </a>
+
+    <a href="/admin/" class="menu-item">
+      <div class="d-flex align-items-center gap-3">
+        <div class="menu-icon" style="background:#1565c0;">⚙️</div>
+        <p class="fw-bold mb-0">Django Admin</p>
+      </div>
+      <span class="menu-arrow">›</span>
+    </a>
+  </div>
+</div>
+</body>
+</html>

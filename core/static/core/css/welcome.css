@@ -1,0 +1,19 @@
+/* Welcome page styles extracted from global welcome.css */
+:root{--bg1:#0f1724;--bg2:#0b2545;--card:#ffffff;--muted:#6b7280;--accent:#2563eb;--success:#16a34a;--danger:#dc2626}
+body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;min-height:100vh}
+.hero{display:flex;align-items:center;justify-content:center;padding:56px 20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+.hero-inner{max-width:1100px;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center}
+.brand{display:flex;align-items:center;gap:16px}
+.brand img{width:64px;height:64px;object-fit:contain}
+.brand h1{font-size:28px;margin:0;color:#fff;letter-spacing:0.4px}
+.subtitle{color:#cbd5e1;max-width:800px;margin-top:12px;margin-bottom:20px}
+.actions{display:flex;gap:12px}
+.btn{padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(37,99,235,0.18)}
+.btn.outline{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff}
+.cards{max-width:1100px;margin:28px auto;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.card{background:rgba(255,255,255,0.04);padding:18px;border-radius:12px;display:flex;gap:14px;align-items:center;text-decoration:none;color:inherit;transition:transform .18s ease,box-shadow .18s ease}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 36px rgba(2,6,23,0.6)}
+.card-icon{font-size:28px;width:56px;height:56px;border-radius:10px;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center}
+.card-content h2{margin:0;font-size:16px}
+.card-content p{margin:6px 0 0;color:var(--muted);font-size:13px}

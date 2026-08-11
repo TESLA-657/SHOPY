@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+
+<div class="container py-4 admin-paiements-page">
+  <h4 class="fw-bold mb-4">💳 Paiements en attente</h4>
+
+  {% if paiements %}
+  <div class="table-responsive">
+    <table class="table table-hover shadow-sm" style="border-radius:12px; overflow:hidden;">
+      <thead style="background:#28a745; color:white;">
+        <tr>
+          <th>Boutique</th><th>Plan</th><th>Montant</th>
+          <th>Numéro OM</th><th>Référence</th><th>Date</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in paiements %}
+        <tr>
+          <td><strong>{{ p.vendeur.nom_boutique }}</strong></td>
+          <td><span class="badge bg-success">{{ p.plan.nom|upper }}</span></td>
+          <td>{{ p.montant|floatformat:0 }} GNF</td>
+          <td>{{ p.numero_paiement }}</td>
+          <td>{{ p.reference|default:"-" }}</td>
+          <td>{{ p.date_soumission|date:"d/m/Y H:i" }}</td>
+          <td>
+            <form method="post" action="{% url 'admin_valider_paiement_abonnement' p.pk %}" style="display:inline;">
+              {% csrf_token %}
+              <button name="action" value="valider"
+                      class="btn btn-success btn-sm me-1">✅ Valider</button>
+              <button name="action" value="refuser"
+                      class="btn btn-danger btn-sm">❌ Refuser</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted">Aucun paiement en attente.</p>
+  {% endif %}
+</div>
+{% endblock %}

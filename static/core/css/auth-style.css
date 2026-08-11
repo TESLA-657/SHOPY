@@ -1,0 +1,102 @@
+.auth-page {
+  min-height: calc(100vh - 84px);
+  display: grid;
+  place-items: center;
+  padding: 2.5rem 1rem;
+}
+.auth-grid {
+  width: min(100%, 1120px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+.auth-panel,
+.auth-form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+}
+.auth-panel {
+  padding: 2.2rem;
+}
+.auth-title {
+  margin-bottom: 0.85rem;
+  font-size: clamp(2.1rem, 3.1vw, 2.8rem);
+  line-height: 1.05;
+}
+.auth-subtitle {
+  color: var(--text-muted);
+  margin-bottom: 1.8rem;
+  max-width: 42rem;
+}
+.auth-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.10);
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+.auth-panel-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.auth-panel-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: flex-start;
+  background: var(--surface-strong);
+  border-radius: 18px;
+  padding: 1rem 1.1rem;
+}
+.auth-panel-item-icon {
+  width: 2.35rem;
+  height: 2.35rem;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(37, 99, 235, 0.14);
+  color: var(--primary);
+  font-size: 1.05rem;
+}
+.auth-form-card {
+  padding: 2rem;
+}
+.auth-form-card .form-control {
+  border-radius: 14px;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+}
+.auth-form-card .form-label {
+  font-weight: 700;
+  color: var(--text);
+}
+.auth-form-note {
+  color: var(--text-muted);
+  margin-top: 1rem;
+  text-align: center;
+}
+.auth-cta {
+  width: 100%;
+  border-radius: 14px;
+  padding: 1rem 1.3rem;
+}
+.auth-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+.auth-footer a {
+  color: var(--primary);
+  font-weight: 700;
+}
+@media (min-width: 992px) {
+  .auth-grid {
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+}

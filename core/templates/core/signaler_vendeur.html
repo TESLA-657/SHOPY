@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/signaler-vendeur.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="catalogue-container signaler-vendeur-wrap d-flex align-items-center" style=" display: flex; align-items: center; justify-content: center;">
+  <div class="page-content mx-auto" style="max-width:480px; width:100%;">
+    
+    <!-- Icône d'alerte -->
+    <div class="alert-icon-large">
+      🚨
+    </div>
+
+    {% if client_connecte %}
+    <div class="user-info">
+      <p>👤 <strong>{{ client_connecte.nom }}</strong> — {{ client_connecte.numero }}</p>
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <h5>🚨 Signaler un vendeur</h5>
+      <p class="text-muted">Boutique : <strong>{{ vendeur.nom_boutique }}</strong></p>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Votre nom</label>
+          <input type="text" name="nom" class="form-control" placeholder="Entrez votre nom" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Votre numéro</label>
+          <input type="text" name="numero" class="form-control" placeholder="+224 6X XX XX XX XX" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Raison du signalement</label>
+          <select name="raison" class="form-select">
+            <option value="arnaque">⚠️ Arnaque</option>
+            <option value="produit_non_conforme">❌ Produit non conforme</option>
+            <option value="mauvais_service">👎 Mauvais service</option>
+            <option value="autre">📝 Autre</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Description (optionnel)</label>
+          <textarea name="description" class="form-control" rows="3" placeholder="Décrivez le problème..."></textarea>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn">
+            🚨 Envoyer le signalement
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="text-center">
+      <a href="{% url 'detail_produit' vendeur.pk %}" class="retour-link">
+        ← Retour au produit
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

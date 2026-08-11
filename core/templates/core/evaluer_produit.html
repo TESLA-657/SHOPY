@@ -1,0 +1,245 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/evaluer-produit.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="eval-container">
+    <div class="eval-card">
+        <div class="eval-header">
+            <a href="{% url 'detail_produit' produit.pk %}" class="back-btn">
+                ← Retour
+            </a>
+            <h1>Évaluer {{ produit.nom }}</h1>
+        </div>
+
+        <div class="product-summary">
+            {% if produit.photo %}
+                <img src="{{ produit.photo.url }}" alt="{{ produit.nom }}" class="product-thumb">
+            {% else %}
+                <div class="product-thumb placeholder">📦</div>
+            {% endif %}
+            <div class="product-info">
+                <span class="product-price">{{ produit.prix|format_prix }} GNF</span>
+                <span class="product-vendeur">Vendeur: {{ produit.vendeur.nom_boutique }}</span>
+            </div>
+        </div>
+
+        <form method="post" class="eval-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">Votre note</label>
+                <div class="star-rating">
+                    {% for i in "54321" %}
+                    <input type="radio" name="note" value="{{ i }}" id="star{{ i }}" {% if form.note.value == i %}checked{% endif %}>
+                    <label for="star{{ i }}" class="star">⭐</label>
+                    {% endfor %}
+                </div>
+                {% if form.note.errors %}
+                    <span class="error-text">{{ form.note.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Votre avis (optionnel)</label>
+                <textarea name="commentaire" rows="4" class="form-textarea" placeholder="Partagez votre expérience avec ce produit...">{{ form.commentaire.value|default:'' }}</textarea>
+                {% if form.commentaire.errors %}
+                    <span class="error-text">{{ form.commentaire.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Soumettre mon avis
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Évaluer Produit CSS */
+.eval-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: #0f0f14;
+}
+
+.eval-card {
+    background: rgba(30, 30, 40, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 32px;
+    max-width: 500px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+}
+
+.eval-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.back-btn {
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.back-btn:hover {
+    color: #818cf8;
+}
+
+.eval-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #f1f5f9;
+}
+
+.product-summary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(50, 50, 65, 0.6);
+    border-radius: 16px;
+    margin-bottom: 24px;
+}
+
+.product-thumb {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.product-thumb.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: rgba(99, 102, 241, 0.3);
+    color: #94a3b8;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.product-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #10b981;
+}
+
+.product-vendeur {
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.eval-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 32px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.star-rating label:hover,
+.star-rating input:checked ~ label,
+.star-rating input:checked + label {
+    transform: scale(1.2);
+}
+
+.form-textarea {
+    padding: 14px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    background: rgba(30, 30, 40, 0.8);
+    color: #f1f5f9;
+    font-size: 15px;
+    resize: none;
+    transition: all 0.3s;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.form-textarea::placeholder {
+    color: #94a3b8;
+}
+
+.error-text {
+    color: #f87171;
+    font-size: 13px;
+}
+
+.submit-btn {
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.5);
+}
+
+@media (max-width: 500px) {
+    .eval-card {
+        padding: 24px;
+    }
+    
+    .eval-header h1 {
+        font-size: 20px;
+    }
+}
+</style>
+{% endblock %}

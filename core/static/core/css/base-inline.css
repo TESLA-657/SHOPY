@@ -1,0 +1,116 @@
+/*
+  Fichier CSS destiné à remplacer les styles inline de base.html et de certains templates.
+  Objectif : éviter les attributs style="..." et regrouper les styles.
+*/
+
+/* Photo viewer */
+#photo-viewer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+#photo-viewer-img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+#photo-viewer .photo-viewer-hint {
+  position: absolute;
+  bottom: 20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+}
+
+/* Popup overlay */
+#popup-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+#popup-overlay .popup-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+#popup-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+#popup-overlay #popup-ok-btn {
+  background: #28a745;
+  border-radius: 8px;
+  border: none;
+}
+
+/* Notifications floating button */
+.notif-fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  text-decoration: none;
+  z-index: 1000;
+}
+
+.notif-fab-btn {
+  background: #28a745;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.notif-fab-icon {
+  font-size: 20px;
+}
+
+.notif-fab-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* Photo viewer: old rules removed / replaced */
+
+/* Popup overlay: old rules removed / replaced */
+
+
+

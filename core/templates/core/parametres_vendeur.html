@@ -1,0 +1,189 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/parametres-vendeur.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="account-container">
+  <!-- Header Purple -->
+  <div class="account-header-purple">
+    <div class="account-stats">
+      <p class="account-stats-label">⚙️ Paramètres</p>
+      <div class="account-stats-value">{{ vendeur.nom_boutique }}</div>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="pv-back-wrapper">
+    <a href="{% url 'dashboard_vendeur' %}" class="pv-back-btn">
+      ← Retour au Dashboard
+    </a>
+  </div>
+
+  <!-- Menu Cards -->
+  <div class="account-menu">
+    <div class="account-menu-card">
+
+      <!-- Boutique Info Card -->
+      <div class="account-card-header boutique">
+        🏪 Informations boutique
+      </div>
+
+      <div class="pv-form-section">
+        <form method="post" onsubmit="showBoutiqueSavedPopup(event)">
+          {% csrf_token %}
+
+          <div class="form-group-styled">
+            <label class="form-label-styled">Nom de la boutique</label>
+            <input type="text" name="nom_boutique" value="{{ vendeur.nom_boutique }}" class="form-input-styled" required placeholder="Nom de votre boutique">
+          </div>
+
+          <div class="form-group-styled">
+            <label class="form-label-styled">Numéro WhatsApp</label>
+            <input type="text" name="numero" value="{{ vendeur.numero }}" class="form-input-styled" placeholder="+224 XXX XXXXXX">
+          </div>
+
+          <div class="form-group-styled">
+            <label class="form-label-styled">Ville</label>
+            <input type="text" name="ville" value="{{ vendeur.ville }}" class="form-input-styled" placeholder="Conakry, Kindia, etc.">
+          </div>
+
+          <div class="form-group-styled">
+            <label class="form-label-styled">Email</label>
+            <input type="text" value="{{ vendeur.user.email }}" class="form-input-styled" disabled>
+          </div>
+
+          <button type="submit" class="account-btn account-btn-primary">
+            💾 Enregistrer les changements
+          </button>
+        </form>
+      </div>
+
+      <!-- Abonnement Card -->
+      <div class="account-card-header abonnement">
+        💳 Abonnement
+      </div>
+
+      <div class="pv-form-section">
+        {% if abonnement %}
+          <div class="abonnement-status-card">
+            <div class="abonnement-status-row">
+              <span class="abonnement-status-label">Plan</span>
+              <span class="abonnement-status-value plan">{{ abonnement.plan.nom|upper }}</span>
+            </div>
+            <div class="abonnement-status-row">
+              <span class="abonnement-status-label">Statut</span>
+              <span class="abonnement-status-value {% if abonnement.statut == 'actif' %}active{% elif abonnement.statut == 'essai' %}essai{% else %}suspendu{% endif %}">
+                {% if abonnement.statut == 'essai' %}Essai gratuit{% elif abonnement.statut == 'actif' %}Actif{% else %}Suspendu{% endif %}
+              </span>
+            </div>
+            <div class="abonnement-status-row">
+              <span class="abonnement-status-label">Expire</span>
+              <span class="abonnement-status-value">{{ abonnement.date_fin|date:"d/m/Y" }}</span>
+            </div>
+            <div class="abonnement-status-row">
+              <span class="abonnement-status-label">Restants</span>
+              <span class="abonnement-status-value jours">{{ abonnement.jours_restants }} jour(s)</span>
+            </div>
+          </div>
+        {% endif %}
+
+        <a href="{% url 'choisir_abonnement' %}" class="account-btn account-btn-primary" style="margin-top: 16px;">
+          💳 Changer de plan
+        </a>
+      </div>
+
+      <!-- Apparence Card -->
+      <div class="account-card-header apparence">
+        🎨 Apparence
+      </div>
+
+      <div class="pv-form-section">
+        <div class="theme-toggle-card">
+          <div class="theme-toggle-info">
+            <p class="theme-toggle-title">Mode sombre</p>
+            <p class="theme-toggle-desc">Plus comfortable pour vos yeux</p>
+          </div>
+          <button id="theme-btn" onclick="toggleTheme()" class="theme-toggle-btn">
+            🌙 Activer
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function updateThemeButton() {
+  const theme = localStorage.getItem('shopy-theme') || 'light';
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = theme === 'dark' ? '☀️ Mode clair' : '🌙 Mode sombre';
+}
+
+document.addEventListener('DOMContentLoaded', updateThemeButton);
+
+function updateCountdown() {
+  const dateFinStr = "{{ abonnement.date_fin|date:'Y-m-d H:i:s' }}";
+  const dateFin = new Date(dateFinStr);
+  const maintenant = new Date();
+  const diff = dateFin - maintenant;
+  if (!document.getElementById('compte-rebours')) return;
+  if (diff <= 0) {
+    document.getElementById('compte-rebours').textContent = 'Expiré';
+    return;
+  }
+  const jours = Math.floor(diff / 86400000);
+  const heures = Math.floor((diff % 86400000) / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const secondes = Math.floor((diff % 60000) / 1000);
+  let texte = '';
+  if (jours > 1) texte = `${jours} jours restants`;
+  else if (jours === 1) texte = `1 jour ${heures}h restants`;
+  else if (heures > 0) texte = `${heures}h ${minutes}min restantes`;
+  else if (minutes > 0) texte = `${minutes}min ${secondes}s restantes`;
+  else texte = `${secondes} secondes restantes`;
+  const el = document.getElementById('compte-rebours');
+  if (el) {
+    el.textContent = texte;
+    el.style.color = diff < 86400000 ? '#f85149' : '#238636';
+  }
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+/* Popup boutique enregistrée */
+function showBoutiqueSavedPopup(e){
+  if(e && e.preventDefault) e.preventDefault();
+
+  const popup = document.getElementById('popup-boutique-saved');
+  const link = document.getElementById('popup-boutique-saved-link');
+  if(popup) popup.style.display = 'flex';
+  if(link) link.href = link.getAttribute('data-href') || '#';
+  
+  setTimeout(()=>{
+    const form = document.querySelector('form[method="post"]');
+    if(form) form.submit();
+  }, 450);
+  return false;
+}
+</script>
+
+<!-- Popup -->
+<div id="popup-boutique-saved">
+  <div>
+    <div class="pv-popup-icon">✅</div>
+    <h5>Informations enregistrées</h5>
+    <p>Votre boutique a été mise à jour.</p>
+    <a id="popup-boutique-saved-link" data-href="{% url 'parametres_vendeur' %}" href="{% url 'parametres_vendeur' %}" onclick="document.getElementById('popup-boutique-saved').style.display='none';">
+      Continuer
+    </a>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,170 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenue sur SHOPY</title>
+  <link href="{% static 'core/css/welcome-premium.css' %}" rel="stylesheet">
+</head>
+<body>
+  <style>
+    /* Badge vérifié style */
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #1da1f2, #0d8ecf);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-left: 6px;
+      box-shadow: 0 2px 4px rgba(29, 161, 242, 0.3);
+    }
+    .verified-badge svg {
+      width: 10px;
+      height: 10px;
+    }
+    
+    /* Badge TikTok style */
+    .badge-tiktok {
+      background: linear-gradient(135deg, #ff0050, #00f2ea);
+    }
+    
+    /* Badge Facebook style */
+    .badge-facebook {
+      background: linear-gradient(135deg, #1877f2, #0d65d9);
+    }
+    
+    /* Flash Sale pulse animation */
+    @keyframes flashPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+      50% { transform: scale(1.02); box-shadow: 0 0 20px 5px rgba(231, 76, 60, 0.4); }
+    }
+    .flash-badge {
+      animation: flashPulse 1.5s infinite;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating Particles -->
+<div class="particles">
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+</div>
+
+<!-- Premium Navbar -->
+<nav class="premium-nav">
+  <div class="premium-nav-content">
+    <div class="brand-container">
+      <div class="brand-logo">🛒</div>
+      <div class="brand-text">
+        <h1>SHOPY</h1>
+        <p>Guinee</p>
+      </div>
+    </div>
+<div class="nav-links">
+      <a href="{% url 'catalogue' %}" class="nav-link">Acheter</a>
+      <a href="{% url 'inscription_vendeur' %}" class="nav-link">Vendre</a>
+      <a href="{% url 'connexion_client' %}" class="nav-link">Client</a>
+      <a href="{% url 'connexion_vendeur' %}" class="nav-link">Vendeur</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="welcome-main">
+  <div class="hero-container">
+    <div class="hero-card">
+      <div class="hero-content">
+        <h2 class="hero-title">
+          Bienvenue sur <span>SHOPY</span>
+        </h2>
+        <p class="hero-subtitle">
+          La plateforme e-commerce leader en Guinnée. Trouvez des produits près de chez vous et créez votre boutique en quelques clics.
+        </p>
+        
+        <div class="choice-grid">
+          <!-- Acheter Card -->
+          <a href="{% url 'catalogue' %}" class="choice-card buy">
+            <span class="choice-pill">Acheter</span>
+            <div class="choice-icon-wrap">🛒</div>
+            <h3 class="choice-title">Acheter</h3>
+            <p class="choice-desc">Découvrir les produits près de chez moi</p>
+          </a>
+
+          <!-- Vendre Card -->
+          <a href="{% url 'inscription_vendeur' %}" class="choice-card sell">
+            <span class="choice-pill">Vendre</span>
+            <div class="choice-icon-wrap">💰</div>
+            <h3 class="choice-title">Vendre</h3>
+            <p class="choice-desc">Créer ma boutique et poster mes articles</p>
+          </a>
+
+<!-- Connexion Vendeur -->
+          <a href="{% url 'connexion_vendeur' %}" class="choice-card">
+            <div class="choice-icon-wrap">🔑</div>
+            <h3 class="choice-title">Connexion Vendeur</h3>
+            <p class="choice-desc">Gérer ma boutique et mes produits</p>
+          </a>
+
+          <!-- Connexion Client -->
+          <a href="{% url 'connexion_client' %}" class="choice-card">
+            <div class="choice-icon-wrap">👤</div>
+            <h3 class="choice-title">Mon Compte</h3>
+            <p class="choice-desc">Suivre mes commandes et favoris</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Premium Footer -->
+<footer class="premium-footer">
+  <div class="footer-brand">SHOPY GUINNEE</div>
+  
+  <div class="footer-links">
+<div class="footer-column">
+      <h4>Support</h4>
+      <span>📩 support@shopyguinee.com</span>
+      <span>📞 +224 612 97 16 10</span>
+<a href="https://wa.me/224611476352" target="_blank" title="Contacter sur WhatsApp">
+            <img src="{% static 'core/images/whatsapp.svg' %}" alt="WhatsApp" style="width: 24px; height: 24px;">
+        </a>
+    </div>
+    
+    <div class="footer-column">
+      <h4>Aide & Assistance</h4>
+      <a href="{% url 'catalogue' %}">Comment acheter</a>
+      <a href="{% url 'inscription_vendeur' %}">Devenir vendeur</a>
+      <a href="{% url 'connexion_client' %}">Centre client</a>
+      <a href="{% url 'connexion_vendeur' %}">Centre vendeur</a>
+    </div>
+    
+    <div class="footer-column">
+      <h4>Ressources</h4>
+      <span>📦 Livraison & retours</span>
+      <span>🔒 Sécurité des paiements</span>
+      <span>🧾 Conditions d'utilisation</span>
+    </div>
+  </div>
+
+  <div class="footer-copyright">
+    © {% now "Y" %} SHOPY GUINNEE — Tous droits réservés.
+  </div>
+</footer>
+
+</body>
+</html>

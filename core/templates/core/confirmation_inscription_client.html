@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compte créé — Shopy</title>
+  <link href="{% static 'core/css/confirmation-inscription-client.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<div class="success-container">
+  <div class="success-card">
+    
+    <!-- Confetti effects -->
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    
+    <!-- Success Icon -->
+    <div class="success-icon">
+      <span>🎉</span>
+    </div>
+    
+    <!-- Title -->
+    <h4 class="success-title">Compte créé avec succès !</h4>
+    
+    <!-- Message -->
+    <p class="success-message">
+      Bienvenue <strong>{{ nom }}</strong> sur Shopy Guinea !<br>
+      Votre compte a été créé avec l'email <strong>{{ email }}</strong>.
+    </p>
+    
+    <!-- User Info Box -->
+    <div class="user-info">
+      <div class="user-info-item">
+        <span class="user-info-label">Nom:</span>
+        <span class="user-info-value">{{ nom }}</span>
+      </div>
+      <div class="user-info-item">
+        <span class="user-info-label">Email:</span>
+        <span class="user-info-value">{{ email }}</span>
+      </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="success-buttons">
+      <a href="{% url 'connexion_client' %}" class="btn-primary">
+        👤 Accéder à mon espace client
+      </a>
+      <a href="{% url 'catalogue' %}" class="btn-success">
+        🛒 Parcourir le catalogue
+      </a>
+    </div>
+    
+    <!-- Return Link -->
+    <a href="{% url 'Welcome' %}" class="return-link">
+      ← Retour à l'accueil
+    </a>
+    
+  </div>
+</div>
+
+</body>
+</html>

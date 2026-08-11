@@ -1,0 +1,91 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Vendeurs Certifiés - SHOPY{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>🏅 Vendeurs Certifiés SHOPY</h1>
+    <p class="subtitle">Des vendeurs vérifiés et éprouvés pour vos achats en toute confiance</p>
+    
+    {% if not vendeurs %}
+        <div class="alert alert-info">
+            <p>Aucun vendeur certifiés pour le moment. Becomez le premier!</p>
+        </div>
+    {% else %}
+        <div class="vendeur-grid">
+            {% for v in vendors %}
+            <div class="vendeur-card">
+                <div class="vendeur-header">
+                    <span class="badge-certifie">✅ Certifié SHOPY</span>
+                    <div class="note">
+                        {% if v.note_confiance > 0 %}
+                            <span class="etoiles">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= v.note_confiance %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            </span>
+                            <span class="note-valeur">{{ v.note_confiance|floatformat:1 }}/5</span>
+                        {% else %}
+                            <span class="note-valeur">Nouveau</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <h3>{{ v.nom_boutique }}</h3>
+                <p class="ville">📍 {{ v.ville }}</p>
+                
+                <div class="stats">
+                    <span>{{ v.nb_evaluations }} évaluation(s)</span>
+                    <span>•</span>
+                    <span>{{ v.total_produits_crees }} produit(s)</span>
+                </div>
+                
+                <a href="{% url 'noter_vendeur' v.pk %}" class="btn btn-secondary">
+                    Noter ce vendeur
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.vendeur-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+.vendeur-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.vendeur-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.badge-certifie {
+    background: #10b981;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+.etoiles {
+    color: #f59e0b;
+}
+.note-valeur {
+    margin-left: 5px;
+    font-weight: bold;
+}
+.stats {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin: 10px 0;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,79 @@
+
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'core/css/catalogue-style.css' %}">
+<style>
+  .info {
+    background-color: white;
+    border-radius: 7px;
+  }
+.info p {
+color: rgb(49, 55, 61);
+}
+.info:hover {
+  transform: scale(1.1);
+  transition: 0.5s;
+}
+.form-paie {
+border-radius: 7px;
+}
+</style>
+<div class="catalogue-container page-shell" style="display: flex; align-items: center;">
+  <div class="page-content">
+    <div class="section-card mx-auto" style="max-width:520px;">
+      <div class="section-card-inner">
+        <div class="section-card-header">
+          <div>
+            <h1 class="page-title">💰 Payer ma commande</h1>
+            <p class="page-subtitle">{{ produit.nom }} × {{ commande.quantite }} = <strong style="color: var(--primary-color);">{{ montant|floatformat:0 }} GNF</strong></p>
+          </div>
+          <span class="summary-chip" style="color: black;">Référence : CMD-{{ commande.pk }}-{{ commande.nom_client|upper }}</span>
+        </div>
+
+        <div class="info">
+          <p class="section-title" style="text-align: center;">💳 Options de paiement</p>
+          <p class="page-text-muted">Montant à régler : <strong>{{ montant|floatformat:0 }} GNF</strong></p>
+          <p class="page-note">Référence : <strong>CMD-{{ commande.pk }}-{{ commande.nom_client|upper }}</strong></p>
+          <p class="page-text-muted mt-2">
+            Pour <strong>Orange Money</strong>, vous pouvez envoyer au : <strong style="color:#FF6600;">{{ commande.vendeur.numero }}</strong>
+          </p>
+        </div>
+
+        <div class="info">
+          <p class="page-text-muted"><strong>Produit :</strong> {{ produit.nom }}</p>
+          <p class="page-text-muted"><strong>Boutique :</strong> {{ commande.vendeur.nom_boutique }}</p>
+          <p class="page-text-muted"><strong>Quantité :</strong> {{ commande.quantite }}</p>
+          <p class="page-text-muted"><strong>Total : </strong><strong>{{ montant|floatformat:0 }} GNF</strong> </p>
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label" for="mode_paiement">Mode de paiement  :</label>
+            <select name="mode_paiement" id="mode_paiement" class="form-paie" required>
+              {% for value, label in modes_paiement %}
+                <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="numero_paiement">Numéro de paiement</label>
+            <input type="text" name="numero_paiement" id="numero_paiement" class="form-paie"
+                   placeholder="Ex: +224 6XX XX XX XX" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="reference">Référence (optionnel)</label>
+            <input type="text" name="reference" id="reference" class="form-paie"
+                   placeholder="Ex: OM2026041500123">
+          </div><br>
+          <div class="d-grid mt-4">
+            <button type="submit" class="page-action-btn primary" style="background:linear-gradient(135deg,#09eb4d,#08d44c); box-shadow:0 0 30px #08d44c;">✅ Confirmer le paiement</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

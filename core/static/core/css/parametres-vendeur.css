@@ -1,0 +1,513 @@
+/* ============================================
+   PARAMÈTRES VENDEUR - Style Premium
+   ============================================ */
+
+:root {
+  /* Palette principale - Dark Theme Premium */
+  --pv-bg: #0d1117;
+  --pv-bg-2: #161b22;
+  --pv-bg-3: #21262d;
+  --pv-card: rgba(255, 255, 255, 0.06);
+  --pv-card-2: rgba(255, 255, 255, 0.10);
+  --pv-border: rgba(255, 255, 255, 0.12);
+  --pv-border-2: rgba(255, 255, 255, 0.20);
+  
+  /* Texte */
+  --pv-text: rgba(255, 255, 255, 0.92);
+  --pv-text-2: rgba(255, 255, 255, 0.72);
+  --pv-text-muted: rgba(255, 255, 255, 0.50);
+  
+  /* Accents */
+  --pv-primary: #238636;
+  --pv-primary-hover: #2ea043;
+  --pv-primary-glow: rgba(35, 134, 54, 0.4);
+  --pv-purple: #7c3fd4;
+  --pv-purple-dark: #5b2d8e;
+  --pv-pink: #e91e63;
+  --pv-pink-dark: #c2185b;
+  --pv-yellow: #d29922;
+  --pv-red: #f85149;
+  --pv-blue: #388bfd;
+  
+  /* Ombres */
+  --pv-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --pv-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --pv-shadow-glow: 0 0 30px var(--pv-primary-glow);
+  --pv-shadow-purple: 0 0 25px rgba(124, 63, 212, 0.4);
+  
+  /* Border radius */
+  --pv-radius: 12px;
+  --pv-radius-2: 16px;
+  --pv-radius-full: 9999px;
+  
+  /* Transitions */
+  --pv-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   CONTAINER PRINCIPAL
+   ============================================ */
+
+.account-container {
+  background: radial-gradient(1000px 600px at 15% 0%, rgba(124, 63, 212, 0.15), transparent 50%),
+              radial-gradient(800px 500px at 85% 25%, rgba(233, 30, 99, 0.1), transparent 50%),
+              linear-gradient(180deg, rgba(13, 17, 23, 0.98), rgba(10, 14, 20, 0.98));
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.account-header-purple {
+  background: linear-gradient(135deg, var(--pv-purple), var(--pv-purple-dark));
+  padding: 28px 20px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.account-header-purple::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+}
+
+.account-stats {
+  text-align: center;
+  margin-bottom: 20px;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.account-stats-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 8px 0;
+}
+
+.account-stats-value {
+  color: white;
+  font-weight: 800;
+  font-size: 26px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* ============================================
+   BACK BUTTON
+   ============================================ */
+
+.pv-back-wrapper {
+  padding: 16px 16px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.pv-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--pv-purple), var(--pv-purple-dark));
+  border: none;
+  border-radius: var(--pv-radius);
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  transition: var(--pv-transition);
+  box-shadow: var(--pv-shadow-purple);
+}
+
+.pv-back-btn:hover {
+  transform: translateY(-2px) translateX(-3px);
+  box-shadow: 0 8px 25px rgba(124, 63, 212, 0.5);
+  color: white;
+}
+
+/* ============================================
+   MENU CARDS
+   ============================================ */
+
+.account-menu {
+  margin-top: -24px;
+  padding: 0 16px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.account-menu-card {
+  background: var(--pv-bg-2);
+  border: 1px solid var(--pv-border);
+  border-radius: var(--pv-radius-2);
+  overflow: hidden;
+  box-shadow: var(--pv-shadow);
+}
+
+/* ============================================
+   CARD HEADERS
+   ============================================ */
+
+.account-card-header {
+  padding: 18px 20px;
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.account-card-header.boutique {
+  background: linear-gradient(135deg, var(--pv-purple), var(--pv-purple-dark));
+}
+
+.account-card-header.abonnement {
+  background: linear-gradient(135deg, var(--pv-primary), #1a7f2e);
+}
+
+.account-card-header.apparence {
+  background: linear-gradient(135deg, var(--pv-pink), var(--pv-pink-dark));
+}
+
+/* ============================================
+   FORM GROUPS
+   ============================================ */
+
+.pv-form-section {
+  padding: 24px 20px;
+}
+
+.form-group-styled {
+  margin-bottom: 20px;
+}
+
+.form-label-styled {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pv-text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input-styled {
+  width: 100%;
+  padding: 16px 18px;
+  background: var(--pv-bg-3);
+  border: 2px solid var(--pv-border);
+  border-radius: var(--pv-radius);
+  color: var(--pv-text);
+  font-size: 15px;
+  transition: var(--pv-transition);
+  outline: none;
+}
+
+.form-input-styled::placeholder {
+  color: var(--pv-text-muted);
+}
+
+.form-input-styled:focus {
+  border-color: var(--pv-purple);
+  box-shadow: 0 0 0 4px rgba(124, 63, 212, 0.2),
+              var(--pv-shadow-2);
+}
+
+.form-input-styled:disabled {
+  background: var(--pv-bg-2);
+  color: var(--pv-text-muted);
+  border-color: transparent;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.account-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 16px 20px;
+  border-radius: var(--pv-radius);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  transition: var(--pv-transition);
+  border: none;
+  cursor: pointer;
+}
+
+.account-btn-primary {
+  background: linear-gradient(135deg, var(--pv-purple), var(--pv-purple-dark));
+  color: white;
+  box-shadow: var(--pv-shadow-purple);
+  width: 100%;
+}
+
+.account-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(124, 63, 212, 0.5);
+}
+
+.account-btn-secondary {
+  background: var(--pv-bg-3);
+  color: var(--pv-purple);
+  border: 2px solid var(--pv-purple);
+}
+
+.account-btn-secondary:hover {
+  background: rgba(124, 63, 212, 0.15);
+}
+
+/* ============================================
+   ABONNEMENT STATUS CARD
+   ============================================ */
+
+.abonnement-status-card {
+  background: var(--pv-bg-3);
+  border-radius: var(--pv-radius);
+  padding: 20px;
+  border: 1px solid var(--pv-border);
+}
+
+.abonnement-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--pv-border);
+}
+
+.abonnement-status-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.abonnement-status-row:first-child {
+  padding-top: 0;
+}
+
+.abonnement-status-label {
+  font-size: 13px;
+  color: var(--pv-text-muted);
+}
+
+.abonnement-status-value {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.abonnement-status-value.active {
+  color: var(--pv-primary);
+}
+
+.abonnement-status-value.essai {
+  color: var(--pv-blue);
+}
+
+.abonnement-status-value.suspendu {
+  color: var(--pv-red);
+}
+
+.abonnement-status-value.plan {
+  color: var(--pv-purple);
+}
+
+.abonnement-status-value.jours {
+  color: var(--pv-pink);
+  font-weight: 800;
+}
+
+/* ============================================
+   THEME TOGGLE
+   ============================================ */
+
+.theme-toggle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--pv-bg-3);
+  border-radius: var(--pv-radius);
+  padding: 18px 20px;
+  border: 1px solid var(--pv-border);
+}
+
+.theme-toggle-info {
+  flex: 1;
+}
+
+.theme-toggle-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--pv-text);
+  margin: 0;
+}
+
+.theme-toggle-desc {
+  font-size: 13px;
+  color: var(--pv-text-muted);
+  margin: 4px 0 0 0;
+}
+
+.theme-toggle-btn {
+  background: linear-gradient(135deg, var(--pv-pink), var(--pv-pink-dark));
+  color: white;
+  border: none;
+  border-radius: var(--pv-radius-full);
+  padding: 12px 24px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--pv-transition);
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+}
+
+.theme-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(233, 30, 99, 0.5);
+}
+
+/* ============================================
+   POPUP
+   ============================================ */
+
+#popup-boutique-saved {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+#popup-boutique-saved > div {
+  background: var(--pv-bg-2);
+  border: 1px solid var(--pv-border);
+  border-radius: var(--pv-radius-2);
+  padding: 36px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+#popup-boutique-saved .pv-popup-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+#popup-boutique-saved h5 {
+  color: var(--pv-text);
+  font-weight: 800;
+  font-size: 20px;
+  margin: 0 0 10px 0;
+}
+
+#popup-boutique-saved p {
+  color: var(--pv-text-muted);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+#popup-boutique-saved-link {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--pv-primary), #1a7f2e);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--pv-radius);
+  padding: 14px 28px;
+  font-weight: 700;
+  transition: var(--pv-transition);
+  box-shadow: var(--pv-shadow-glow);
+}
+
+#popup-boutique-saved-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(35, 134, 54, 0.5);
+  color: white;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 640px) {
+  .account-header-purple {
+    padding: 20px 16px 50px;
+  }
+  
+  .account-stats-value {
+    font-size: 22px;
+  }
+  
+  .account-menu {
+    padding: 0 12px 16px;
+  }
+  
+  .pv-form-section {
+    padding: 20px 16px;
+  }
+  
+  .account-card-header {
+    padding: 16px;
+    font-size: 15px;
+  }
+  
+  .form-input-styled {
+    padding: 14px 16px;
+  }
+  
+  .theme-toggle-card {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .theme-toggle-btn {
+    width: 100%;
+  }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.account-menu-card {
+  animation: fadeIn 0.4s ease-out;
+}

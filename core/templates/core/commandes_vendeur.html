@@ -1,0 +1,283 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/commandes-vendeur.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div id="cv-commandes-container">
+  <div id="cv-commandes-wrapper">
+
+    <!-- Header -->
+    <div class="cv-header">
+      <div class="cv-header-left">
+        <h4>📦 Mes Commandes</h4>
+        <div class="cv-shop-name">{{ vendeur.nom_boutique }}</div>
+      </div>
+      <a href="{% url 'dashboard_vendeur' %}" class="cv-back-btn">← Retour au Dashboard</a>
+    </div>
+
+<!-- Stats Grid -->
+    <div class="cv-stats-grid">
+      <div class="cv-stat-card total">
+        <div class="cv-stat-icon">📋</div>
+        <div class="cv-stat-label">Total</div>
+        <div class="cv-stat-value">{{ total_commandes }}</div>
+      </div>
+      <div class="cv-stat-card pending">
+        <div class="cv-stat-icon">⏳</div>
+        <div class="cv-stat-label">En attente</div>
+        <div class="cv-stat-value">{{ commandes_attente }}</div>
+      </div>
+      <div class="cv-stat-card accepted">
+        <div class="cv-stat-icon">✅</div>
+        <div class="cv-stat-label">Acceptées</div>
+        <div class="cv-stat-value">{{ commandes_acceptees }}</div>
+      </div>
+      <div class="cv-stat-card rejected">
+        <div class="cv-stat-icon">❌</div>
+        <div class="cv-stat-label">Refusées</div>
+        <div class="cv-stat-value">{{ commandes_refusees }}</div>
+      </div>
+    </div>
+
+<!-- Tabs pour Statut (En attente, Acceptées, Refusées) -->
+    <div class="cv-tabs">
+      <button class="cv-tab active" data-statut="all" onclick="switchStatutTab('all')">
+        📋 Tous <span class="cv-tab-count">{{ total_commandes }}</span>
+      </button>
+      <button class="cv-tab" data-statut="en_attente" onclick="switchStatutTab('en_attente')">
+        ⏳ En attente <span class="cv-tab-count">{{ commandes_attente }}</span>
+      </button>
+      <button class="cv-tab" data-statut="acceptee" onclick="switchStatutTab('acceptee')">
+        ✅ Acceptées <span class="cv-tab-count">{{ commandes_acceptees }}</span>
+      </button>
+      <button class="cv-tab" data-statut="refusee" onclick="switchStatutTab('refusee')">
+        ❌ Refusées <span class="cv-tab-count">{{ commandes_refusees }}</span>
+      </button>
+    </div>
+
+<!-- Section: En attente -->
+    <div class="cv-section" data-section="en_attente">
+      <div class="cv-section-header pending">
+        <div class="cv-section-header-icon">⏳</div>
+        <div class="cv-section-title">Commandes en attente</div>
+        <div class="cv-section-count">{{ commandes_attente }}</div>
+      </div>
+      <div class="cv-commande-list">
+        {% for commande in commandes %}
+          {% if commande.statut == 'en_attente' %}
+            <div class="cv-commande-item" data-promo="{% if commande.produit.promo %}promo{% else %}non-promo{% endif %}">
+              {% if commande.produit.photo %}
+                <img src="{{ commande.produit.photo.url }}" class="cv-commande-image">
+              {% else %}
+                <div class="cv-commande-placeholder">📦</div>
+              {% endif %}
+              <div class="cv-commande-info">
+                <div class="cv-commande-title">{{ commande.produit.nom }}
+                  {% if commande.produit.promo %}<span class="cv-promo-badge">🔥 Promo</span>{% endif %}
+                </div>
+                <div class="cv-commande-meta">
+                  <span>👤 {{ commande.nom_client }}</span>
+                  <span>📍 {{ commande.ville_client }}</span>
+                </div>
+                <div class="cv-commande-qte">Quantité: {{ commande.quantite }}</div>
+              </div>
+              <div class="cv-commande-actions">
+                <form method="post" action="{% url 'changer_statut_commande' commande.pk %}" class="cv-select-form">
+                  {% csrf_token %}
+                  <select name="statut" onchange="this.form.submit()">
+                    <option value="en_attente" selected>⏳ En attente</option>
+                    <option value="acceptee">✅ Accepter</option>
+                    <option value="refusee">❌ Refuser</option>
+                  </select>
+                </form>
+                <div class="cv-commande-price">{{ commande.prix_total|format_prix }} GNF</div>
+                <div class="cv-commande-date">{{ commande.date_commande|date:"d/m/Y H:i" }}</div>
+              </div>
+            </div>
+          {% endif %}
+        {% empty %}
+          <div class="cv-empty-state">
+            <div class="cv-empty-icon">🛒</div>
+            <div class="cv-empty-title">Aucune commande en attente</div>
+            <div class="cv-empty-subtitle">Les nouvelles commandes apparaîtront ici.</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+<!-- Section: Acceptées -->
+    <div class="cv-section" data-section="acceptee">
+      <div class="cv-section-header accepted">
+        <div class="cv-section-header-icon">✅</div>
+        <div class="cv-section-title">Commandes acceptées</div>
+        <div class="cv-section-count">{{ commandes_acceptees }}</div>
+      </div>
+      <div class="cv-commande-list">
+        {% for commande in commandes %}
+          {% if commande.statut == 'acceptee' %}
+            <div class="cv-commande-item" data-promo="{% if commande.produit.promo %}promo{% else %}non-promo{% endif %}">
+              {% if commande.produit.photo %}
+                <img src="{{ commande.produit.photo.url }}" class="cv-commande-image">
+              {% else %}
+                <div class="cv-commande-placeholder">📦</div>
+              {% endif %}
+              <div class="cv-commande-info">
+                <div class="cv-commande-title">{{ commande.produit.nom }}
+                  {% if commande.produit.promo %}<span class="cv-promo-badge">🔥 Promo</span>{% endif %}
+                </div>
+                <div class="cv-commande-meta">
+                  <span>👤 {{ commande.nom_client }}</span>
+                  <span>📍 {{ commande.ville_client }}</span>
+                </div>
+                <div class="cv-commande-qte">Quantité: {{ commande.quantite }}</div>
+              </div>
+              <div class="cv-commande-actions">
+                <span class="cv-commande-status accepted">✓ Acceptée</span>
+                <div class="cv-commande-price">{{ commande.prix_total|format_prix }} GNF</div>
+                <div class="cv-commande-date">{{ commande.date_commande|date:"d/m/Y H:i" }}</div>
+              </div>
+            </div>
+          {% endif %}
+        {% empty %}
+          <div class="cv-empty-state">
+            <div class="cv-empty-icon">🎉</div>
+            <div class="cv-empty-title">Aucune commande acceptée</div>
+            <div class="cv-empty-subtitle">Les commandes traitées seront listées ici.</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+<!-- Section: Refusées -->
+    <div class="cv-section" data-section="refusee">
+      <div class="cv-section-header rejected">
+        <div class="cv-section-header-icon">❌</div>
+        <div class="cv-section-title">Commandes refusées</div>
+        <div class="cv-section-count">{{ commandes_refusees }}</div>
+      </div>
+      <div class="cv-commande-list">
+        {% for commande in commandes %}
+          {% if commande.statut == 'refusee' %}
+            <div class="cv-commande-item" data-promo="{% if commande.produit.promo %}promo{% else %}non-promo{% endif %}">
+              {% if commande.produit.photo %}
+                <img src="{{ commande.produit.photo.url }}" class="cv-commande-image">
+              {% else %}
+                <div class="cv-commande-placeholder">📦</div>
+              {% endif %}
+              <div class="cv-commande-info">
+                <div class="cv-commande-title">{{ commande.produit.nom }}
+                  {% if commande.produit.promo %}<span class="cv-promo-badge">🔥 Promo</span>{% endif %}
+                </div>
+                <div class="cv-commande-meta">
+                  <span>👤 {{ commande.nom_client }}</span>
+                  <span>📍 {{ commande.ville_client }}</span>
+                </div>
+                <div class="cv-commande-qte">Quantité: {{ commande.quantite }}</div>
+              </div>
+              <div class="cv-commande-actions">
+                <span class="cv-commande-status rejected">✕ Refusée</span>
+                <div class="cv-commande-date">{{ commande.date_commande|date:"d/m/Y H:i" }}</div>
+              </div>
+            </div>
+          {% endif %}
+        {% empty %}
+          <div class="cv-empty-state">
+            <div class="cv-empty-icon">👍</div>
+            <div class="cv-empty-title">Aucune commande refusée</div>
+            <div class="cv-empty-subtitle">Les commandes refusées seront affichées ici.</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+<!-- Archive Button -->
+    <div class="cv-archive-section">
+      <form method="post" action="{% url 'supprimer_historique' %}">
+        {% csrf_token %}
+        <button type="submit" class="cv-archive-btn" onclick="return confirm('Archiver les commandes de plus d\'un mois ?')">
+          🗑️ Archiver l'historique
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let currentPromoTab = 'all';
+  let currentStatutTab = 'all';
+
+  // Fonctions pour les onglets Promo / Normal
+  function switchPromoTab(tab) {
+    currentPromoTab = tab;
+    
+    // Update promo tab buttons
+    document.querySelectorAll('.cv-tab[data-promo]').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.promo === tab) {
+        btn.classList.add('active');
+      }
+    });
+    
+    // Filter by promo status
+    filterCommandes();
+  }
+
+  // Fonctions pour les onglets Statut (En attente, Acceptées, Refusées)
+  function switchStatutTab(tab) {
+    currentStatutTab = tab;
+    
+    // Update statut tab buttons
+    document.querySelectorAll('.cv-tab[data-statut]').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.statut === tab) {
+        btn.classList.add('active');
+      }
+    });
+    
+    // Filter by status
+    filterCommandes();
+  }
+
+  function filterCommandes() {
+    // Filter sections by statut status
+    const sections = document.querySelectorAll('.cv-section');
+    
+    sections.forEach(section => {
+      const sectionStatut = section.dataset.section || 'all';
+      
+      // First filter by statut
+      let showByStatut = false;
+      if (currentStatutTab === 'all') {
+        showByStatut = true;
+      } else if (currentStatutTab === sectionStatut) {
+        showByStatut = true;
+      }
+      
+      section.style.display = showByStatut ? '' : 'none';
+    });
+    
+    // Then filter individual items by promo status within each visible section
+    const commandeItems = document.querySelectorAll('.cv-commande-item');
+    
+    commandeItems.forEach(item => {
+      const itemPromo = item.dataset.promo || 'non-promo';
+      
+      let showByPromo = false;
+      if (currentPromoTab === 'all') {
+        showByPromo = true;
+      } else if (currentPromoTab === itemPromo) {
+        showByPromo = true;
+      }
+      
+      item.style.display = showByPromo ? '' : 'none';
+    });
+  }
+</script>
+
+{% endblock %}

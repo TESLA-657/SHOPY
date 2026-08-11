@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garanties — Admin Shopy</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#0f0f1a; font-family:'Segoe UI',sans-serif; color:white; min-height:100vh; }
+    .header { padding:16px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); }
+    .back-link { color:#667eea; text-decoration:none; font-size:14px; }
+    .section-title { font-size:20px; font-weight:700; }
+    .garantie-card { background:#1a1a2e; border-radius:12px; padding:16px; margin-bottom:12px; border:1px solid rgba(0,137,123,0.2); }
+    .commande-info { font-weight:600; font-size:15px; }
+    .info-detail { color:rgba(255,255,255,0.5); font-size:12px; margin-top:4px; }
+    .montant { color:#00897b; font-size:14px; font-weight:600; margin-top:8px; }
+    .status-badge { padding:4px 10px; border-radius:12px; font-size:11px; font-weight:600; }
+    .status-active { background:rgba(0,137,123,0.2); color:#00897b; }
+    .status-traitee { background:rgba(40,167,69,0.2); color:#28a745; }
+    .status-refusee { background:rgba(231,76,60,0.2); color:#e74c3c; }
+    .btn-action { border:none; border-radius:8px; padding:8px 16px; font-size:12px; font-weight:600; cursor:pointer; }
+    .btn-accepter { background:#28a745; color:white; }
+    .btn-refuser { background:#e74c3c; color:white; }
+    .empty-state { text-align:center; padding:60px 20px; color:rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a href="{% url 'admin_dashboard' %}" class="back-link">← Dashboard</a>
+  <span class="section-title">Garanties Acheteur</span>
+  <span></span>
+</div>
+
+<div style="padding:20px;">
+
+  {% for g in garanties %}
+  <div class="garantie-card">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <p class="commande-info">Commande #{{ g.commande.pk }}</p>
+        <p class="info-detail">{{ g.commande.produit.nom }}</p>
+        <p class="info-detail">Client: {{ g.commande.nom_client }} — {{ g.commande.numero_client }}</p>
+        <p class="info-detail">Vendeur: {{ g.commande.vendeur.nom_boutique }}</p>
+        <p class="montant">Montant: {{ g.montant_rembourse|default:g.commande.prix_total|floatformat:0 }} GNF</p>
+        <p style="color:rgba(255,255,255,0.4); font-size:11px; margin-top:8px;">{{ g.date_demande|date:"d/m/Y H:i" }}</p>
+      </div>
+      <span class="status-badge 
+        {% if g.statut == 'en_attente' %}status-active
+        {% elif g.statut == 'acceptee' %}status-traitee
+        {% else %}status-refusee{% endif %}">
+        {{ g.get_statut_display }}
+      </span>
+    </div>
+    
+    <p style="color:rgba(255,255,255,0.6); font-size:12px; margin-top:8px;">
+      Motif: {{ g.motif|default:"Non spécifié" }}
+    </p>
+    
+    {% if g.statut == 'en_attente' %}
+    <div class="d-flex gap-2 mt-3">
+      <form method="post" action="{% url 'admin_traiter_garantie' g.pk %}" style="flex:1;">
+        {% csrf_token %}
+        <button name="action" value="accepter" class="btn-action btn-accepter" style="width:100%;">
+          ✅ Accepter Remboursement
+        </button>
+      </form>
+      <form method="post" action="{% url 'admin_traiter_garantie' g.pk %}" style="flex:1;">
+        {% csrf_token %}
+        <button name="action" value="refuser" class="btn-action btn-refuser" style="width:100%;">
+          ❌ Refuser
+        </button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+  {% empty %}
+  <div class="empty-state">
+    <p style="font-size:50px;">🛡️</p>
+    <p>Aucune demande de garantie.</p>
+  </div>
+  {% endfor %}
+
+</div>
+
+</body>
+</html>

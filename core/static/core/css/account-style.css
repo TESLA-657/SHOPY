@@ -1,0 +1,996 @@
+/* ===== ACCOUNT STYLE - AliExpress Inspired ===== */
+
+:root {
+  --primary-color: #e60012;
+  --secondary-color: #ff7a1d;
+  --accent-blue: #1a237e;
+  --accent-purple: #5b2d8e;
+  --text-primary: #222;
+  --text-secondary: #999;
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --border-light: #e8e8e8;
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== CONTAINER ===== */
+.account-container {
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* ===== HEADER GRADIENT ===== */
+.account-header {
+  background: linear-gradient(135deg, var(--accent-blue), #3949ab);
+  padding: 24px 20px 50px;
+}
+
+.account-header-purple {
+  background: linear-gradient(135deg, var(--accent-purple), #7c3fd4);
+  padding: 24px 20px 50px;
+}
+
+/* ===== STATS SECTION ===== */
+.account-stats {
+  text-align: center;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.account-stats-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.account-stats-value {
+  color: white;
+  font-weight: bold;
+  margin: 4px 0;
+  font-size: 24px;
+}
+
+.account-stats-value span {
+  font-size: 16px;
+}
+
+/* ===== PROFILE SECTION ===== */
+.account-profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.account-profile-avatar {
+  position: relative;
+  cursor: pointer;
+}
+
+.account-profile-avatar-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  object-fit: cover;
+}
+
+.account-profile-avatar-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.account-profile-avatar-placeholder.vendor {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.account-profile-avatar-icon {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  background: #3949ab;
+}
+
+.account-profile-avatar-icon.vendor {
+  background: #7c3fd4;
+}
+
+/* ===== Vendor Online Dot (Messenger-like) ===== */
+.vendor-online-dot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #2ecc71;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.18);
+  z-index: 3;
+}
+
+
+/* little pop animation */
+@keyframes vendorDotPop {
+  from { transform: scale(0.6); opacity: 0.2; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.vendor-online-dot {
+  animation: vendorDotPop 0.18s ease-out;
+}
+
+/* small inline dot for catalogue/details */
+.vendor-online-dot-inline {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2ecc71;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.18);
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+.account-profile-info {
+  color: white;
+}
+
+.account-profile-label {
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  font-size: 11px;
+}
+
+/* ===== SALUTATION DISPLAY ===== */
+.salutation-display {
+  color: #fff;
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: fadeInSalut 0.5s ease-out;
+}
+
+@keyframes fadeInSalut {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.account-profile-name {
+  color: white;
+  margin: 0;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.account-profile-city {
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
+  font-size: 12px;
+}
+
+.account-profile-verified {
+  background: rgba(40, 167, 69, 0.3);
+  color: #7defa1;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.account-profile-info-btn {
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* ===== MENU SECTION ===== */
+.account-menu {
+  margin-top: -24px;
+  padding: 0 12px 16px;
+}
+
+.account-menu-card {
+  background: var(--bg-secondary);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.account-menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border-light);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.account-menu-item:last-child {
+  border-bottom: none;
+}
+
+.account-menu-item:hover {
+  background: rgba(230, 0, 18, 0.05);
+}
+
+.account-menu-item-icon {
+  background: #e8eaf6;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+
+.account-menu-item-icon.orders {
+  background: #fff8e1;
+}
+
+.account-menu-item-icon.favorites {
+  background: #fce4ec;
+}
+
+.account-menu-item-icon.notifications {
+  background: #ffebee;
+}
+
+.account-menu-item-icon.messages {
+  background: #e3f2fd;
+}
+
+.account-menu-item-icon.settings {
+  background: #f3e5f5;
+}
+
+.account-menu-item-icon.subscription {
+  background: #e8f5e9;
+}
+
+.account-menu-item-icon.stats {
+  background: #e3f2fd;
+}
+
+.account-menu-item-text {
+  flex: 1;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.account-menu-item-sub {
+  font-size: 12px;
+  color: #28a745;
+  font-weight: 600;
+  margin: 4px 0 0 0;
+}
+
+.account-menu-item-arrow {
+  color: #ccc;
+  font-size: 20px;
+}
+
+.account-menu-item-badge {
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  min-width: 22px;
+  height: 22px;
+  font-size: 11px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.account-menu-item-badge.warning {
+  background: #ffc107;
+  color: black;
+}
+
+/* ===== CONTENT SECTION ===== */
+.account-content {
+  padding: 0 12px 16px;
+}
+
+.account-card {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.account-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  font-weight: bold;
+  font-size: 15px;
+}
+
+/* ===== ORDERS/ITEMS ===== */
+.account-item {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.account-item:last-child {
+  border-bottom: none;
+}
+
+.account-item-image {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.account-item-placeholder {
+  width: 52px;
+  height: 52px;
+  background: var(--bg-primary);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 24px;
+}
+
+.account-item-content {
+  flex: 1;
+}
+
+.account-item-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin: 0 0 2px 0;
+}
+
+.account-item-meta {
+  color: #999;
+  font-size: 12px;
+  margin: 2px 0;
+}
+
+.account-item-seller {
+  color: #999;
+  font-size: 12px;
+  margin: 0;
+}
+
+.account-item-price {
+  color: #28a745;
+  font-weight: bold;
+  font-size: 13px;
+  margin: 0 0 4px 0;
+}
+
+.account-item-status {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  margin: 4px 0 0 0;
+}
+
+.account-item-status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.account-item-status.accepted {
+  background: #d4edda;
+  color: #155724;
+}
+
+.account-item-status.rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* ===== FAVORITES GRID ===== */
+.account-favorites-grid {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.account-favorite-item {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.account-favorite-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.account-favorite-image {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+}
+
+.account-favorite-info {
+  padding: 8px 10px;
+  background: var(--bg-secondary);
+}
+
+.account-favorite-name {
+  font-weight: bold;
+  font-size: 12px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-favorite-price {
+  color: #28a745;
+  font-size: 13px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* ===== EMPTY STATE ===== */
+.account-empty-state {
+  padding: 32px;
+  text-align: center;
+}
+
+.account-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.account-empty-title {
+  font-weight: bold;
+  font-size: 15px;
+  margin: 16px 0 8px 0;
+}
+
+.account-empty-subtitle {
+  color: #999;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ===== STATS CARD ===== */
+.account-stats-card {
+  background: var(--bg-secondary);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: space-around;
+  margin: 0 12px;
+}
+
+.account-stats-item {
+  text-align: center;
+  flex: 1;
+  padding: 0 12px;
+}
+
+.account-stats-item-value {
+  font-weight: bold;
+  font-size: 18px;
+  margin: 0;
+}
+
+.account-stats-item-value.blue {
+  color: #3498db;
+}
+
+.account-stats-item-value.red {
+  color: #e74c3c;
+}
+
+.account-stats-item-label {
+  color: #999;
+  font-size: 11px;
+  margin: 0;
+}
+
+.account-stats-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border-light);
+}
+
+/* ===== BUTTONS ===== */
+.account-buttons {
+  padding: 0 12px 12px;
+  display: flex;
+  gap: 12px;
+}
+
+.account-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  text-align: center;
+  padding: 14px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.account-plan-button {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 16px 18px;
+  border-radius: 18px;
+}
+
+.account-plan-button:last-child {
+  margin-bottom: 0;
+}
+
+.account-btn-primary {
+  background: linear-gradient(135deg, var(--accent-purple), #7c3fd4);
+  color: white;
+  box-shadow: 0 4px 15px rgba(124, 63, 212, 0.4);
+}
+
+.account-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 63, 212, 0.6);
+}
+
+.account-btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--accent-purple);
+  border: 2px solid var(--accent-purple);
+}
+
+.account-btn-secondary:hover {
+  background: rgba(123, 63, 212, 0.1);
+}
+
+.account-btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.account-btn-success:hover {
+  background: #218838;
+  transform: translateY(-2px);
+}
+
+.account-btn-danger {
+  background: var(--bg-secondary);
+  color: #e74c3c;
+  border: 2px solid #f8d7da;
+}
+
+.account-btn-danger:hover {
+  background: rgba(231, 76, 60, 0.05);
+}
+
+.account-btn-block {
+  display: block;
+  width: 100%;
+  margin: 12px 0;
+}
+
+/* ===== SINGLE BUTTON ===== */
+.account-buttons-single {
+  padding: 0 12px 12px;
+}
+
+/* ===== LOGOUT SECTION ===== */
+.account-logout {
+  padding: 0 12px 32px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .account-header,
+  .account-header-purple {
+    padding: 16px 16px 40px;
+  }
+
+  .account-profile {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .account-profile-info-btn {
+    display: none;
+  }
+
+  .account-menu {
+    padding: 0 8px 12px;
+  }
+
+  .account-content {
+    padding: 0 8px 12px;
+  }
+
+  .account-card-header,
+  .account-item {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .account-favorites-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .account-buttons {
+    padding: 0 8px 8px;
+    gap: 8px;
+  }
+
+  .account-btn {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .account-stats-card {
+    margin: 0 8px;
+  }
+}
+
+/* ===== DARK MODE ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #e4e4e4;
+    --text-secondary: #b0b0b0;
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #262626;
+    --border-light: #404040;
+  }
+
+  .account-menu-item:hover {
+    background: rgba(230, 0, 18, 0.1);
+  }
+
+  .account-favorite-item {
+    background: var(--bg-secondary);
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.account-card,
+.account-menu-card {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+/* ===== FORM STYLING ===== */
+form[id*="photo-form"] {
+  display: inline-block;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+label[for*="photo-input"] {
+  cursor: pointer;
+  display: block;
+}
+
+/* ==========================================================================
+   INVOICES (MES FACTURES) - STYLISH UPGRADE
+========================================================================== */
+
+/* === FACTURE CARDS === */
+.facture-card {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.facture-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.facture-card-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+}
+
+.facture-card-header-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.facture-card-header-icon.waiting {
+  background: linear-gradient(135deg, #fff3cd, #ffeeba);
+}
+
+.facture-card-header-icon.accepted {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+}
+
+.facture-card-header-icon.rejected {
+  background: linear-gradient(135deg, #f8d7da, #f5c6c5);
+}
+
+.facture-card-header-title {
+  flex: 1;
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0;
+}
+
+.facture-card-header-count {
+  background: var(--primary-color);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* === FACTURE ITEM === */
+.facture-item {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.2s ease;
+}
+
+.facture-item:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.facture-item:last-child {
+  border-bottom: none;
+}
+
+.facture-item-image {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.facture-item-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.facture-item-content {
+  flex: 1;
+}
+
+.facture-item-title {
+  font-weight: 700;
+  font-size: 15px;
+  margin: 0 0 4px 0;
+  color: var(--text-primary);
+}
+
+.facture-item-meta {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin: 0 0 2px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.facture-item-price {
+  font-weight: 700;
+  font-size: 16px;
+  color: #28a745;
+  margin: 8px 0 0 0;
+}
+
+.facture-item-date {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* === STATUS BADGES === */
+.facture-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.facture-status-badge.waiting {
+  background: linear-gradient(135deg, #fff3cd, #ffeeba);
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.facture-status-badge.accepted {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.facture-status-badge.rejected {
+  background: linear-gradient(135deg, #f8d7da, #f5c6c5);
+  color: #721c24;
+  border: 1px solid #f5c6c5;
+}
+
+/* === DOWNLOAD BUTTON === */
+.facture-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.facture-download-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+  color: white;
+}
+
+.facture-download-btn:active {
+  transform: translateY(0);
+}
+
+/* === EMPTY STATE === */
+.facture-empty-state {
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.facture-empty-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+}
+
+.facture-empty-title {
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.facture-empty-subtitle {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ==========================================================================
+   RESPONSIVE INVOICES
+========================================================================== */
+@media (max-width: 640px) {
+  .facture-card-header {
+    padding: 14px 16px;
+    flex-wrap: wrap;
+  }
+  
+  .facture-item {
+    padding: 14px 16px;
+    flex-wrap: wrap;
+  }
+  
+  .facture-item-image,
+  .facture-item-placeholder {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .facture-download-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 12px;
+  }
+}

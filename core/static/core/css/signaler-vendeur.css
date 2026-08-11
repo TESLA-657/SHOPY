@@ -1,0 +1,277 @@
+/* ============================================
+   SIGNALER VENDEUR - Style Premium Moderne
+   ============================================ */
+@charset "UTF-8";
+
+:root {
+  /* Palette principale - Dark Premium Theme */
+  --sv-bg: #0a0a0f;
+  --sv-bg-2: #12121a;
+  --sv-card: #16161f;
+  --sv-card-hover: #1c1c28;
+  --sv-border: rgba(255, 255, 255, 0.08);
+  --sv-border-2: rgba(255, 255, 255, 0.15);
+  
+  /* Texte */
+  --sv-text: #ffffff;
+  --sv-text-2: rgba(255, 255, 255, 0.85);
+  --sv-text-3: rgba(255, 255, 255, 0.6);
+  --sv-text-muted: rgba(255, 255, 255, 0.45);
+  
+  /* Rouge d'alerte */
+  --sv-danger: #ef4444;
+  --sv-danger-light: #f87171;
+  --sv-danger-glow: rgba(239, 68, 68, 0.35);
+  
+  /* Vert succès */
+  --sv-success: #22c55e;
+  
+  /* Effets */
+  --sv-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --sv-shadow-2: 0 4px 20px rgba(0, 0, 0, 0.4);
+  
+  /* Border radius */
+  --sv-radius: 20px;
+  --sv-radius-2: 14px;
+  --sv-radius-3: 10px;
+  --sv-radius-full: 9999px;
+  
+  /* Transitions */
+  --sv-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   BACKGROUND
+   ============================================ */
+
+body {
+  background: var(--sv-bg);
+}
+
+.signaler-vendeur-wrap {
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(239, 68, 68, 0.1), transparent 60%),
+              radial-gradient(ellipse 60% 40% at 80% 60%, rgba(239, 68, 68, 0.06), transparent 50%),
+              var(--sv-bg);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+/* ============================================
+   CARD PRINCIPALE
+   ============================================ */
+
+.signaler-vendeur-wrap .card {
+  background: var(--sv-card);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-2);
+  padding: 28px;
+  box-shadow: var(--sv-shadow);
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.signaler-vendeur-wrap .card h5 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--sv-danger), #f87171);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+}
+
+.signaler-vendeur-wrap .card p.text-muted {
+  color: var(--sv-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+
+.signaler-vendeur-wrap .card p strong {
+  color: var(--sv-text);
+}
+
+/* ============================================
+   USER INFO (si connecté)
+   ============================================ */
+
+.signaler-vendeur-wrap .user-info {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--sv-radius-3);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+}
+
+.signaler-vendeur-wrap .user-info p {
+  color: var(--sv-text-2);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* ============================================
+   FORMULAIRE
+   ============================================ */
+
+.signaler-vendeur-wrap .form-label {
+  color: var(--sv-text-2);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.signaler-vendeur-wrap .form-control,
+.signaler-vendeur-wrap .form-select {
+  background: var(--sv-bg-2);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-3);
+  padding: 14px 16px;
+  color: var(--sv-text);
+  font-size: 1rem;
+  transition: var(--sv-transition);
+}
+
+.signaler-vendeur-wrap .form-control:focus,
+.signaler-vendeur-wrap .form-select:focus {
+  background: var(--sv-card);
+  border-color: var(--sv-danger);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.signaler-vendeur-wrap .form-control::placeholder {
+  color: var(--sv-text-muted);
+}
+
+.signaler-vendeur-wrap .form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 40px;
+}
+
+.signaler-vendeur-wrap .form-select option {
+  background: var(--sv-card);
+  color: var(--sv-text);
+}
+
+/* ============================================
+   TEXTAREA
+   ============================================ */
+
+.signaler-vendeur-wrap textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* ============================================
+   BOUTON SOUMETTRE
+   ============================================ */
+
+.signaler-vendeur-wrap button[type="submit"] {
+  background: linear-gradient(135deg, var(--sv-danger), #dc2626);
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--sv-radius-3);
+  transition: var(--sv-transition);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.signaler-vendeur-wrap button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, #f87171, var(--sv-danger));
+}
+
+/* ============================================
+   LIEN RETOUR
+   ============================================ */
+
+.signaler-vendeur-wrap .retour-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--sv-text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 12px 20px;
+  margin-top: 16px;
+  border-radius: var(--sv-radius-3);
+  background: var(--sv-card);
+  border: 1px solid var(--sv-border);
+  transition: var(--sv-transition);
+}
+
+.signaler-vendeur-wrap .retour-link:hover {
+  background: var(--sv-card-hover);
+  border-color: var(--sv-border-2);
+  color: var(--sv-text);
+  transform: translateX(-4px);
+}
+
+/* ============================================
+   ALERTE ICON
+   ============================================ */
+
+.alert-icon-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sv-danger), #dc2626);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 36px;
+  box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 40px rgba(239, 68, 68, 0.6);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 576px) {
+  .signaler-vendeur-wrap {
+    padding: 20px 12px;
+  }
+  
+  .signaler-vendeur-wrap .card {
+    padding: 20px;
+  }
+  
+  .signaler-vendeur-wrap .card h5 {
+    font-size: 1.25rem;
+  }
+  
+  .alert-icon-large {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+  
+  .signaler-vendeur-wrap .form-control,
+  .signaler-vendeur-wrap .form-select {
+    padding: 12px 14px;
+  }
+}

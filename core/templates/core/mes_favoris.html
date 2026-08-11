@@ -1,0 +1,139 @@
+{% extends "core/base.html" %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+{% endblock %}
+
+{% block title %}Mes Favoris - Shopy Guinea{% endblock %}
+
+{% block content %}
+<div class="account-container">
+  <!-- Header -->
+  <div class="account-header-purple">
+    <div class="account-stats">
+      <p class="account-stats-label">Ma Liste</p>
+      <h1 class="account-stats-value">❤️ Mes Favoris</h1>
+      <p class="account-stats-label">Produits sauvegardés</p>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <div class="account-menu">
+    <div class="account-menu-card">
+      {% if favoris %}
+      <a href="{% url 'espace_client' %}" class="account-menu-item">
+        <span class="account-menu-item-icon">←</span>
+        <span class="account-menu-item-text">Retour à mon espace</span>
+        <span class="account-menu-item-arrow">›</span>
+      </a>
+      {% else %}
+      <a href="{% url 'catalogue' %}" class="account-menu-item">
+        <span class="account-menu-item-icon">🛒</span>
+        <span class="account-menu-item-text">Parcourir le catalogue</span>
+        <span class="account-menu-item-arrow">›</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if favoris %}
+  <!-- Favorites Grid -->
+  <div class="account-content">
+    <div class="account-favorites-grid">
+      {% for fav in favoris %}
+      <div class="account-favorite-item">
+        <a href="{% url 'detail_produit' fav.produit.pk %}">
+          {% if fav.produit.photo %}
+          <img src="{{ fav.produit.photo.url }}" alt="{{ fav.produit.nom }}" class="account-favorite-image">
+          {% else %}
+          <div class="account-favorite-image" style="display:flex;align-items:center;justify-content:center;background:#f5f5f5;font-size:40px;">
+            📦
+          </div>
+          {% endif %}
+        </a>
+        <div class="account-favorite-info">
+          <h3 class="account-favorite-name">
+            <a href="{% url 'detail_produit' fav.produit.pk %}">{{ fav.produit.nom }}</a>
+          </h3>
+          <p class="account-item-seller">{{ fav.produit.vendeur.nom_boutique }} · {{ fav.produit.vendeur.ville }}</p>
+          
+          <div class="product-card-price" style="margin: 8px 0;">
+            {% if fav.produit.promo and fav.produit.prix_promo %}
+            <span class="price-old" style="text-decoration:line-through;color:#999;font-size:13px;">{{ fav.produit.prix|format_prix }} GNF</span>
+            <span class="price-new" style="color:#28a745;font-weight:bold;font-size:15px;display:block;">{{ fav.produit.prix_promo|format_prix }} GNF</span>
+            {% else %}
+            <span class="price-new" style="color:#28a745;font-weight:bold;font-size:15px;">{{ fav.produit.prix|format_prix }} GNF</span>
+            {% endif %}
+          </div>
+          
+          <p class="product-card-date" style="font-size:11px;color:#999;margin-bottom:8px;">
+            Ajouté le {{ fav.date_ajout|date:"d/m/Y" }}
+          </p>
+          
+          <div style="display:flex;gap:8px;">
+            <a href="{% url 'detail_produit' fav.produit.pk %}" class="account-btn account-btn-primary" style="flex:1;font-size:12px;padding:10px;">
+              Voir
+            </a>
+            <form method="post" action="{% url 'toggle_favori' fav.produit.pk %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="account-btn account-btn-danger" title="Retirer des favoris" style="padding:10px 12px;">
+                🗑️
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+  {% else %}
+  <!-- Empty State -->
+  <div class="account-content">
+    <div class="account-card">
+      <div class="account-empty-state">
+        <div class="account-empty-icon">❤️</div>
+        <h2 class="account-empty-title">Aucun favori</h2>
+        <p class="account-empty-subtitle">Vous n'avez pas encore de produits dans vos favoris.</p>
+      </div>
+      <div class="account-buttons">
+        <a href="{% url 'catalogue' %}" class="account-btn account-btn-primary">
+          Parcourir le catalogue
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+.product-card-price {
+  margin: 8px 0;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 13px;
+}
+
+.price-new {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.product-card-date {
+  font-size: 11px;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.account-item-seller {
+  font-size: 11px;
+  color: #999;
+  margin: 4px 0 0 0;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}SHOPY{% endblock %}</title>
+  <!-- Favicon and Logo -->
+<link rel="icon" type="image/png" href="{% static 'core/images/shopify_icon.png' %}">
+  <link rel="apple-touch-icon" href="{% static 'core/images/shopify_icon.png' %}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'core/css/confirmations-payments.css' %}">
+  <link rel="stylesheet" href="{% static 'core/css/base-inline.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body data-authenticated="{% if user.is_authenticated %}true{% else %}false{% endif %}">
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Viewer photo plein écran -->
+  <div id="photo-viewer" onclick="this.style.display='none'">
+    <img id="photo-viewer-img" src="" alt="Photo">
+    <p class="photo-viewer-hint">Appuyez pour fermer</p>
+  </div>
+
+
+  <!-- Système de pop-up universel -->
+  <div id="popup-overlay" style="display:none">
+
+    <div class="popup-card">
+      <div id="popup-icon"></div>
+      <h5 id="popup-title" class="fw-bold mb-2"></h5>
+      <p id="popup-message" class="text-muted mb-4"></p>
+      <button onclick="fermerPopup()" id="popup-ok-btn" class="btn fw-bold text-white px-4">
+        OK
+      </button>
+    </div>
+  </div>
+
+
+  {% if erreur %}
+  <span id="django-erreur" style="display:none;">{{ erreur }}</span>
+  {% endif %}
+
+  {% if nb_notifications > 0 %}
+  <a href="{% url 'mes_notifications' %}" class="notif-fab" aria-label="Notifications">
+    <div class="notif-fab-btn">
+      <span class="notif-fab-icon">🔔</span>
+      <span class="notif-fab-badge">{{ nb_notifications }}</span>
+    </div>
+  </a>
+  {% endif %}
+
+
+  <!-- Contenu principal -->
+  {% block content %}
+  {% endblock %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'core/js/notifications.js' %}"></script>
+  <script src="{% static 'core/js/notifications-polling.js' %}"></script>
+  <script>
+    window.notifications = JSON.parse('{{ notifications_toast|default:"[]"|escapejs }}');
+  </script>
+
+  <script>
+  function afficherPopup(icon, titre, message) {
+    document.getElementById('popup-icon').textContent = icon;
+    document.getElementById('popup-title').textContent = titre;
+    document.getElementById('popup-message').textContent = message;
+    document.getElementById('popup-overlay').style.display = 'flex';
+  }
+
+  function fermerPopup() {
+    document.getElementById('popup-overlay').style.display = 'none';
+  }
+
+  function confirmerSuppression(url) {
+    document.getElementById('lien-suppression').href = url;
+    document.getElementById('popup-suppression').style.display = 'flex';
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const erreurEl = document.getElementById('django-erreur');
+    if (erreurEl) {
+      afficherPopup('❌', 'Erreur', erreurEl.textContent);
+    }
+  });
+  </script>
+
+  <script>
+  function voirPhoto(src) {
+    document.getElementById('photo-viewer-img').src = src;
+    document.getElementById('photo-viewer').style.display = 'flex';
+  }
+  </script>
+
+  <script>
+    // Appliquer le thème sauvegardé
+    const theme = localStorage.getItem('shopy-theme') || 'light';
+    document.body.setAttribute('data-theme', theme);
+
+    function toggleTheme() {
+      const current = document.body.getAttribute('data-theme');
+      const nouveau = current === 'light' ? 'dark' : 'light';
+      document.body.setAttribute('data-theme', nouveau);
+      localStorage.setItem('shopy-theme', nouveau);
+
+      const btn = document.getElementById('theme-btn');
+      if (btn) btn.textContent = nouveau === 'dark' ? '☀️ Mode clair' : '🌙 Mode sombre';
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue sur SHOPY</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif;
+        margin: 0; 
+        background: #1a1a2e;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        height: 100vh; }
+        .container { text-align: center; 
+        width: 90%; 
+        max-width: 400px;
+       }
+        h1 { color: #0000fa; 
+          margin-bottom: 30px;
+
+         }
+        .choice-card { 
+            background:rgb(243, 233, 220); padding: 30px; margin-bottom: 20px; border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s;
+            text-decoration: none; display: block;
+        }
+        .choice-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .choice-card h2 { margin: 0; color: #3498db; }
+        .choice-card p { color: #666; margin: 10px 0 0; }
+        .vendre h2 { color: #2ecc71; } /* Couleur différente pour différencier */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SHOPY GUINEE</h1>
+        
+        <a href="{% url 'catalogue' %}" class="choice-card">
+  🛒 <strong>ACHETER</strong>
+  <p>Découvrir les produits près de chez moi</p>
+</a>
+
+<a href="{% url 'inscription_vendeur' %}" class="choice-card vendre">
+  💰 <strong>VENDRE</strong>
+  <p>Créer ma boutique et poster mes articles</p>
+</a>
+
+<a href="{% url 'connexion_vendeur' %}" class="choice-card">
+  🔑 <strong style="color:#28a745;">Se connecter à ma boutique</strong>
+  <p>J'ai déjà un compte vendeur</p>
+</a>
+
+<a href="{% url 'connexion_client' %}" class="choice-card">
+  👤 <strong style="color:#3498db;">Mon compte client</strong>
+  <p>Suivre mes commandes et favoris</p>
+</a>
+    </div>
+
+</body>
+</html>

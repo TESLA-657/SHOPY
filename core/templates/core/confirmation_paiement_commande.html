@@ -1,0 +1,248 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/confirmations-payments.css' %}">
+<style>
+
+.confirmation-hero{
+  position:relative;
+  overflow:hidden;
+}
+
+.confirmation-hero::before{
+  content:'';
+  position:absolute;
+  top:-50%;
+  left:-50%;
+  width:200%;
+  height:200%;
+  background:radial-gradient(circle, rgba(40,167,69,0.15) 0%, transparent 70%);
+  animation:pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse{
+  0%,100%{ transform:scale(1); opacity:0.8; }
+  50%{ transform:scale(1.1); opacity:1; }
+}
+
+.success-checkmark{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:linear-gradient(135deg, #28a745, #20c997);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 24px;
+  box-shadow:0 10px 40px rgba(40,167,69,0.4);
+  animation:scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes scaleIn{
+  from{ transform:scale(0); }
+  to{ transform:scale(1); }
+}
+
+.success-checkmark span{
+  font-size:56px;
+  color:#fff;
+  animation:checkDraw 0.4s 0.3s ease-out forwards;
+  opacity:0;
+}
+
+@keyframes checkDraw{
+  to{ opacity:1; }
+}
+
+.confirmation-details-card{
+  background:rgba(255,255,255,0.95);
+  border-radius:16px;
+  padding:24px;
+  margin-top:24px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.08);
+}
+
+.detail-row{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid rgba(0,0,0,0.06);
+}
+
+.detail-row:last-child{
+  border-bottom:none;
+}
+
+.detail-label{
+  color:#666;
+  font-weight:500;
+}
+
+.detail-value{
+  font-weight:700;
+  color:#1a1a2e;
+}
+
+.next-steps-card{
+  background:linear-gradient(135deg, rgba(40,167,69,0.08), rgba(32,201,151,0.05));
+  border-radius:16px;
+  padding:20px;
+  margin-top:20px;
+  border:1px solid rgba(40,167,69,0.2);
+}
+
+.next-steps-card h5{
+  color:#28a745;
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+.next-steps-card ul{
+  margin:0;
+  padding-left:20px;
+  color:#555;
+}
+
+.next-steps-card li{
+  margin-bottom:8px;
+}
+
+.action-buttons{
+  display:flex;
+  gap:12px;
+  margin-top:24px;
+}
+
+.btn-continue{
+  flex:1;
+  background:linear-gradient(135deg, #28a745, #20c997);
+  color:#fff;
+  font-weight:700;
+  padding:14px 24px;
+  border-radius:12px;
+  text-align:center;
+  transition:all 0.3s ease;
+}
+
+.btn-continue:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px rgba(40,167,69,0.4);
+  color:#fff;
+}
+
+.btn-track{
+  background:#fff;
+  color:#28a745;
+  font-weight:700;
+  padding:14px 24px;
+  border-radius:12px;
+  text-align:center;
+  border:2px solid #28a745;
+  transition:all 0.3s ease;
+}
+
+.btn-track:hover{
+  background:#28a745;
+  color:#fff;
+}
+
+/* Responsive */
+@media (max-width: 576px){
+  .confirmation-details-card{
+    padding:16px;
+  }
+  
+  .action-buttons{
+    flex-direction:column;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="catalogue-container page-shell" style="justify-content: center; align-items: center; display: flex;">
+  <div class="page-content">
+    <div class="section-card mx-auto" style="max-width:520px;">
+      
+      <!-- Hero Section -->
+      <div class="confirmation-hero text-center" style="position:relative; padding: 40px 20px;">
+        <div class="success-checkmark">
+          <span>✓</span>
+        </div>
+        
+        <h2 class="fw-bold" style="color:#28a745; font-size:28px;">
+          Paiement envoyé !
+        </h2>
+        <p class="text-muted mt-2" style="font-size:16px;">
+          Votre paiement a été soumis avec succès.
+        </p>
+      </div>
+
+<!-- Details Card -->
+      <div class="confirmation-details-card">
+        <div class="detail-row">
+          <span class="detail-label">📦 Statut</span>
+          <span class="detail-value 
+            {% if commande.statut == 'acceptee' %}text-success
+            {% elif commande.statut == 'refusee' %}text-danger
+            {% else %}text-warning{% endif %}">
+            {% if commande.statut == 'acceptee' %}Confirmée
+            {% elif commande.statut == 'refusee' %}Refusée
+            {% else %}En attente de validation{% endif %}
+          </span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">👤 Vendeur</span>
+          <span class="detail-value">{{ commande.vendeur.nom_boutique|default:"Boutique" }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">🛒 Produit</span>
+          <span class="detail-value">{{ commande.produit.nom|default:"Produit" }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">📝 Quantité</span>
+          <span class="detail-value">{{ commande.quantite|default:1 }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">💳 Montant</span>
+          <span class="detail-value" style="color:#28a745;">{{ commande.prix_total|floatformat:0 }} GNF</span>
+        </div>
+      </div>
+
+      <!-- Next Steps -->
+      <div class="next-steps-card">
+        <h5>📋 Prochaines étapes</h5>
+        <ul>
+          <li>Le vendeur a été notifié par email</li>
+          <li>II va vérifier votre paiement et accepter votre commande</li>
+          <li>Vous recevrez une confirmation dès que votre commande sera acceptée</li>
+        </ul>
+      </div>
+
+<!-- Action Buttons -->
+      <div class="action-buttons">
+        <a href="{% url 'catalogue' %}" class="btn-continue">
+          🛍️ Commander d'autres produits
+        </a>
+      </div>
+
+      <!-- Download Invoice Button -->
+      {% if commande %}
+      <div class="text-center mt-4">
+        <a href="{% url 'telecharger_facture' commande.pk %}" class="btn-track" style="display:inline-block; text-decoration:none;" target="_blank">
+          📄 Télécharger la facture
+        </a>
+      </div>
+      {% endif %}
+
+      <div class="text-center mt-3">
+        <a href="{% url 'espace_client' %}" class="ret" style="color:#666;">
+          ← Voir mes commandes
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

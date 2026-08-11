@@ -1,0 +1,88 @@
+.inscription-vendeur-page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+.inscription-vendeur-card {
+  width: 100%;
+  max-width: 460px;
+  border: none;
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.12);
+}
+.inscription-vendeur-card .card-body {
+  padding: 2rem 2rem 2.5rem;
+}
+.inscription-vendeur-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.inscription-vendeur-title {
+  color: #111827;
+  margin-top: 1rem;
+  margin-bottom: 0.65rem;
+  font-size: 1.95rem;
+  line-height: 1.08;
+}
+.inscription-vendeur-subtitle {
+  color: #4b5563;
+  margin-bottom: 1.8rem;
+  font-size: 0.95rem;
+}
+.inscription-vendeur-card .form-label {
+  font-weight: 700;
+  color: #111827;
+}
+.inscription-vendeur-card .form-control {
+  border-radius: 14px;
+  border: 1px solid #d1d5db;
+  background: #f8fafc;
+  padding: 0.95rem 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.inscription-vendeur-card .form-control:focus {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.12);
+}
+.inscription-vendeur-card .btn-primary {
+  background-color: #16a34a;
+  border: none;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 18px 40px rgba(22, 163, 74, 0.18);
+}
+.inscription-vendeur-card .btn-primary:hover {
+  background-color: #15803d;
+}
+.inscription-vendeur-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+.inscription-vendeur-footer a {
+  color: #16a34a;
+  font-weight: 700;
+}
+.inscription-vendeur-error {
+  margin-bottom: 1rem;
+}
+@media (max-width: 575px) {
+  .inscription-vendeur-card {
+    border-radius: 20px;
+  }
+  .inscription-vendeur-title {
+    font-size: 1.7rem;
+  }
+}

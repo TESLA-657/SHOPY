@@ -1,0 +1,90 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Mes Garanties Acheteur - SHOPY{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Mes Garanties Acheteur</h1>
+    <p class="subtitle">Protection automatique sur vos achats</p>
+    
+    {% if not garanties %}
+        <div class="alert alert-info">
+            <p>Vous n'avez pas encore de garanties actives.</p>
+        </div>
+    {% else %}
+        <div class="garanties-list">
+            {% for g in garanties %}
+            <div class="garantie-card {% if g.est_active %}active{% else %}inactive{% endif %}">
+                <div class="garantie-header">
+                    {% if g.est_active %}
+                        <span class="badge-active">Active</span>
+                    {% else %}
+                        <span class="badge-inactive">{{ g.get_statut_display }}</span>
+                    {% endif %}
+                    <span class="date-exp">Expire: {{ g.date_expiration|date:"d/m/Y" }}</span>
+                </div>
+                
+                <h3>Commande #{{ g.commande.pk }}</h3>
+                <p class="produit">{{ g.commande.produit.nom }}</p>
+                <p class="vendeur">par {{ g.commande.vendeur.nom_boutique }}</p>
+                
+                <div class="montant">
+                    <span>Montant protege: </span>
+                    <strong>{{ g.commande.prix_total }} GNF</strong>
+                </div>
+                
+                {% if g.est_active %}
+                    <a href="{% url 'demander_remboursement' g.pk %}" class="btn btn-warning">
+                        Demander remboursement
+                    </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.garanties-list {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+.garantie-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.garantie-card.active {
+    border-left: 4px solid #10b981;
+}
+.garantie-card.inactive {
+    border-left: 4px solid #9ca3af;
+    opacity: 0.7;
+}
+.garantie-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.badge-active {
+    background: #10b981;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+.badge-inactive {
+    background: #6b7280;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+.date-exp {
+    color: #6b7280;
+}
+.montant {
+    margin: 10px 0;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% block content %}
+
+<div class="container py-4 notifications-page">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">🔔 Mes Notifications</h5>
+  </div>
+
+  {% if notifications %}
+    {% for notif in notifications %}
+    <div class="card shadow-sm mb-2 p-3" style="border-radius:10px; border:none;
+         border-left:4px solid {% if notif.type == 'commande' %}#28a745{% elif notif.type == 'abonnement' %}#ffc107{% elif notif.type == 'securite' %}#e74c3c{% else %}#3498db{% endif %};">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="fw-bold small">
+            {% if notif.type == 'commande' %}📦{% elif notif.type == 'abonnement' %}💳{% elif notif.type == 'securite' %}🔒{% else %}ℹ️{% endif %}
+            {{ notif.titre }}
+          </div>
+          <p class="text-muted small mb-0">{{ notif.message }}</p>
+        </div>
+        <small class="text-muted">{{ notif.date|date:"d/m H:i" }}</small>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="text-center py-5 text-muted">
+      <div style="font-size:48px;">🔔</div>
+      <p>Aucune notification pour le moment.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

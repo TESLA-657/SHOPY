@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/confirmation-paiement.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="confirmation-wrapper">
+  <div class="confirmation-card">
+    <div class="confirmation-icon">✅</div>
+    <h2 class="confirmation-title">Paiement soumis !</h2>
+    <p class="confirmation-text">
+      Votre demande de paiement a été envoyée à l'administrateur.<br>
+      Votre abonnement sera activé sous <strong>quelques minutes</strong>.
+    </p>
+    
+    <div class="confirmation-info">
+      <p>📋 <strong>En attente de validation</strong></p>
+      <p style="font-size:0.85rem; color:#888; margin-top:4px;">L'administrateur va vérifier et valider votre paiement</p>
+    </div>
+    
+    <div class="confirmation-steps">
+      <h6>Prochaines étapes</h6>
+      <ol>
+        <li>Vérification de votre paiement par l'admin</li>
+        <li>Activation de votre abonnement</li>
+        <li>Notification de confirmation</li>
+      </ol>
+    </div>
+    
+    <a href="{% url 'dashboard_vendeur' %}" class="confirmation-btn" style="width: 400px;">
+      ← Retour au Dashboard
+    </a>
+  </div>
+</div>
+
+{% endblock %}

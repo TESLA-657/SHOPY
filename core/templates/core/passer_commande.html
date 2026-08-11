@@ -1,0 +1,123 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block content %}
+<style>
+  .form {
+    background-color: antiquewhite;
+    border-radius: 10px;
+    padding:10px ;
+    border: 1px solid black;
+    box-shadow: 0 0 30px #00ff87;
+    margin: 10px;
+
+  }
+  .form:hover {
+    transform: scale(1.1);
+    transition: 0.5s;
+  }
+  .ret {color: darkgray;
+     background:linear-gradient(135deg,#15201d,#1a1d1b) ; 
+      border-radius: 10px;
+      box-shadow: 0 0 50px #1f2020;
+      font-family: monospace;
+      padding: 4px 66px; /* longueur largeur*/
+      color: #dfdada;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .inf {
+      color: #15201d;
+      background-color:white;
+      border-radius: 7px;
+      text-align: center;
+    }
+    .inf:hover {
+      transform: scale(1.1);
+      transition: 0.5s;
+    }
+</style>
+<link rel="stylesheet" href="{% static 'core/css/catalogue-style.css' %}">
+
+<div class="catalogue-container page-shell" style="display: flex; justify-content: center; align-items: center;">
+  <div class="page-content">
+    <div class="section-card mx-auto" style="max-width:520px;">
+      <div class="section-card-inner">
+        <div class="section-card-header">
+          <div>
+            <h1 class="page-title" style="display: flex; text-align: center; align-items: center;justify-content: center;display: flex;">🛒 Passer une commande</h1>
+            <p class="page-subtitle">Produit : <strong>{{ produit.nom }}</strong></p>            {% if discount_pct and discount_pct > 0 %}
+              <p class="page-note" style="color:#08d44c; margin-top:4px; font-weight:700;">Fidélité appliquée : -{{ discount_pct }}% chez {{ produit.vendeur.nom_boutique }}</p>
+            {% endif %}          </div>
+          <span class="summary-chip" style="background-color: #1e1e2e;">
+            {% if produit.promo and produit.prix_promo %}
+              {{ produit.prix_promo|format_prix }} GNF
+            {% else %}
+              {{ produit.prix|format_prix }} GNF
+            {% endif %}
+          </span>
+        </div>
+
+        {% if erreur %}
+        <div class="info-panel mb-4">
+          <p class="page-text-muted"><strong class="text-danger">{{ erreur }}</strong></p>
+        </div>
+        {% endif %}
+
+        <form method="post">
+          {% csrf_token %}
+
+          {% if client_connecte %}
+          <div class="inf">
+            <p class="section-title" style="color: #1f2020;">👤 Vos informations</p>
+            <p class="inf">Nom : <strong>{{ client_connecte.nom }}</strong></p>
+            <p class="inf">Numéro : <strong>{{ client_connecte.numero }}</strong></p>
+            <p class="inf">Ville : <strong>{{ client_connecte.ville }}</strong></p>
+          </div>
+          {% else %}
+          <div class="mb-3">
+            <label class="form-label" for="nom_client"></label>
+            <input type="text" name="nom_client" id="nom_client" class="form" placeholder="Votre Nom Complet" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="numero_client" aria-placeholder="Votre numéro WhatsApp " requiered></label>
+            <input type="text" name="numero_client" id="numero_client" class="form"
+                   placeholder="Votre numéro WhatsApp" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="ville_client" arplaceholder="Votre ville "></label>
+            <input type="text" name="ville_client" id="ville_client" class="form" placeholder="Votre ville " required>
+          </div>
+          <p class="text-center page-note mb-3">
+            <a href="{% url 'connexion_client' %}" class="page-action-btn secondary" style="display:inline-flex; width:auto; padding:10px 18px; color: black;">Vous avez un compte ? Connectez-vous pour commander plus vite</a>
+          </p>
+          {% endif %}
+
+          <div class="mb-3">
+            <label class="form-label" for="quantite">Quantité *</label>
+            <input type="number" name="quantite" id="quantite" class="form" value="1" min="1"
+                   max="{{ produit.quantite }}" required>
+            <div class="form-text"><b>Stock disponible :</b> {{ produit.quantite }}</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="message">Message (optionnel)</label>
+            <textarea name="message" id="message" class="form" rows="3"
+                      placeholder="Ex: livraison à domicile, je suis au quartier..."></textarea>
+          </div>
+
+          <div class="d-grid mt-4">
+            <button type="submit" class="page-action-btn primary" style="background:linear-gradient(135deg,#09eb4d,#08d44c); box-shadow:0 0 30px #08d44c;">✅ Confirmer la commande</button>
+          </div>
+        </form>
+
+        <div class="text-center mt-3">
+          <a href="{% url 'detail_produit' produit.pk %}" class="ret">← Retour au produit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendeurs Certifiés — Admin Shopy</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#0f0f1a; font-family:'Segoe UI',sans-serif; color:white; min-height:100vh; }
+    .header { padding:16px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); }
+    .back-link { color:#667eea; text-decoration:none; font-size:14px; }
+    .section-title { font-size:20px; font-weight:700; }
+    .vendor-card { background:#1a1a2e; border-radius:12px; padding:16px; margin-bottom:12px; border:1px solid rgba(243,156,18,0.2); }
+    .vendor-name { font-weight:600; font-size:15px; }
+    .vendor-info { color:rgba(255,255,255,0.5); font-size:12px; margin-top:4px; }
+    .note-badge { color:#f39c12; font-size:13px; margin-top:8px; }
+    .btn-action { border:none; border-radius:8px; padding:8px 16px; font-size:12px; font-weight:600; cursor:pointer; width:100%; }
+    .btn-certifier { background:#27ae60; color:white; }
+    .btn-retirer { background:#e74c3c; color:white; }
+    .empty-state { text-align:center; padding:60px 20px; color:rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a href="{% url 'admin_dashboard' %}" class="back-link">← Dashboard</a>
+  <span class="section-title">Vendeurs Certifiés</span>
+  <span></span>
+</div>
+
+<div style="padding:20px;">
+  <p style="color:rgba(255,255,255,0.5); font-size:12px; margin-bottom:16px;">
+    🛡️ Gérez la certification des vendeurs. Un vendeur certifié affiche le badge ✅ et une note de confiance.
+  </p>
+
+  {% for v in vendeurs %}
+  <div class="vendor-card">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <p class="vendor-name">
+          {{ v.nom_boutique }}
+          {% if v.est_certifie %}<span style="color:#27ae60;">✅ Certifié</span>{% endif %}
+        </p>
+        <p class="vendor-info">{{ v.ville }} — {{ v.numero }}</p>
+        {% if v.nb_evaluations > 0 %}
+        <p class="note-badge">⭐ {{ v.note_confiance|floatformat:1 }}/5 ({{ v.nb_evaluations }} avis)</p>
+        {% else %}
+        <p class="note-badge" style="color:rgba(255,255,255,0.4);">Pas encore d'évaluations</p>
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="mt-3">
+      <form method="post" action="{% url 'admin_certifier_vendeur' v.pk %}">
+        {% csrf_token %}
+        {% if v.est_certifie %}
+        <button type="submit" class="btn-action btn-retirer">
+          ❌ Retirer Certification
+        </button>
+        {% else %}
+        <button type="submit" class="btn-action btn-certifier">
+          ✅ Certifier ce vendeur
+        </button>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty-state">
+    <p style="font-size:50px;">🛡️</p>
+    <p>Aucun vendor.</p>
+  </div>
+  {% endfor %}
+
+</div>
+
+</body>
+</html>

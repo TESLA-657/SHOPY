@@ -1,0 +1,288 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/mes-produits.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="mpc-container">
+  <div class="mpc-wrapper">
+
+    <!-- Back Button -->
+    <div class="mb-3">
+      <a href="{% url 'dashboard_vendeur' %}" class="mpc-back-btn">
+        ← Retour au Dashboard
+      </a>
+    </div>
+
+    {% if suspendu %}
+    <div class="mpc-suspended-overlay">
+      <div class="mpc-suspended-modal">
+        <div class="mpc-suspended-icon">🔒</div>
+        <h3 class="mpc-suspended-title">
+          {% if 'Essai gratuit' in vendeur.raison_suspension %}
+            Essai gratuit expiré
+          {% elif 'signalement' in vendeur.raison_suspension %}
+            Compte Suspendu
+          {% else %}
+            Abonnement expiré
+          {% endif %}
+        </h3>
+        <p class="mpc-suspended-text">
+          {% if 'Essai gratuit' in raison_suspension %}
+            Votre essai gratuit de 30 jours est terminé. Choisissez un abonnement pour continuer à vendre.
+          {% elif 'signalement' in vendeur.raison_suspension %}
+            {{ vendeur.raison_suspension }}
+          {% else %}
+            Votre abonnement a expiré. Renouvelez pour continuer à vendre.
+          {% endif %}
+        </p>
+        {% if 'signalement' not in vendeur.raison_suspension %}
+          <a href="{% url 'choisir_abonnement' %}" class="mpc-suspended-btn">
+            💳 Choisir un abonnement
+          </a>
+        {% else %}
+          <a href="mailto:admin@shopy-guinee.com" class="mpc-suspended-btn-contact">
+            📧 Contacter l'administrateur
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if abonnement and abonnement.jours_restants <= 5 and not suspendu %}
+    <div style="background: rgba(210, 153, 34, 0.15); border: 1px solid rgba(210, 153, 34, 0.4); border-radius: 12px; padding: 12px 16px; text-align: center; margin-bottom: 20px;">
+      ⚠️ Abonnement expire dans <strong>{{ abonnement.jours_restants }} jour(s)</strong>.
+      <a href="{% url 'choisir_abonnement' %}" style="color: var(--mp-primary); font-weight: bold; margin-left: 8px;">Renouveler →</a>
+    </div>
+    {% endif %}
+
+<!-- Header -->
+    <div class="mpc-header">
+      <div class="mpc-header-content">
+        <div class="mpc-title-section">
+          <h1>📦 Mes produits</h1>
+          <p>Gérez votre catalogue, vos stocks et la visibilité en ligne</p>
+        </div>
+        <a href="{% url 'ajouter_produit' %}" class="mpc-add-btn">
+          ➕ Ajouter un produit
+        </a>
+      </div>
+    </div>
+
+    <!-- Tabs pour Promo / Non-Promo -->
+    <div class="mpc-tabs">
+      <button class="mpc-tab active" data-tab="all" onclick="switchTab('all')">
+        Tous <span class="mpc-tab-count">{{ produits.count }}</span>
+      </button>
+      <button class="mpc-tab" data-tab="promo" onclick="switchTab('promo')">
+        🔥 En promo <span class="mpc-tab-count">{{ produits_promo.count }}</span>
+      </button>
+      <button class="mpc-tab" data-tab="non-promo" onclick="switchTab('non-promo')">
+        📦 Normaux <span class="mpc-tab-count">{{ produits_non_promo.count }}</span>
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="mpc-search">
+      <input
+        type="text"
+        id="recherche-vendeur-input"
+        class="mpc-search-input"
+        placeholder="🔍 Rechercher un produit par nom ou description..."
+      >
+      <p id="recherche-vendeur-info" class="text-muted small mt-2 mb-0" style="display:none; color: var(--mp-text-muted);"></p>
+    </div>
+
+<!-- Products Grid: Tous les produits -->
+    <div class="mpc-grid" id="grille-produits">
+      {% for p in produits %}
+        <div class="mpc-product-card"
+             data-nom="{{ p.nom|lower }}"
+             data-description="{{ p.description|default:''|lower }}"
+             data-promo="{% if p.promo %}promo{% else %}non-promo{% endif %}">
+          
+<!-- Image with clickable overlay -->
+          <div class="mpc-product-image">
+            {% if p.photo %}
+              <img src="{{ p.photo.url }}" alt="{{ p.nom }}">
+            {% else %}
+              <div class="mpc-product-placeholder">📦</div>
+            {% endif %}
+            <a href="{% url 'modifier_produit' p.id %}" class="mpc-image-link" title="Voir Détails"></a>
+            
+            <!-- Badges -->
+            <div class="mpc-badges">
+              {% if p.promo %}
+              <span class="mpc-badge mpc-badge-promo">🔥 Promo</span>
+              {% endif %}
+              <span class="mpc-badge mpc-badge-status {% if not p.visible %}masquer{% endif %}">
+                {% if p.visible %}En ligne{% else %}Masqué{% endif %}
+              </span>
+              <span class="mpc-badge mpc-badge-stock 
+                {% if p.quantite == 0 %}rupture
+                {% elif p.quantite <= 2 %}low
+                {% else %}ok{% endif %}">
+                {% if p.quantite == 0 %}Rupture
+                {% elif p.quantite <= 2 %}{{ p.quantite }} rest.
+                {% else %}{{ p.quantite }} en stock{% endif %}
+              </span>
+            </div>
+          </div>
+          
+          <!-- Info -->
+          <div class="mpc-product-info">
+            <h3 class="mpc-product-name">{{ p.nom }}</h3>
+            <div class="mpc-product-price">
+              {% if p.promo and p.prix_promo %}
+                <span style="text-decoration: line-through; opacity: 0.6; font-size: 14px;">{{ p.prix|floatformat:0 }} GNF</span>
+                <span style="color: #e74c3c; font-weight: bold;">{{ p.prix_promo|floatformat:0 }} GNF</span>
+              {% else %}
+                {{ p.prix|floatformat:0 }} GNF
+              {% endif %}
+            </div>
+            <p class="mpc-product-desc">{{ p.description|truncatechars:80 }}</p>
+            
+            <!-- Actions -->
+            <div class="mpc-actions">
+              <a href="{% url 'modifier_produit' p.id %}" class="mpc-btn-action mpc-btn-edit">
+                ✏️ Modifier
+              </a>
+              <a href="{% url 'supprimer_produit' p.id %}" class="mpc-btn-action mpc-btn-delete"
+                 onclick="return confirm('Supprimer ce produit ?')">
+                🗑️ Supprimer
+              </a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="mpc-empty" style="grid-column: 1 / -1;">
+          <div class="mpc-empty-icon">📦</div>
+          <p class="mpc-empty-text">Vous n'avez pas encore de produits.</p>
+          <a href="{% url 'ajouter_produit' %}" class="mpc-empty-btn">
+            ➕ Ajouter mon premier produit
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div id="msg-aucun-produit-vendeur" class="mpc-empty" style="display:none; margin-top: 20px;">
+      <div class="mpc-empty-icon">🔍</div>
+      <p class="mpc-empty-text">Aucun produit trouvé pour cette recherche.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Popup Limite Atteinte -->
+{% if request.session.limite_atteinte %}
+<div id="popup-limite" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center;">
+  <div style="background: var(--mp-bg-2); border: 1px solid var(--mp-border); border-radius: var(--mp-radius-2); padding: 32px; max-width:380px; width:90%; text-align:center;">
+    <div style="font-size:48px;">🚫</div>
+    <h5 class="fw-bold mt-3 mb-2" style="color: var(--mp-text);">Limite atteinte !</h5>
+    <p style="color: var(--mp-text-muted); margin-bottom: 24px;">
+      Votre plan <strong>{{ request.session.plan_actuel|upper }}</strong> est limité à
+      <strong>{{ request.session.limite }} produits</strong>.
+    </p>
+    <a href="{% url 'choisir_abonnement' %}" style="display:block; background: var(--mp-primary); color:white; padding:14px; border-radius: var(--mp-radius); font-weight:bold; text-decoration:none; margin-bottom:10px;">
+      🚀 Upgrader mon abonnement
+    </a>
+    <a href="{% url 'liste_produits_vendeur' %}?clear=1" style="display:block; color: var(--mp-text-muted); font-size:13px; text-decoration:none; padding:10px;">
+      Fermer
+    </a>
+  </div>
+</div>
+{% endif %}
+
+<script>
+  const rechercheVendeurInput = document.getElementById('recherche-vendeur-input');
+  const resetRechercheVendeur = document.getElementById('reset-recherche-vendeur');
+  const cardsProduitsVendeur = document.querySelectorAll('#grille-produits .mpc-product-card');
+  const msgAucunProduitVendeur = document.getElementById('msg-aucun-produit-vendeur');
+  const rechercheInfo = document.getElementById('recherche-vendeur-info');
+  let currentTab = 'all';
+
+  // Fonction de changement d'onglet
+  function switchTab(tab) {
+    currentTab = tab;
+    
+    // Mise à jour des boutons actifs
+    document.querySelectorAll('.mpc-tab').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.tab === tab) {
+        btn.classList.add('active');
+      }
+    });
+    
+    // Filtrer les produits
+    filtrerProduitsVendeur();
+  }
+
+  function filtrerProduitsVendeur() {
+    const terme = (rechercheVendeurInput.value || '').toLowerCase().trim();
+    let visible = 0;
+
+    cardsProduitsVendeur.forEach(card => {
+      const nom = card.dataset.nom || '';
+      const description = card.dataset.description || '';
+      const promo = card.dataset.promo || 'non-promo';
+      
+      // Vérifier correspondance avec la recherche
+      const matchSearch = !terme || nom.includes(terme) || description.includes(terme);
+      
+      // Vérifier correspondance avec l'onglet
+      let matchTab = false;
+      if (currentTab === 'all') {
+        matchTab = true;
+      } else if (currentTab === 'promo') {
+        matchTab = promo === 'promo';
+      } else if (currentTab === 'non-promo') {
+        matchTab = promo === 'non-promo';
+      }
+
+      if (matchSearch && matchTab) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (msgAucunProduitVendeur) {
+      msgAucunProduitVendeur.style.display = (visible === 0) ? 'block' : 'none';
+    }
+
+    if (rechercheInfo) {
+      if (terme || currentTab !== 'all') {
+        rechercheInfo.style.display = 'block';
+        rechercheInfo.textContent = 'Résultats';
+
+        if (terme) {
+          rechercheInfo.append(' pour : ');
+          const strongTerme = document.createElement('strong');
+          strongTerme.textContent = terme;
+          rechercheInfo.appendChild(strongTerme);
+        }
+
+        if (currentTab !== 'all') {
+          rechercheInfo.append(' dans ');
+          const strongTab = document.createElement('strong');
+          strongTab.textContent = currentTab === 'promo' ? 'Promos' : 'Normaux';
+          rechercheInfo.appendChild(strongTab);
+        }
+      } else {
+        rechercheInfo.style.display = 'none';
+        rechercheInfo.textContent = '';
+      }
+    }
+  }
+
+  if (rechercheVendeurInput) {
+    rechercheVendeurInput.addEventListener('input', filtrerProduitsVendeur);
+  }
+</script>
+
+{% endblock %}

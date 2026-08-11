@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container py-4 admin-paiements-page">
+  <h4 class="fw-bold mb-4">🛒 Paiements commandes en attente</h4>
+
+  {% if paiements %}
+  <div class="table-responsive">
+    <table class="table table-hover shadow-sm" style="border-radius:12px; overflow:hidden;">
+      <thead style="background:#1565c0; color:white;">
+        <tr>
+          <th>Commande</th>
+          <th>Client</th>
+          <th>Mode</th>
+          <th>Montant</th>
+          <th>Référence</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in paiements %}
+        <tr>
+          <td><strong>#{{ p.commande.pk }}</strong></td>
+          <td>{{ p.commande.nom_client|default:"-" }}</td>
+          <td><span class="badge bg-info text-dark">{{ p.get_mode_paiement_display }}</span></td>
+          <td>{{ p.montant|floatformat:0 }} GNF</td>
+          <td>{{ p.reference|default:"-" }}</td>
+          <td>{{ p.date_soumission|date:"d/m/Y H:i" }}</td>
+          <td>
+            <form method="post" action="{% url 'admin_valider_paiement_commande' p.pk %}" style="display:inline;">
+              {% csrf_token %}
+              <button name="action" value="valider" class="btn btn-success btn-sm me-1">✅ Valider</button>
+              <button name="action" value="refuser" class="btn btn-danger btn-sm">❌ Refuser</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted">Aucun paiement commande en attente.</p>
+  {% endif %}
+</div>
+{% endblock %}

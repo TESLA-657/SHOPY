@@ -1,0 +1,558 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="account-container">
+
+  <div class="client-header-premium">
+    <div class="client-orb orb-one"></div>
+    <div class="client-orb orb-two"></div>
+    <div class="client-orb orb-three"></div>
+
+    <div class="client-stats-row">
+      <div class="client-stat-item glass-card">
+        <span class="client-stat-icon">📦</span>
+        <div>
+          <p class="client-stat-label">Total commandes</p>
+          <p class="client-stat-value">{{ commandes|length }}</p>
+        </div>
+      </div>
+      {% if nb_commandes_acceptees > 0 %}
+      <div class="client-stat-badge">
+        ✨ {{ nb_commandes_acceptees }} acceptée(s)
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="dashboard-profile glass-card profile-card">
+      <form method="post" action="{% url 'upload_photo_client' %}"
+            enctype="multipart/form-data" id="photo-form-client">
+        {% csrf_token %}
+        <label for="photo-input-client" class="client-avatar-wrapper">
+          {% if client.photo %}
+            <img src="{{ client.photo.url }}" alt="{{ client.nom }}"
+                 class="client-avatar-img"
+                 {% if client.photo %}onclick="voirPhoto('{{ client.photo.url }}')"{% endif %}>
+          {% else %}
+            <div class="client-avatar-placeholder">
+              {{ client.nom|first|upper }}
+            </div>
+          {% endif %}
+          <div class="client-avatar-edit">📷</div>
+          <span class="client-online-dot"></span>
+        </label>
+        <input type="file" id="photo-input-client" name="photo" accept="image/*"
+               onchange="document.getElementById('photo-form-client').submit()">
+      </form>
+
+      <div class="dashboard-profile-info">
+        <p class="dashboard-salutation">{{ salutation }} 👋</p>
+        <h3 class="dashboard-name">{{ client.nom }}</h3>
+        <div class="dashboard-meta">
+          <span class="dashboard-verified">✅ Client vérifié</span>
+          <span class="dashboard-city">📍 {{ client.ville }}</span>
+          <span class="dashboard-city">📱 {{ client.numero }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .account-container {
+      background:
+        radial-gradient(circle at top left, rgba(15, 23, 42, 0.08), transparent 24%),
+        linear-gradient(135deg, #f8fbff 0%, #f3f7ff 100%);
+      min-height: 100vh;
+      padding-bottom: 40px;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+
+    .client-header-premium {
+      position: relative;
+      overflow: hidden;
+      padding: 24px 18px 72px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #7c3aed 100%);
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+    }
+
+    .client-orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(2px);
+      opacity: 0.85;
+      pointer-events: none;
+      animation: floatOrb 8s ease-in-out infinite;
+    }
+
+    .orb-one {
+      width: 220px;
+      height: 220px;
+      top: -70px;
+      right: -40px;
+      background: radial-gradient(circle, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    }
+
+    .orb-two {
+      width: 140px;
+      height: 140px;
+      bottom: -30px;
+      left: -30px;
+      background: radial-gradient(circle, rgba(34,211,238,0.25), rgba(34,211,238,0));
+      animation-delay: 2s;
+    }
+
+    .orb-three {
+      width: 100px;
+      height: 100px;
+      top: 40%;
+      left: 40%;
+      background: radial-gradient(circle, rgba(255,255,255,0.22), rgba(255,255,255,0));
+      animation-delay: 4s;
+    }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-12px) scale(1.04); }
+    }
+
+    .client-stats-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .glass-card {
+      backdrop-filter: blur(18px);
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    }
+
+    .client-stat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      color: white;
+    }
+
+    .client-stat-icon {
+      font-size: 20px;
+      background: rgba(255,255,255,0.2);
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .client-stat-label {
+      margin: 0;
+      font-size: 11px;
+      opacity: 0.82;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .client-stat-value {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .client-stat-badge {
+      background: linear-gradient(135deg, rgba(34,211,238,0.25), rgba(168,85,247,0.25));
+      color: #ecfeff;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 24px;
+      position: relative;
+      z-index: 2;
+      transform: translateY(12px);
+    }
+
+    .client-avatar-wrapper {
+      position: relative;
+      width: 86px;
+      height: 86px;
+      flex-shrink: 0;
+      cursor: pointer;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.25));
+      box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+      transition: all 0.3s ease;
+    }
+
+    .client-avatar-wrapper:hover {
+      transform: scale(1.05) rotate(2deg);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.28);
+    }
+
+    .client-avatar-wrapper:hover .client-avatar-edit {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .client-avatar-img, .client-avatar-placeholder {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.8);
+    }
+
+    .client-avatar-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+    }
+
+    .client-avatar-edit {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(2,6,23,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .client-online-dot {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #22c55e;
+      border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      animation: clientDotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes clientDotPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+      50% { box-shadow: 0 0 0 5px rgba(34, 197, 94, 0); }
+    }
+
+    .dashboard-profile-info {
+      flex: 1;
+      color: white;
+    }
+
+    .dashboard-salutation {
+      margin: 0 0 4px 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .dashboard-name {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .dashboard-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .dashboard-verified, .dashboard-city {
+      background: rgba(255,255,255,0.16);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+    }
+
+    .account-menu {
+      margin-top: -28px;
+      padding: 0 14px 16px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .account-menu-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .account-menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      text-decoration: none;
+      color: #0f172a;
+      transition: all 0.25s ease;
+    }
+
+    .account-menu-item:hover {
+      background: linear-gradient(90deg, rgba(59,130,246,0.08), rgba(124,58,237,0.08));
+      transform: translateX(2px);
+    }
+
+    .account-menu-item-icon {
+      background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-right: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+
+    .account-menu-item-icon.orders { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+    .account-menu-item-icon.favorites { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
+    .account-menu-item-icon.notifications { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+    .account-menu-item-icon.messages { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+    .account-menu-item-icon.settings { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+
+    .account-menu-item-text {
+      flex: 1;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .account-menu-item-badge {
+      background: linear-gradient(135deg, #ef4444, #f97316);
+      color: white;
+      border-radius: 999px;
+      min-width: 22px;
+      height: 22px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 7px;
+      margin-right: 8px;
+      box-shadow: 0 6px 14px rgba(239, 68, 68, 0.2);
+    }
+
+    .account-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 0 14px 14px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .summary-card.waiting { background: linear-gradient(135deg, #fff7ed, #ffedd5); }
+    .summary-card.accepted { background: linear-gradient(135deg, #ecfdf5, #d1fae5); }
+    .summary-card.rejected { background: linear-gradient(135deg, #fef2f2, #fee2e2); }
+
+    .account-buttons-single {
+      padding: 0 14px 14px;
+    }
+
+    .account-btn-success {
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      border: none;
+      box-shadow: 0 12px 24px rgba(20, 184, 166, 0.25);
+      color: white;
+      border-radius: 16px;
+      font-weight: 700;
+      padding: 14px 16px;
+    }
+
+    .account-logout {
+      padding: 0 14px 20px;
+    }
+
+    .account-btn-danger {
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+      border: none;
+      box-shadow: 0 12px 24px rgba(239, 68, 68, 0.25);
+      color: white;
+      border-radius: 16px;
+      font-weight: 700;
+      padding: 14px 16px;
+    }
+
+    @media (max-width: 768px) {
+      .account-summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .profile-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .dashboard-meta {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+
+  <div class="account-menu">
+    <div class="account-menu-card">
+
+<!-- Commandes -->
+      <a href="{% url 'mes_factures' %}" class="account-menu-item">
+        <div style="display: flex; align-items: center; flex: 1;">
+          <div class="account-menu-item-icon orders">📋</div>
+          <span class="account-menu-item-text">Commandes</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          {% if nb_commandes_acceptees > 0 %}
+          <span class="account-menu-item-badge">{{ nb_commandes_acceptees }}</span>
+          {% endif %}
+          <span class="account-menu-item-arrow">›</span>
+        </div>
+      </a>
+
+<!-- Favoris -->
+      <a href="{% url 'mes_favoris' %}" class="account-menu-item">
+        <div style="display: flex; align-items: center; flex: 1;">
+          <div class="account-menu-item-icon favorites">❤️</div>
+          <span class="account-menu-item-text">Favoris</span>
+        </div>
+        <span class="account-menu-item-arrow">›</span>
+      </a>
+
+      <!-- Panier -->
+      <a href="{% url 'voir_panier' %}" class="account-menu-item">
+        <div style="display: flex; align-items: center; flex: 1;">
+          <div class="account-menu-item-icon" style="background:#17a2b8;">🛒</div>
+          <span class="account-menu-item-text">Mon Panier</span>
+        </div>
+        <span class="account-menu-item-arrow">›</span>
+      </a>
+
+      <!-- Notifications -->
+      <a href="{% url 'mes_notifications' %}" class="account-menu-item">
+        <div style="display: flex; align-items: center; flex: 1;">
+          <div class="account-menu-item-icon notifications">🔔</div>
+          <span class="account-menu-item-text">Notifications</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          {% if nb_notifications > 0 %}
+          <span class="account-menu-item-badge">
+            {{ nb_notifications }}
+          </span>
+          {% endif %}
+          <span class="account-menu-item-arrow">›</span>
+        </div>
+      </a>
+
+<!-- Messages -->
+      <a href="{% url 'mes_messages_client' %}" class="account-menu-item">
+        <div style="display: flex; align-items: center; flex: 1;">
+          <div class="account-menu-item-icon messages">💬</div>
+          <span class="account-menu-item-text">Messages</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          {% if nb_messages_non_lus > 0 %}
+          <span class="account-menu-item-badge">{{ nb_messages_non_lus }}</span>
+          {% endif %}
+          <span class="account-menu-item-arrow">›</span>
+        </div>
+      </a>
+
+<!-- Paramètres -->
+      <a href="{% url 'parametres_client' %}" class="account-menu-item">
+        <div style="display: flex; align-items: center; flex: 1;">
+          <div class="account-menu-item-icon settings">⚙️</div>
+          <span class="account-menu-item-text">Paramètres</span>
+        </div>
+        <span class="account-menu-item-arrow">›</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Order summary -->
+  <div class="account-summary-grid">
+    <div class="summary-card waiting">
+      <span>⏳ En attente</span>
+      <strong>{{ commandes_attente }}</strong>
+    </div>
+    <div class="summary-card accepted">
+      <span>✅ Acceptées</span>
+      <strong>{{ commandes_acceptees }}</strong>
+    </div>
+    <div class="summary-card rejected">
+      <span>❌ Refusées / Annulées</span>
+      <strong>{{ commandes_refusees }}</strong>
+    </div>
+  </div>
+
+  <!-- Boutons action -->
+  <div class="account-buttons-single">
+    <a href="{% url 'catalogue' %}" class="account-btn account-btn-success account-btn-block">
+      🛒 Parcourir le catalogue
+    </a>
+  </div>
+
+  <!-- Déconnexion -->
+  <div class="account-logout">
+    <a href="{% url 'deconnexion_vendeur' %}" class="account-btn account-btn-danger account-btn-block">
+      🚪 Se déconnecter
+    </a>
+  </div>
+
+</div>
+{% endblock %}

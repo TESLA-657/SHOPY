@@ -1,0 +1,309 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+<style>
+.ai-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    border-radius: 12px;
+    color: white;
+    margin-bottom: 20px;
+}
+.ai-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+}
+.ai-subtitle {
+    font-size: 14px;
+    opacity: 0.9;
+    margin: 0;
+}
+.ai-stats {
+    display: flex;
+    gap: 16px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+}
+.ai-stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    flex: 1;
+    min-width: 150px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.ai-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+}
+.ai-stat-label {
+    font-size: 12px;
+    color: #666;
+    margin: 4px 0 0 0;
+}
+.alerte-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.alerte-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+.alerte-info {
+    flex: 1;
+}
+.alerte-nom {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+}
+.alerte-details {
+    font-size: 13px;
+    color: #666;
+}
+.alerte-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+.empty-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="account-container">
+
+    <!-- Header -->
+    <div class="ai-header">
+        <h1 class="ai-title">🤖 Assistant IA</h1>
+        <p class="ai-subtitle">Produits recherch&eacute;s par les clients qui correspondent &agrave; votre catalogue</p>
+        
+        <div class="ai-stats">
+            <div class="ai-stat-card">
+                <p class="ai-stat-value">{{ total_alertes }}</p>
+                <p class="ai-stat-label">Alertes correspondantes</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des alertes -->
+    {% if alertes %}
+        <div style="padding: 0 12px;">
+            <h3 style="font-size: 16px; margin-bottom: 16px;">💡 клиенты ищут:</h3>
+            
+            {% for alerte in alertes %}
+            <div class="alerte-card">
+                <div class="alerte-icon">🔔</div>
+                <div class="alerte-info">
+                    <p class="alerte-nom">{{ alerte.produit_nom }}</p>
+                    <p class="alerte-details">
+                        {% if alerte.marque %}Marque: {{ alerte.marque }} &middot; {% endif %}
+                        Prix cibl&eacute;: <strong>{{ alerte.prix_cible|format_prix }} GNF</strong>
+                        {% if alerte.ville %} &middot; Ville: {{ alerte.ville }}{% endif %}
+                    </p>
+                </div>
+                <span class="alerte-badge">Cible</span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Conseils -->
+        <div style="padding: 20px 12px;">
+            <div style="background: #fff3e0; border-radius: 12px; padding: 16px; border-left: 4px solid #ff9800;">
+                <h4 style="margin: 0 0 8px 0; color: #e65100;">💡 Astuces</h4>
+                <ul style="margin: 0; padding-left: 20px; color: #666; font-size: 14px;">
+                    <li>Ajoutez des produits avec des noms similaires pour capter ces recherches</li>
+                    <li>Proposez des prix comp&eacute;titifs pour attirer ces clients</li>
+                    <li>Activez la garantie acheteur pour construire la confiance</li>
+                </ul>
+            </div>
+        </div>
+        
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Aucune alerte correspondante</h3>
+            <p>Les clients n'ont pas encore recherch&eacute; de produits similaires aux v&ocirc;tres.</p>
+            <p style="font-size: 12px; margin-top: 8px;">Revenez plus tard ou ajoutez plus de produits &agrave; votre catalogue.</p>
+        </div>
+    {% endif %}
+
+<!-- ===== CHAT INTEGR&Eacute; ===== -->
+    <div style="margin-top: 30px; padding: 0 12px;">
+        <h3 style="font-size: 16px; margin-bottom: 16px;">💬 Assistant Conversationnel</h3>
+        
+        <!-- Messages -->
+        <div id="chatMessages" style="background: white; border-radius: 12px; min-height: 200px; max-height: 300px; overflow-y: auto; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <div style="margin-bottom: 12px; padding: 10px 14px; border-radius: 12px; max-width: 80%; background: #f0f0ff;">
+                <div>👋 Bonjour! Posez-moi des questions sur votre boutique!</div>
+                <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">Maintenant</div>
+            </div>
+        </div>
+        
+<!-- Boutons rapides -->
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+            <button onclick="sendChat('Quels produits sont en rupture de stock?')" style="background: #f0f0ff; border: 1px solid #667eea; color: #667eea; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">📦 Stock</button>
+            <button onclick="sendChat('Combien de ventes ce mois?')" style="background: #f0f0ff; border: 1px solid #667eea; color: #667eea; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">💰 Ventes</button>
+            <button onclick="sendChat('comparaison semaine')" style="background: #e3f2fd; border: 1px solid #2196f3; color: #1976d2; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">📅 Comparaison semaine</button>
+            <button onclick="sendChat('Donne-moi des conseils')" style="background: #fff3e0; border: 1px solid #ff9800; color: #e65100; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">💡 Conseils</button>
+            <button onclick="sendChat('prévisions')" style="background: #e8f5e9; border: 1px solid #4caf50; color: #2e7d32; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">🔮 Pr&eacute;visions</button>
+            <button onclick="sendChat('Quel est mon produit le plus commandé?')" style="background: #f0f0ff; border: 1px solid #667eea; color: #667eea; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">🏆 Top produit</button>
+            <button onclick="sendChat('Quels sont mes revenus totaux?')" style="background: #f0f0ff; border: 1px solid #667eea; color: #667eea; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">💵 Revenus</button>
+            <button onclick="sendChat('Où sont mes clients?')" style="background: #f0f0ff; border: 1px solid #667eea; color: #667eea; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">📍 Clients</button>
+            <button onclick="sendChat('Qui sont mes meilleurs clients?')" style="background: #fce4ec; border: 1px solid #e91e63; color: #c2185b; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">👑 Meilleurs clients</button>
+            <button onclick="sendChat('Quel est le statut de ma boutique?')" style="background: #f0f0ff; border: 1px solid #667eea; color: #667eea; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">🏪 Statut</button>
+            <button onclick="sendChat('Ai-je des promotions?')" style="background: #f0f0ff; border: 1px solid #667eea; color: #667eea; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">🏷️ Promotions</button>
+            <button onclick="sendChat('Donne-moi un résumé')" style="background: #f0f0ff; border: 1px solid #667eea; color: #667eea; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer;">📊 R&eacute;sum&eacute;</button>
+        </div>
+        
+        <!-- Input et envoyer -->
+        <div style="display: flex; gap: 8px;">
+            <input type="text" id="chatInput" placeholder="Tapez votre question..." style="flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 14px;" onkeypress="if(event.key==='Enter')sendChat(document.getElementById('chatInput').value)">
+            <button onclick="sendChat(document.getElementById('chatInput').value)" style="background: #667eea; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 14px; cursor: pointer;">Envoyer</button>
+        </div>
+    </div>
+
+    <!-- Bouton retour -->
+    <div style="padding: 12px;">
+        <a href="{% url 'dashboard_vendeur' %}" class="account-btn account-btn-secondary" style="text-align: center; display: block;">
+            &larr; Retour au tableau de bord
+        </a>
+    </div>
+
+</div>
+
+{% csrf_token %}
+<script>
+var csrfToken = '{{ csrf_token }}';
+
+function sendChat(question) {
+    if (!question || question.trim() === '') return;
+    
+    var input = document.getElementById('chatInput');
+    var container = document.getElementById('chatMessages');
+    
+    // Ajouter message utilisateur
+    var userMsg = document.createElement('div');
+    userMsg.style.cssText = 'margin-bottom: 12px; padding: 10px 14px; border-radius: 12px; max-width: 80%; margin-left: auto; background: #667eea; color: white;';
+    var userText = document.createElement('div');
+    userText.textContent = question;
+    var userTime = document.createElement('div');
+    userTime.style.cssText = 'font-size: 11px; opacity: 0.7; margin-top: 4px;';
+    userTime.textContent = 'Maintenant';
+    userMsg.appendChild(userText);
+    userMsg.appendChild(userTime);
+    container.appendChild(userMsg);
+    
+    input.value = '';
+    container.scrollTop = container.scrollHeight;
+    
+    // Show loading state
+    var loadingId = 'loading-' + Date.now();
+    var loadingMsg = document.createElement('div');
+    loadingMsg.id = loadingId;
+    loadingMsg.style.cssText = 'margin-bottom: 12px; padding: 10px 14px; border-radius: 12px; max-width: 80%; background: #f5f5f5; color: #888;';
+    var loadingText = document.createElement('div');
+    loadingText.textContent = 'Traitement en cours...';
+    loadingMsg.appendChild(loadingText);
+    container.appendChild(loadingMsg);
+    container.scrollTop = container.scrollHeight;
+    
+    // Envoyer au serveur avec CSRF
+    var csrftoken = csrfToken || '{{ csrf_token }}';
+    fetch('/assistant-ia/chat/', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrftoken
+        },
+        body: 'question=' + encodeURIComponent(question)
+    })
+    .then(function(response) {
+        // Remove loading message
+        var loadingEl = document.getElementById(loadingId);
+        if (loadingEl) loadingEl.remove();
+        
+        var contentType = response.headers.get('content-type');
+        if (!response.ok) {
+            if (response.status === 403) {
+                throw new Error('Accès refusé ou session invalide. Reconnectez-vous.');
+            }
+            if (response.status === 302) {
+                throw new Error('Session expirée. Reconnectez-vous.');
+            }
+            throw new Error('Erreur serveur: ' + response.status);
+        }
+        if (!contentType || contentType.indexOf('application/json') === -1) {
+            throw new Error('Réponse invalide du serveur. Reconnectez-vous ou réessayez.');
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        var iaMsg = document.createElement('div');
+        iaMsg.style.cssText = 'margin-bottom: 12px; padding: 10px 14px; border-radius: 12px; max-width: 80%; background: #f0f0ff;';
+        var responseText = data.reponse || 'Reponse recue';
+        var responseTextLines = responseText.split('\n');
+        var responseDiv = document.createElement('div');
+        responseTextLines.forEach(function(line, idx) {
+            responseDiv.appendChild(document.createTextNode(line));
+            if (idx < responseTextLines.length - 1) {
+                responseDiv.appendChild(document.createElement('br'));
+            }
+        });
+        var timeDiv = document.createElement('div');
+        timeDiv.style.cssText = 'font-size: 11px; opacity: 0.7; margin-top: 4px;';
+        timeDiv.textContent = 'Assistant IA';
+        iaMsg.appendChild(responseDiv);
+        iaMsg.appendChild(timeDiv);
+        container.appendChild(iaMsg);
+        container.scrollTop = container.scrollHeight;
+    })
+    .catch(function(err) {
+        // Remove loading message
+        var loadingEl = document.getElementById(loadingId);
+        if (loadingEl) loadingEl.remove();
+        
+        console.error('Error:', err);
+        var errMsg = document.createElement('div');
+        errMsg.style.cssText = 'margin-bottom: 12px; padding: 10px 14px; border-radius: 12px; max-width: 80%; background: #ffebee; color: #c62828;';
+        var errText = document.createElement('div');
+        errText.textContent = 'Erreur: ' + (err.message || 'Connexion impossible');
+        var errInfo = document.createElement('div');
+        errInfo.style.cssText = 'font-size: 11px; margin-top: 4px;';
+        errInfo.textContent = 'Verifier connexion et reessayer';
+        errMsg.appendChild(errText);
+        errMsg.appendChild(errInfo);
+        container.appendChild(errMsg);
+    });
+}
+</script>
+{% endblock %}

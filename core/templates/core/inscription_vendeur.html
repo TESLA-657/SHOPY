@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription Vendeur — Shopy</title>
+  <link href="{% static 'core/css/inscription_vendeur.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<div class="register-container">
+  <div class="register-card">
+    
+    <!-- Header -->
+    <div class="register-header">
+      <div class="register-icon">🏪</div>
+      <h4 class="register-title">Ouvrir ma boutique</h4>
+      <p class="register-subtitle">Remplissez les informations pour commencer à vendre</p>
+    </div>
+
+    <!-- Error display -->
+    {% if erreur %}
+    <span id="django-erreur" style="display:none;">{{ erreur }}</span>
+    {% endif %}
+
+    <!-- Registration Form -->
+    <form class="register-form" method="post" autocomplete="off">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label class="form-label" for="id_nom_boutique">Nom de la boutique</label>
+        <input 
+          type="text" 
+          name="nom_boutique" 
+          id="id_nom_boutique" 
+          class="form-input" 
+          placeholder="Ex: AB STORE" 
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label" for="id_numero">Numéro de téléphone</label>
+        <input 
+          type="text" 
+          name="numero" 
+          id="id_numero" 
+          class="form-input" 
+          placeholder="+224 6XX XX XX XX" 
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label" for="id_email">Email</label>
+        <input 
+          type="email" 
+          name="email" 
+          id="id_email" 
+          class="form-input" 
+          placeholder="exemple@gmail.com" 
+          autocomplete="off" 
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label" for="id_ville">Ville</label>
+        <input 
+          type="text" 
+          name="ville" 
+          id="id_ville" 
+          class="form-input" 
+          placeholder="Conakry, Labé, Kankan..." 
+          autocomplete="off" 
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label" for="id_mot_de_passe">Mot de passe</label>
+        <input 
+          type="password" 
+          name="mot_de_passe" 
+          id="id_mot_de_passe" 
+          class="form-input" 
+          placeholder="Choisissez un mot de passe" 
+          autocomplete="off" 
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label" for="id_confirmer_mot_de_passe">Confirmer le mot de passe</label>
+        <input 
+          type="password" 
+          name="confirmer_mot_de_passe" 
+          id="id_confirmer_mot_de_passe" 
+          class="form-input" 
+          placeholder="Confirmez le mot de passe" 
+          required
+        >
+      </div>
+      
+<!-- Conditions Section -->
+<!-- CAPTCHA Section -->
+      <div class="captcha-section">
+        <label class="form-label">Vérification de sécurité</label>
+        <p class="captcha-question">{{ captcha_question }}</p>
+        <input 
+          type="text" 
+          name="captcha_answer" 
+          id="id_captcha_answer" 
+          class="form-input" 
+          placeholder="Entrez la réponse (ex: 7)" 
+          required
+        >
+        <button type="button" class="captcha-refresh" onclick="refreshCaptcha()">🔄 Nouvelle question</button>
+      </div>
+      
+      <!-- Conditions Section -->
+      <div class="conditions-section">
+        <h5 class="conditions-title">📋 Conditions Essentielles</h5>
+        <p class="conditions-subtitle">Cochez toutes les cases pour continuer:</p>
+        
+        <div class="conditions-list">
+          <label class="condition-item">
+            <input type="checkbox" name="condition_1" required class="condition-checkbox">
+            <span class="condition-text">
+              ✅ Je certify que je suis majeur et have capacité juridique pour vendre
+            </span>
+          </label>
+          
+          <label class="condition-item">
+            <input type="checkbox" name="condition_2" required class="condition-checkbox">
+            <span class="condition-text">
+              📦 Je m'engage à expédier les commandes sous 48h
+            </span>
+          </label>
+          
+          <label class="condition-item">
+            <input type="checkbox" name="condition_3" required class="condition-checkbox">
+            <span class="condition-text">
+              📱 Je consens à être contacté par téléphone pour les commandes
+            </span>
+          </label>
+          
+          <label class="condition-item">
+            <input type="checkbox" name="condition_4" required class="condition-checkbox">
+            <span class="condition-text">
+              ⚠️ J'accepte les conditions d'utilisation de SHOPY
+            </span>
+          </label>
+          
+<!-- Condition 5 removed per user request -->
+        </div>
+      </div>
+      
+      <button type="submit" class="register-button">
+        Démarrer mon essai gratuit
+      </button>
+    </form>
+
+    <!-- Links -->
+    <div class="register-links">
+      <p class="register-link-text">
+        Déjà un compte ?
+        <a href="{% url 'connexion_vendeur' %}" class="register-link">Se connecter</a>
+      </p>
+    </div>
+
+    <!-- Return Link -->
+    <div style="margin-top: 8px;">
+      <a href="{% url 'Welcome' %}" class="register-return">
+        ← Retour à l'accueil
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Error Popup -->
+<div id="popup-overlay" class="popup-overlay">
+  <div class="popup-content">
+    <div class="popup-icon">❌</div>
+    <h5 class="popup-title">Erreur</h5>
+    <p id="popup-message" class="popup-message"></p>
+    <button 
+      onclick="document.getElementById('popup-overlay').style.display='none'" 
+      class="popup-button"
+    >
+      Réessayer
+    </button>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const erreurEl = document.getElementById('django-erreur');
+  if (erreurEl && erreurEl.textContent.trim()) {
+    document.getElementById('popup-message').textContent = erreurEl.textContent;
+    document.getElementById('popup-overlay').style.display = 'flex';
+  }
+});
+</script>
+
+</body>
+</html>

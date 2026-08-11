@@ -1,0 +1,133 @@
+{% extends "core/base.html" %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+{% endblock %}
+
+{% block title %}Mes Factures - Shopy Guin%C3%A9e{% endblock %}
+
+{% block content %}
+<div class="account-container">
+    <div class="text-center mb-3">
+        <a href="{% url 'espace_client' %}" class="account-btn account-btn-primary fw-bold text-white" style="background-color: forestgreen; border-radius: 8px;">← Retour à mon espace</a>
+    </div>
+    
+    <div class="account-header">
+        <div class="account-stats">
+            <p class="account-stats-label">Mes commandes</p>
+            <div class="account-stats-value">{{ commandes|length }} commande(s)</div>
+        </div>
+    </div>
+
+<div class="account-content">
+        <!-- En attente -->
+        <div class="facture-card mb-4">
+            <div class="facture-card-header">
+                <div class="facture-card-header-icon waiting">⏳</div>
+                <h3 class="facture-card-header-title">En attente</h3>
+            </div>
+            {% for commande in commandes %}
+                {% if commande.statut == 'en_attente' %}
+                    <div class="facture-item">
+                        {% if commande.produit.photo %}
+                            <img src="{{ commande.produit.photo.url }}" class="facture-item-image">
+                        {% else %}
+                            <div class="facture-item-placeholder">📦</div>
+                        {% endif %}
+                        <div class="facture-item-content">
+                            <p class="facture-item-title">{{ commande.produit.nom }}</p>
+                            <p class="facture-item-meta">🏪 {{ commande.vendeur.nom_boutique }} · 📍 {{ commande.vendeur.ville }}</p>
+                            <p class="facture-item-meta">Quantité: {{ commande.quantite }}</p>
+                            <p class="facture-item-price">{{ commande.prix_total|format_prix }} GNF</p>
+                        </div>
+                        <div>
+                            <span class="facture-status-badge waiting">⏳ En attente</span>
+                            <p class="facture-item-date mt-2">{{ commande.date_commande|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <div class="facture-empty-state">
+                    <div class="facture-empty-icon">🛒</div>
+                    <p class="facture-empty-title">Aucune commande en attente</p>
+                    <p class="facture-empty-subtitle">Vos commandes en attente apparaîtront ici.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Acceptées -->
+        <div class="facture-card mb-4">
+            <div class="facture-card-header">
+                <div class="facture-card-header-icon accepted">✅</div>
+                <h3 class="facture-card-header-title">Acceptées</h3>
+            </div>
+            {% for commande in commandes %}
+                {% if commande.statut == 'acceptee' %}
+                    <div class="facture-item">
+                        {% if commande.produit.photo %}
+                            <img src="{{ commande.produit.photo.url }}" class="facture-item-image">
+                        {% else %}
+                            <div class="facture-item-placeholder">📦</div>
+                        {% endif %}
+                        <div class="facture-item-content">
+                            <p class="facture-item-title">{{ commande.produit.nom }}</p>
+                            <p class="facture-item-meta">🏪 {{ commande.vendeur.nom_boutique }} · 📍 {{ commande.vendeur.ville }}</p>
+                            <p class="facture-item-meta">Quantité: {{ commande.quantite }}</p>
+                            <p class="facture-item-price">{{ commande.prix_total|format_prix }} GNF</p>
+                        </div>
+                        <div>
+                            <a href="{% url 'telecharger_facture' commande.pk %}" class="facture-download-btn" target="_blank">
+                                📥 Télécharger Facture
+                            </a>
+                            <p class="facture-item-date mt-2">{{ commande.date_commande|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <div class="facture-empty-state">
+                    <div class="facture-empty-icon">🎉</div>
+                    <p class="facture-empty-title">Aucune commande acceptée</p>
+                    <p class="facture-empty-subtitle">Vos commandes acceptées apparaîtront ici.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Refusées -->
+        <div class="facture-card">
+            <div class="facture-card-header">
+                <div class="facture-card-header-icon rejected">❌</div>
+                <h3 class="facture-card-header-title">Refusées/Annulées</h3>
+            </div>
+            {% for commande in commandes %}
+                {% if commande.statut == 'refusee' or commande.statut == 'annulee' %}
+                    <div class="facture-item">
+                        {% if commande.produit.photo %}
+                            <img src="{{ commande.produit.photo.url }}" class="facture-item-image">
+                        {% else %}
+                            <div class="facture-item-placeholder">📦</div>
+                        {% endif %}
+                        <div class="facture-item-content">
+                            <p class="facture-item-title">{{ commande.produit.nom }}</p>
+                            <p class="facture-item-meta">🏪 {{ commande.vendeur.nom_boutique }} · 📍 {{ commande.vendeur.ville }}</p>
+                            <p class="facture-item-meta">Quantité: {{ commande.quantite }}</p>
+                            <p class="facture-item-price">{{ commande.prix_total|format_prix }} GNF</p>
+                        </div>
+                        <div>
+                            <span class="facture-status-badge rejected">{% if commande.statut == 'refusee' %}❌ Refusée{% else %}🚫 Annulée{% endif %}</span>
+                            <p class="facture-item-date mt-2">{{ commande.date_commande|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <div class="facture-empty-state">
+                    <div class="facture-empty-icon">👍</div>
+                    <p class="facture-empty-title">Aucune commande refusée</p>
+                    <p class="facture-empty-subtitle">Vos commandes refusées ou annulées apparaîtront ici.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
