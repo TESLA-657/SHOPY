@@ -30,9 +30,18 @@ def notifications_count(request):
             }
             for notif in unread_qs
         ]
-        is_vendeur = hasattr(request.user, 'vendeur') and request.user.vendeur is not None
-        is_client = hasattr(request.user, 'client') and request.user.client is not None
+        try:
+            is_vendeur = hasattr(request.user, 'vendeur') and request.user.vendeur is not None
+        except Exception:
+            is_vendeur = False
+
+        try:
+            is_client = hasattr(request.user, 'client') and request.user.client is not None
+        except Exception:
+            is_client = False
+
         active_url = request.resolver_match.url_name if hasattr(request, 'resolver_match') and request.resolver_match else ''
+
         
         return {
             'nb_notifications': nb,
