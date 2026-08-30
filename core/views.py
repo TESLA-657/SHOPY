@@ -1907,9 +1907,10 @@ def connexion_client(request):
                 client = Client.objects.get(user=user)
                 login(request, user)
                 log_action(request, 'login_client', f'Client {email}')
-                return redirect('espace_client')  # ← espace client, pas catalogue
+                return redirect('catalogue')  # Rediriger le client directement vers le catalogue
             except Client.DoesNotExist:
                 erreur = "Ce compte n'est pas un compte client."
+
         else:
             erreur = "Email ou mot de passe incorrect."
 
