@@ -271,114 +271,49 @@
 }
 </style>
 
-  <!-- Menu principal -->
-  <div class="account-menu">
-    <div class="account-menu-card">
+  <!-- Grid Raccourcis Dashboard Vendeur -->
+  <div class="container my-3 px-3">
+    <div class="row g-3">
+      <!-- Abonnement Card -->
+      <div class="col-6 col-md-3">
+        <a href="{% url 'abonnement_vendeur' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
+          <div class="fs-2 mb-1 text-primary">📋</div>
+          <h6 class="fw-bold text-dark mb-1 fs-7">Abonnement</h6>
+          <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill small">
+            {% if abonnement %}{{ abonnement.jours_restants }}J restants{% else %}Gratuit{% endif %}
+          </span>
+        </a>
+      </div>
 
-      <!-- Mes produits -->
-      <a href="{% url 'liste_produits_vendeur' %}" class="account-menu-item">
-        <div style="display: flex; align-items: center; flex: 1;">
-          <div class="account-menu-item-icon">📦</div>
-          <div style="flex: 1;">
-            <span class="account-menu-item-text">Mes produits</span>
-            <p class="account-menu-item-sub">Gérez votre catalogue, vos stocks et la visibilité</p>
-          </div>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span class="account-menu-item-badge">{{ produits_en_ligne }}</span>
-          <span class="account-menu-item-arrow">›</span>
-        </div>
-      </a>
-
-      <!-- Commandes -->
-      <a href="{% url 'commandes_vendeur' %}" class="account-menu-item">
-        <div style="display: flex; align-items: center; flex: 1;">
-          <div class="account-menu-item-icon orders">🔔</div>
-          <span class="account-menu-item-text">Commandes</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          {% if commandes_en_attente > 0 %}
-          <span class="account-menu-item-badge">{{ commandes_en_attente }}</span>
-          {% endif %}
-          <span class="account-menu-item-arrow">›</span>
-        </div>
-      </a>
-
-      <!-- Abonnement -->
-      <a href="{% url 'abonnement_vendeur' %}" class="account-menu-item">
-        <div style="display: flex; align-items: center; flex: 1;">
-          <div class="account-menu-item-icon subscription">📋</div>
-          <div style="flex: 1;">
-            <span class="account-menu-item-text" style="display: block; margin: 0;">Abonnement</span>
-            {% if abonnement %}
-            <p class="account-menu-item-sub">
-              {% if abonnement.statut == 'essai' %}Essai gratuit
-              {% elif abonnement.statut == 'actif' %}Actif
-              {% else %}Suspendu{% endif %}
-              — {{ abonnement.jours_restants }} J restants
-            </p>
-            {% endif %}
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          {% if paiement_en_attente %}
-          <span class="account-menu-item-badge warning">1</span>
-          {% endif %}
-          <span class="account-menu-item-arrow">›</span>
-        </div>
-      </a>
+      <!-- Assistant IA -->
+      <div class="col-6 col-md-3">
+        <a href="{% url 'assistant_ia_vendeur' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
+          <div class="fs-2 mb-1">🤖</div>
+          <h6 class="fw-bold text-dark mb-1 fs-7">Assistant IA</h6>
+          <span class="badge bg-purple-subtle text-purple border rounded-pill small">Recommandations</span>
+        </a>
+      </div>
 
       <!-- Statistiques -->
-      <a href="{% url 'statistiques_vendeur' %}" class="account-menu-item">
-        <div style="display: flex; align-items: center; flex: 1;">
-          <div class="account-menu-item-icon stats">📊</div>
-          <span class="account-menu-item-text">Statistiques</span>
-        </div>
-        <span class="account-menu-item-arrow">›</span>
-      </a>
-
-<!-- Assistant IA Shopy -->
-      <a href="{% url 'assistant_ia_vendeur' %}" class="account-menu-item">
-        <div style="display: flex; align-items: center; flex: 1;">
-          <div class="account-menu-item-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">🤖</div>
-          <div style="flex: 1;">
-            <span class="account-menu-item-text">Assistant IA</span>
-            <p class="account-menu-item-sub">Produits recherchés par les clients & recommandations</p>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          {% if nb_alertes_vendeur > 0 %}
-          <span class="account-menu-item-badge">{{ nb_alertes_vendeur }}</span>
-          {% endif %}
-          <span class="account-menu-item-arrow">›</span>
-        </div>
-      </a>
-
-      <!-- Messages -->
-      <a href="{% url 'messages_vendeur' %}" class="account-menu-item">
-        <div style="display: flex; align-items: center; flex: 1;">
-          <div class="account-menu-item-icon messages">💬</div>
-          <span class="account-menu-item-text">Messages</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          {% if nb_messages_non_lus > 0 %}
-          <span class="account-menu-item-badge">{{ nb_messages_non_lus }}</span>
-          {% endif %}
-          <span class="account-menu-item-arrow">›</span>
-        </div>
-      </a>
+      <div class="col-6 col-md-3">
+        <a href="{% url 'statistiques_vendeur' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
+          <div class="fs-2 mb-1">📊</div>
+          <h6 class="fw-bold text-dark mb-1 fs-7">Statistiques</h6>
+          <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill small">Analyses</span>
+        </a>
+      </div>
 
       <!-- Paramètres -->
-      <a href="{% url 'parametres_vendeur' %}" class="account-menu-item">
-        <div style="display: flex; align-items: center; flex: 1;">
-          <div class="account-menu-item-icon settings">⚙️</div>
-          <span class="account-menu-item-text">Paramètres</span>
-        </div>
-        <span class="account-menu-item-arrow">›</span>
-      </a>
-
+      <div class="col-6 col-md-3">
+        <a href="{% url 'parametres_vendeur' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
+          <div class="fs-2 mb-1">⚙️</div>
+          <h6 class="fw-bold text-dark mb-1 fs-7">Paramètres</h6>
+          <span class="badge bg-secondary-subtle text-secondary border rounded-pill small">Configuration</span>
+        </a>
+      </div>
     </div>
   </div>
+
 
   <!-- Stats produits -->
   <div style="padding: 0 12px 16px;">
