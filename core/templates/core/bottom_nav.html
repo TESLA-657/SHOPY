@@ -1,0 +1,91 @@
+{% load static %}
+{% if user.is_authenticated %}
+<!-- TikTok-Style Pro Bottom Navigation Bar -->
+<div class="shopy-bottom-nav-wrapper">
+  <nav class="shopy-bottom-nav">
+    {% if is_vendeur %}
+      <!-- Vendeur Navigation -->
+      <a href="{% url 'catalogue' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'catalogue' %}active{% endif %}">
+        <div class="shopy-nav-icon-box">
+          <i class="bi bi-shop"></i>
+        </div>
+        <span class="shopy-nav-label">Marketplace</span>
+      </a>
+
+      <a href="{% url 'liste_produits_vendeur' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'liste_produits_vendeur' %}active{% endif %}">
+        <div class="shopy-nav-icon-box">
+          <i class="bi bi-box-seam"></i>
+        </div>
+        <span class="shopy-nav-label">Produits</span>
+      </a>
+
+      <!-- TikTok Center '+' Action Button -->
+      <a href="{% url 'ajouter_produit' %}" class="shopy-nav-item shopy-nav-center-item" title="Ajouter un produit">
+        <div class="shopy-tiktok-btn">
+          <div class="shopy-tiktok-btn-inner">
+            <i class="bi bi-plus-lg"></i>
+          </div>
+        </div>
+      </a>
+
+      <a href="{% url 'commandes_vendeur' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'commandes_vendeur' %}active{% endif %}">
+        <div class="shopy-nav-icon-box">
+          <i class="bi bi-bag-check-fill"></i>
+          {% if commandes_en_attente > 0 %}
+            <span class="shopy-nav-badge">{{ commandes_en_attente }}</span>
+          {% endif %}
+        </div>
+        <span class="shopy-nav-label">Commandes</span>
+      </a>
+
+      <a href="{% url 'dashboard_vendeur' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'dashboard_vendeur' %}active{% endif %}">
+        <div class="shopy-nav-icon-box">
+          <i class="bi bi-person-workspace"></i>
+        </div>
+        <span class="shopy-nav-label">Boutique</span>
+      </a>
+
+    {% else %}
+      <!-- Client Navigation -->
+      <a href="{% url 'catalogue' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'catalogue' or request.resolver_match.url_name == 'Welcome' %}active{% endif %}">
+        <div class="shopy-nav-icon-box">
+          <i class="bi bi-house-door-fill"></i>
+        </div>
+        <span class="shopy-nav-label">Accueil</span>
+      </a>
+
+      <a href="{% url 'mes_favoris' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'mes_favoris' %}active{% endif %}">
+        <div class="shopy-nav-icon-box">
+          <i class="bi bi-heart-fill"></i>
+        </div>
+        <span class="shopy-nav-label">Favoris</span>
+      </a>
+
+      <!-- TikTok Center Cart Button -->
+      <a href="{% url 'voir_panier' %}" class="shopy-nav-item shopy-nav-center-item" title="Mon Panier">
+        <div class="shopy-tiktok-btn client-btn">
+          <div class="shopy-tiktok-btn-inner">
+            <i class="bi bi-cart3"></i>
+          </div>
+        </div>
+      </a>
+
+      <a href="{% url 'mes_messages_client' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'mes_messages_client' %}active{% endif %}">
+        <div class="shopy-nav-icon-box">
+          <i class="bi bi-chat-dots-fill"></i>
+          {% if nb_messages_non_lus > 0 %}
+            <span class="shopy-nav-badge">{{ nb_messages_non_lus }}</span>
+          {% endif %}
+        </div>
+        <span class="shopy-nav-label">Messages</span>
+      </a>
+
+      <a href="{% url 'espace_client' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'espace_client' %}active{% endif %}">
+        <div class="shopy-nav-icon-box">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <span class="shopy-nav-label">Profil</span>
+      </a>
+    {% endif %}
+  </nav>
+</div>

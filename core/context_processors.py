@@ -30,8 +30,14 @@ def notifications_count(request):
             }
             for notif in unread_qs
         ]
+        is_vendeur = hasattr(request.user, 'vendeur') and request.user.vendeur is not None
+        is_client = hasattr(request.user, 'client') and request.user.client is not None
+        
         return {
             'nb_notifications': nb,
-            'notifications_toast': json.dumps(notifications, cls=DjangoJSONEncoder)
+            'notifications_toast': json.dumps(notifications, cls=DjangoJSONEncoder),
+            'is_vendeur': is_vendeur,
+            'is_client': is_client,
         }
-    return {'nb_notifications': 0, 'notifications_toast': '[]'}
+    return {'nb_notifications': 0, 'notifications_toast': '[]', 'is_vendeur': False, 'is_client': False}
+
