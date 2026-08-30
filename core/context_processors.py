@@ -32,12 +32,16 @@ def notifications_count(request):
         ]
         is_vendeur = hasattr(request.user, 'vendeur') and request.user.vendeur is not None
         is_client = hasattr(request.user, 'client') and request.user.client is not None
+        active_url = request.resolver_match.url_name if hasattr(request, 'resolver_match') and request.resolver_match else ''
         
         return {
             'nb_notifications': nb,
             'notifications_toast': json.dumps(notifications, cls=DjangoJSONEncoder),
             'is_vendeur': is_vendeur,
             'is_client': is_client,
+            'active_url': active_url,
         }
-    return {'nb_notifications': 0, 'notifications_toast': '[]', 'is_vendeur': False, 'is_client': False}
+    active_url = request.resolver_match.url_name if hasattr(request, 'resolver_match') and request.resolver_match else ''
+    return {'nb_notifications': 0, 'notifications_toast': '[]', 'is_vendeur': False, 'is_client': False, 'active_url': active_url}
+
 

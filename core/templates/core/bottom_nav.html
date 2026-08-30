@@ -5,14 +5,14 @@
   <nav class="shopy-bottom-nav">
     {% if is_vendeur %}
       <!-- Vendeur Navigation -->
-      <a href="{% url 'catalogue' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'catalogue' %}active{% endif %}">
+      <a href="{% url 'catalogue' %}" class="shopy-nav-item {% if active_url == 'catalogue' %}active{% endif %}">
         <div class="shopy-nav-icon-box">
           <i class="bi bi-shop"></i>
         </div>
         <span class="shopy-nav-label">Marketplace</span>
       </a>
 
-      <a href="{% url 'liste_produits_vendeur' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'liste_produits_vendeur' %}active{% endif %}">
+      <a href="{% url 'liste_produits_vendeur' %}" class="shopy-nav-item {% if active_url == 'liste_produits_vendeur' %}active{% endif %}">
         <div class="shopy-nav-icon-box">
           <i class="bi bi-box-seam"></i>
         </div>
@@ -28,7 +28,7 @@
         </div>
       </a>
 
-      <a href="{% url 'commandes_vendeur' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'commandes_vendeur' %}active{% endif %}">
+      <a href="{% url 'commandes_vendeur' %}" class="shopy-nav-item {% if active_url == 'commandes_vendeur' %}active{% endif %}">
         <div class="shopy-nav-icon-box">
           <i class="bi bi-bag-check-fill"></i>
           {% if commandes_en_attente > 0 %}
@@ -38,7 +38,7 @@
         <span class="shopy-nav-label">Commandes</span>
       </a>
 
-      <a href="{% url 'dashboard_vendeur' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'dashboard_vendeur' %}active{% endif %}">
+      <a href="{% url 'dashboard_vendeur' %}" class="shopy-nav-item {% if active_url == 'dashboard_vendeur' %}active{% endif %}">
         <div class="shopy-nav-icon-box">
           <i class="bi bi-person-workspace"></i>
         </div>
@@ -47,14 +47,14 @@
 
     {% else %}
       <!-- Client Navigation -->
-      <a href="{% url 'catalogue' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'catalogue' or request.resolver_match.url_name == 'Welcome' %}active{% endif %}">
+      <a href="{% url 'catalogue' %}" class="shopy-nav-item {% if active_url == 'catalogue' or active_url == 'Welcome' %}active{% endif %}">
         <div class="shopy-nav-icon-box">
           <i class="bi bi-house-door-fill"></i>
         </div>
         <span class="shopy-nav-label">Accueil</span>
       </a>
 
-      <a href="{% url 'mes_favoris' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'mes_favoris' %}active{% endif %}">
+      <a href="{% url 'mes_favoris' %}" class="shopy-nav-item {% if active_url == 'mes_favoris' %}active{% endif %}">
         <div class="shopy-nav-icon-box">
           <i class="bi bi-heart-fill"></i>
         </div>
@@ -70,7 +70,7 @@
         </div>
       </a>
 
-      <a href="{% url 'mes_messages_client' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'mes_messages_client' %}active{% endif %}">
+      <a href="{% url 'mes_messages_client' %}" class="shopy-nav-item {% if active_url == 'mes_messages_client' %}active{% endif %}">
         <div class="shopy-nav-icon-box">
           <i class="bi bi-chat-dots-fill"></i>
           {% if nb_messages_non_lus > 0 %}
@@ -80,7 +80,7 @@
         <span class="shopy-nav-label">Messages</span>
       </a>
 
-      <a href="{% url 'espace_client' %}" class="shopy-nav-item {% if request.resolver_match.url_name == 'espace_client' %}active{% endif %}">
+      <a href="{% url 'espace_client' %}" class="shopy-nav-item {% if active_url == 'espace_client' %}active{% endif %}">
         <div class="shopy-nav-icon-box">
           <i class="bi bi-person-circle"></i>
         </div>
