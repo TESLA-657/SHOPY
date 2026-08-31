@@ -3,350 +3,583 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+<style>
+  /* ===================================================================
+     SHOPY SELLER DASHBOARD — Dark Theme (Inspiré de RevendeurTech)
+     =================================================================== */
+  :root {
+    --sh-bg: #050B18;
+    --sh-card: #0B1426;
+    --sh-card-hover: #0F1D38;
+    --sh-border: #173B68;
+    --sh-green: #20D66B;
+    --sh-green-subtle: rgba(32, 214, 107, 0.12);
+    --sh-text: #FFFFFF;
+    --sh-text-muted: #8A99AD;
+    --sh-gold: #FFC928;
+  }
+
+  body {
+    background-color: var(--sh-bg) !important;
+    color: var(--sh-text) !important;
+  }
+
+  .seller-dashboard-container {
+    background-color: var(--sh-bg);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* Header Boutique */
+  .seller-header-card {
+    background: linear-gradient(180deg, #071122 0%, #0B1426 100%);
+    border-bottom: 1px solid var(--sh-border);
+    padding: 24px 20px;
+    position: relative;
+  }
+
+  .seller-header-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .seller-top-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(5, 11, 24, 0.6);
+    border: 1px solid var(--sh-border);
+    border-radius: 16px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+  }
+
+  .seller-stat-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .seller-stat-icon {
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .seller-stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--sh-text-muted);
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .seller-stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--sh-green);
+    margin: 2px 0 0 0;
+    letter-spacing: -0.5px;
+  }
+
+  .seller-profile-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .seller-avatar-wrap {
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .seller-avatar-img {
+    width: 68px;
+    height: 68px;
+    border-radius: 16px;
+    object-fit: cover;
+    border: 2px solid var(--sh-border);
+    background: var(--sh-bg);
+  }
+
+  .seller-avatar-fallback {
+    width: 68px;
+    height: 68px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--sh-green);
+    background: #050B18;
+    border: 2px solid var(--sh-border);
+  }
+
+  .seller-avatar-badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    background: var(--sh-green);
+    color: #050B18;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    border: 2px solid var(--sh-card);
+  }
+
+  .seller-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .seller-greeting {
+    font-size: 13px;
+    color: var(--sh-text-muted);
+    margin: 0 0 2px 0;
+    font-weight: 600;
+  }
+
+  .seller-shop-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--sh-text);
+    margin: 0 0 6px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .seller-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .seller-pill-verified {
+    background: var(--sh-green-subtle);
+    color: var(--sh-green);
+    border: 1px solid rgba(32, 214, 107, 0.3);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 8px;
+  }
+
+  .seller-pill-city {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--sh-text-muted);
+    border: 1px solid var(--sh-border);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 8px;
+  }
+
+  /* Widgets Grid */
+  .seller-section-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 16px;
+  }
+
+  .seller-section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--sh-text-muted);
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  .seller-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  @media (min-width: 640px) {
+    .seller-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .seller-card-btn {
+    background: var(--sh-card);
+    border: 1px solid var(--sh-border);
+    border-radius: 16px;
+    padding: 16px 14px;
+    text-align: center;
+    text-decoration: none !important;
+    color: var(--sh-text) !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .seller-card-btn:hover {
+    background: var(--sh-card-hover);
+    border-color: var(--sh-green);
+    transform: translateY(-2px);
+    text-decoration: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .seller-card-btn:focus,
+  .seller-card-btn:active {
+    text-decoration: none !important;
+    color: var(--sh-text) !important;
+  }
+
+  .seller-card-icon {
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .seller-card-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--sh-text);
+    margin: 0;
+    text-decoration: none !important;
+  }
+
+  .seller-card-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    text-decoration: none !important;
+  }
+
+  .badge-green {
+    background: var(--sh-green-subtle);
+    color: var(--sh-green);
+    border: 1px solid rgba(32, 214, 107, 0.3);
+  }
+
+  .badge-blue {
+    background: rgba(33, 150, 243, 0.12);
+    color: #64B5F6;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+  }
+
+  .badge-purple {
+    background: rgba(168, 85, 247, 0.12);
+    color: #C084FC;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+  }
+
+  .badge-gray {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--sh-text-muted);
+    border: 1px solid var(--sh-border);
+  }
+
+  /* KPIs Section */
+  .seller-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .seller-kpi-box {
+    background: var(--sh-card);
+    border: 1px solid var(--sh-border);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .seller-kpi-num {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .seller-kpi-num.blue { color: #60A5FA; }
+  .seller-kpi-num.orange { color: #FB923C; }
+
+  .seller-kpi-label {
+    font-size: 11px;
+    color: var(--sh-text-muted);
+    font-weight: 700;
+    margin: 4px 0 0 0;
+    text-transform: uppercase;
+  }
+
+  /* Action Buttons */
+  .seller-actions-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-action-primary {
+    background: var(--sh-green);
+    color: #050B18 !important;
+    font-weight: 800;
+    font-size: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    text-decoration: none !important;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 15px rgba(32, 214, 107, 0.35);
+  }
+
+  .btn-action-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(32, 214, 107, 0.5);
+    color: #050B18 !important;
+    text-decoration: none !important;
+  }
+
+  .btn-action-secondary {
+    background: var(--sh-card);
+    color: var(--sh-text) !important;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid var(--sh-border);
+    text-decoration: none !important;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+  }
+
+  .btn-action-secondary:hover {
+    background: var(--sh-card-hover);
+    border-color: var(--sh-green);
+    color: #ffffff !important;
+    text-decoration: none !important;
+  }
+
+  .btn-action-logout {
+    background: transparent;
+    color: #EF4444 !important;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    text-decoration: none !important;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    transition: background 0.2s ease;
+  }
+
+  .btn-action-logout:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #EF4444;
+    text-decoration: none !important;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
+<div class="seller-dashboard-container">
 
-<div class="account-container">
-
+  <!-- Modal si boutique suspendue -->
   {% if suspendu %}
-<div style="position:fixed; top:0; left:0; width:100%; height:100%;
-     background:rgba(0,0,0,0.85); z-index:9999; display:flex;
-     align-items:center; justify-content:center;">
-  <div style="background:white; border-radius:16px; padding:40px;
-       max-width:420px; width:90%; text-align:center;">
-    <div style="font-size:50px;">🔒</div>
-    <h3 style="color:#e74c3c; font-weight:bold; margin:16px 0 8px;">
-      {% if 'Essai gratuit' in vendeur.raison_suspension %}
-        Essai gratuit expiré
-      {% elif 'signalement' in vendeur.raison_suspension %}
-        Compte Suspendu
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%;
+       background:rgba(5,11,24,0.92); z-index:9999; display:flex;
+       align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#0B1426; border:1px solid #173B68; border-radius:20px; padding:32px;
+         max-width:420px; width:100%; text-align:center; color:white;">
+      <div style="font-size:48px; margin-bottom:12px;">🔒</div>
+      <h4 style="color:#EF4444; font-weight:800; margin-bottom:10px;">
+        {% if 'Essai gratuit' in vendeur.raison_suspension %}
+          Essai gratuit expiré
+        {% elif 'signalement' in vendeur.raison_suspension %}
+          Boutique Suspendue
+        {% else %}
+          Abonnement expiré
+        {% endif %}
+      </h4>
+      <p style="color:#8A99AD; font-size:13px; margin-bottom:24px; line-height:1.5;">
+        {% if 'Essai gratuit' in vendeur.raison_suspension %}
+          Votre essai gratuit est terminé. Choisissez un abonnement pour continuer à vendre.
+        {% elif 'signalement' in vendeur.raison_suspension %}
+          {{ vendeur.raison_suspension }}
+        {% else %}
+          Votre abonnement a expiré. Renouvelez pour continuer vos ventes.
+        {% endif %}
+      </p>
+      {% if 'signalement' not in vendeur.raison_suspension %}
+      <a href="{% url 'choisir_abonnement' %}" class="btn-action-primary">
+        💳 Choisir un abonnement
+      </a>
       {% else %}
-        Abonnement expiré
+      <a href="mailto:admin@shopy-guinee.com" class="btn-action-logout">
+        📧 Contacter l'administrateur
+      </a>
       {% endif %}
-    </h3>
-    <p style="color:#666; margin-bottom:24px;">
-      {% if 'Essai gratuit' in vendeur.raison_suspension %}
-        Votre essai gratuit de 30 jours est terminé. Choisissez un abonnement pour continuer à vendre.
-      {% elif 'signalement' in vendeur.raison_suspension %}
-        {{ vendeur.raison_suspension }}
-      {% else %}
-        Votre abonnement a expiré. Renouvelez pour continuer à vendre.
-      {% endif %}
-    </p>
-    {% if 'signalement' not in vendeur.raison_suspension %}
-    <a href="{% url 'choisir_abonnement' %}"
-       style="display:block; background:#28a745; color:white; padding:14px;
-              border-radius:8px; font-weight:bold; text-decoration:none;">
-      💳 Choisir un abonnement
-    </a>
-    {% else %}
-    <a href="mailto:admin@shopy-guinee.com"
-       style="display:block; background:#e74c3c; color:white; padding:14px;
-              border-radius:8px; font-weight:bold; text-decoration:none;">
-      📧 Contacter l'administrateur
-    </a>
-    {% endif %}
-  </div>
-</div>
-{% endif %}
-
-  {% if abonnement and abonnement.jours_restants <= 5 and not suspendu %}
-  <div style="background:#fff3cd; padding:10px 16px; text-align:center; font-size:13px;">
-    ⚠️ Abonnement expire dans <strong>{{ abonnement.jours_restants }} jour(s)</strong>.
-    <a href="{% url 'choisir_abonnement' %}" style="color:#28a745; font-weight:bold;">Renouveler →</a>
+    </div>
   </div>
   {% endif %}
 
-<!-- Header Premium avec ventes du mois -->
-  <div class="dashboard-header-premium">
+  <!-- Alerte Abonnement Expiration Proche -->
+  {% if abonnement and abonnement.jours_restants <= 5 and not suspendu %}
+  <div style="background:rgba(255, 201, 40, 0.12); border-bottom:1px solid rgba(255, 201, 40, 0.3); padding:10px 16px; text-align:center; font-size:13px; color:#FFC928;">
+    ⚠️ Votre abonnement expire dans <strong>{{ abonnement.jours_restants }} jour(s)</strong>.
+    <a href="{% url 'choisir_abonnement' %}" style="color:#20D66B; font-weight:800; margin-left:8px; text-decoration:none;">Renouveler →</a>
+  </div>
+  {% endif %}
 
-    <!-- Stats vendeur -->
-    <div class="dashboard-stats-row">
-      <div class="dashboard-stat-item">
-        <span class="dashboard-stat-icon">💰</span>
-        <div>
-          <p class="dashboard-stat-label">Ventes du mois</p>
-          <p class="dashboard-stat-value">{{ vendeur.ventes_du_mois|format_prix }} GNF</p>
+  <!-- En-Tête Pro Vendeur -->
+  <div class="seller-header-card">
+    <div class="seller-header-inner">
+      
+      <!-- Ligne Stats Ventes du Mois -->
+      <div class="seller-top-stats">
+        <div class="seller-stat-box">
+          <span class="seller-stat-icon">💰</span>
+          <div>
+            <p class="seller-stat-label">Ventes du mois</p>
+            <p class="seller-stat-value">{{ vendeur.ventes_du_mois|format_prix }} GNF</p>
+          </div>
         </div>
+        {% if commandes_en_attente > 0 %}
+        <span class="badge-green" style="padding:6px 12px; font-size:12px; border-radius:99px;">
+          🔔 {{ commandes_en_attente }} en attente
+        </span>
+        {% endif %}
       </div>
-      {% if commandes_en_attente > 0 %}
-      <div class="dashboard-stat-badge">
-        🔔 {{ commandes_en_attente }} commande(s) en attente
-      </div>
-      {% endif %}
-    </div>
 
-    <!-- Profil vendeur -->
-    <div class="dashboard-profile">
-      <div class="dashboard-profile-avatar-wrapper">
-        <!-- Photo de profil cliquable -->
-        <form method="post" action="{% url 'upload_photo_vendeur' %}"
-              enctype="multipart/form-data" id="photo-form">
-          {% csrf_token %}
-          <label for="photo-input" class="dashboard-avatar">
-            {% if vendeur.photo %}
-              <img src="{{ vendeur.photo.url }}" alt="{{ vendeur.nom_boutique }}"
-                   class="dashboard-avatar-img">
-            {% else %}
-              <div class="dashboard-avatar-placeholder">
-                {{ vendeur.nom_boutique|first|upper }}
-              </div>
-            {% endif %}
-            <div class="dashboard-avatar-edit">
-              📷
-            </div>
-          </label>
-          <input type="file" id="photo-input" name="photo" accept="image/*"
-                 onchange="document.getElementById('photo-form').submit()">
-        </form>
+      <!-- Profil & Nom Boutique -->
+      <div class="seller-profile-row">
+        <div class="seller-avatar-wrap">
+          <form method="post" action="{% url 'upload_photo_vendeur' %}" enctype="multipart/form-data" id="photo-form">
+            {% csrf_token %}
+            <label for="photo-input" style="cursor:pointer; margin:0; display:block;">
+              {% if vendeur.photo %}
+                <img src="{{ vendeur.photo.url }}" alt="{{ vendeur.nom_boutique }}" class="seller-avatar-img">
+              {% else %}
+                <div class="seller-avatar-fallback">
+                  {{ vendeur.nom_boutique|first|upper }}
+                </div>
+              {% endif %}
+              <div class="seller-avatar-badge">📷</div>
+            </label>
+            <input type="file" id="photo-input" name="photo" accept="image/*" style="display:none;" onchange="document.getElementById('photo-form').submit()">
+          </form>
+        </div>
 
-        <div class="dashboard-profile-info">
-          <p class="dashboard-salutation">{{ salutation }} 👋</p>
-          <h3 class="dashboard-name">{{ vendeur.nom_boutique }}</h3>
-          <div class="dashboard-meta">
+        <div class="seller-info">
+          <p class="seller-greeting">{{ salutation }} 👋</p>
+          <h3 class="seller-shop-name">{{ vendeur.nom_boutique }}</h3>
+          <div class="seller-badges">
             {% if vendeur.statut == 'actif' %}
-            <span class="dashboard-verified">✅ Boutique vérifiée</span>
-            {% elif vendedor.statut == 'suspendu' %}
-            <span class="dashboard-suspended">⏸️ Suspendu</span>
+              <span class="seller-pill-verified">✅ Boutique vérifiée</span>
+            {% elif vendeur.statut == 'suspendu' %}
+              <span class="badge-gray" style="color:#EF4444;">⏸️ Suspendu</span>
             {% else %}
-            <span class="dashboard-pending">⏳ En attente</span>
+              <span class="badge-gray" style="color:#FFC928;">⏳ En attente</span>
             {% endif %}
-            <span class="dashboard-city">📍 {{ vendeur.ville }}</span>
+            <span class="seller-pill-city">📍 {{ vendeur.ville }}</span>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
-<style>
-.dashboard-header-premium {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 24px 20px 60px;
-  position: relative;
-  overflow: hidden;
-}
-.dashboard-header-premium::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-}
-.dashboard-stats-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
-}
-.dashboard-stat-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: white;
-}
-.dashboard-stat-icon {
-  font-size: 32px;
-  opacity: 0.9;
-}
-.dashboard-stat-label {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  opacity: 0.7;
-  margin: 0;
-}
-.dashboard-stat-value {
-  font-size: 28px;
-  font-weight: 800;
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.dashboard-stat-badge {
-  background: rgba(255,255,255,0.2);
-  color: white;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  backdrop-filter: blur(10px);
-}
-.dashboard-profile {}
-.dashboard-profile-avatar-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.dashboard-avatar {
-  position: relative;
-  cursor: pointer;
-}
-.dashboard-avatar-img {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid rgba(255,255,255,0.4);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-.dashboard-avatar-placeholder {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  font-weight: 700;
-  color: white;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  border: 3px solid rgba(255,255,255,0.4);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-.dashboard-avatar-edit {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 28px;
-  height: 28px;
-  background: #667eea;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  border: 2px solid white;
-}
-.dashboard-profile-info {
-  color: white;
-}
-.dashboard-salutation {
-  font-size: 14px;
-  margin: 0 0 4px 0;
-  opacity: 0.9;
-}
-.dashboard-name {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 0 0 8px 0;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-.dashboard-meta {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.dashboard-verified {
-  background: rgba(40, 167, 69, 0.3);
-  color: #7defa1;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.dashboard-suspended {
-  background: rgba(231, 76, 60, 0.3);
-  color: #ffc8ca;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.dashboard-pending {
-  background: rgba(255, 193, 7, 0.3);
-  color: #ffecb3;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.dashboard-city {
-  background: rgba(255,255,255,0.2);
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-}
-</style>
-
-  <!-- Grid Raccourcis Dashboard Vendeur -->
-  <div class="container my-3 px-3">
-    <div class="row g-3">
-      <!-- Abonnement Card -->
-      <div class="col-6 col-md-3">
-        <a href="{% url 'abonnement_vendeur' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
-          <div class="fs-2 mb-1 text-primary">📋</div>
-          <h6 class="fw-bold text-dark mb-1 fs-7">Abonnement</h6>
-          <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill small">
-            {% if abonnement %}{{ abonnement.jours_restants }}J restants{% else %}Gratuit{% endif %}
-          </span>
-        </a>
-      </div>
+  <!-- Contenu Principal -->
+  <div class="seller-section-wrap">
+    
+    <!-- Section Raccourcis / Widgets Métier -->
+    <p class="seller-section-title">Gestion & Outils</p>
+    <div class="seller-grid">
+      <!-- Abonnement -->
+      <a href="{% url 'abonnement_vendeur' %}" class="seller-card-btn">
+        <span class="seller-card-icon">📋</span>
+        <span class="seller-card-title">Abonnement</span>
+        <span class="seller-card-badge badge-green">
+          {% if abonnement %}{{ abonnement.jours_restants }}J restants{% else %}Gratuit{% endif %}
+        </span>
+      </a>
 
       <!-- Assistant IA -->
-      <div class="col-6 col-md-3">
-        <a href="{% url 'assistant_ia_vendeur' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
-          <div class="fs-2 mb-1">🤖</div>
-          <h6 class="fw-bold text-dark mb-1 fs-7">Assistant IA</h6>
-          <span class="badge bg-purple-subtle text-purple border rounded-pill small">Recommandations</span>
-        </a>
-      </div>
+      <a href="{% url 'assistant_ia_vendeur' %}" class="seller-card-btn">
+        <span class="seller-card-icon">🤖</span>
+        <span class="seller-card-title">Assistant IA</span>
+        <span class="seller-card-badge badge-purple">
+          {% if nb_alertes_vendeur > 0 %}{{ nb_alertes_vendeur }} alertes{% else %}Conseils{% endif %}
+        </span>
+      </a>
 
       <!-- Statistiques -->
-      <div class="col-6 col-md-3">
-        <a href="{% url 'statistiques_vendeur' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
-          <div class="fs-2 mb-1">📊</div>
-          <h6 class="fw-bold text-dark mb-1 fs-7">Statistiques</h6>
-          <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill small">Analyses</span>
-        </a>
-      </div>
+      <a href="{% url 'statistiques_vendeur' %}" class="seller-card-btn">
+        <span class="seller-card-icon">📊</span>
+        <span class="seller-card-title">Statistiques</span>
+        <span class="seller-card-badge badge-blue">Analyses</span>
+      </a>
 
       <!-- Paramètres -->
-      <div class="col-6 col-md-3">
-        <a href="{% url 'parametres_vendeur' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
-          <div class="fs-2 mb-1">⚙️</div>
-          <h6 class="fw-bold text-dark mb-1 fs-7">Paramètres</h6>
-          <span class="badge bg-secondary-subtle text-secondary border rounded-pill small">Configuration</span>
-        </a>
+      <a href="{% url 'parametres_vendeur' %}" class="seller-card-btn">
+        <span class="seller-card-icon">⚙️</span>
+        <span class="seller-card-title">Paramètres</span>
+        <span class="seller-card-badge badge-gray">Boutique</span>
+      </a>
+    </div>
+
+    <!-- KPIs Statistiques Produits -->
+    <p class="seller-section-title">Performances du catalogue</p>
+    <div class="seller-kpi-row">
+      <div class="seller-kpi-box">
+        <h4 class="seller-kpi-num blue">{{ produits_en_ligne }}</h4>
+        <p class="seller-kpi-label">Produits en ligne</p>
+      </div>
+      <div class="seller-kpi-box">
+        <h4 class="seller-kpi-num orange">{{ commandes_en_attente }}</h4>
+        <p class="seller-kpi-label">Commandes à traiter</p>
       </div>
     </div>
-  </div>
 
-
-  <!-- Stats produits -->
-  <div style="padding: 0 12px 16px;">
-    <div class="account-stats-card">
-      <div class="account-stats-item">
-        <h4 class="account-stats-item-value blue">{{ produits_en_ligne }}</h4>
-        <p class="account-stats-item-label">Produits en ligne</p>
-      </div>
-      <div class="account-stats-divider"></div>
-      <div class="account-stats-item">
-        <h4 class="account-stats-item-value red">{{ commandes_en_attente }}</h4>
-        <p class="account-stats-item-label">En attente</p>
-      </div>
+    <!-- Actions Rapides -->
+    <div class="seller-actions-wrap">
+      <a href="{% url 'ajouter_produit' %}" class="btn-action-primary">
+        ➕ Publier un Nouveau Produit
+      </a>
+      <a href="{% url 'catalogue' %}" class="btn-action-secondary">
+        🛒 Explorer le Marketplace
+      </a>
+      <a href="{% url 'deconnexion_vendeur' %}" class="btn-action-logout">
+        🚪 Déconnexion
+      </a>
     </div>
-  </div>
 
-  <!-- Boutons action -->
-  <div class="account-buttons">
-    <a href="{% url 'ajouter_produit' %}" class="account-btn account-btn-primary">
-      + Nouveau Produit
-    </a>
-    <a href="{% url 'catalogue' %}" class="account-btn account-btn-secondary">
-      🛒 Catalogue
-    </a>
-  </div>
-
-  <!-- Déconnexion -->
-  <div class="account-logout">
-    <a href="{% url 'deconnexion_vendeur' %}" class="account-btn account-btn-danger account-btn-block">
-      🔴 Déconnexion
-    </a>
   </div>
 
 </div>
 {% endblock %}
-

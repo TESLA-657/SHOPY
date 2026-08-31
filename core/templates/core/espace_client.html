@@ -3,513 +3,483 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+<style>
+  /* ===================================================================
+     SHOPY CLIENT SPACE — Dark Theme (Inspiré de RevendeurTech)
+     =================================================================== */
+  :root {
+    --sh-bg: #050B18;
+    --sh-card: #0B1426;
+    --sh-card-hover: #0F1D38;
+    --sh-border: #173B68;
+    --sh-green: #20D66B;
+    --sh-green-subtle: rgba(32, 214, 107, 0.12);
+    --sh-text: #FFFFFF;
+    --sh-text-muted: #8A99AD;
+  }
+
+  body {
+    background-color: var(--sh-bg) !important;
+    color: var(--sh-text) !important;
+  }
+
+  .client-container-pro {
+    background-color: var(--sh-bg);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* Header Client */
+  .client-header-card {
+    background: linear-gradient(180deg, #071122 0%, #0B1426 100%);
+    border-bottom: 1px solid var(--sh-border);
+    padding: 24px 20px;
+  }
+
+  .client-header-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .client-top-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(5, 11, 24, 0.6);
+    border: 1px solid var(--sh-border);
+    border-radius: 16px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+  }
+
+  .client-stat-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .client-stat-icon {
+    font-size: 26px;
+    line-height: 1;
+  }
+
+  .client-stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--sh-text-muted);
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .client-stat-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--sh-green);
+    margin: 2px 0 0 0;
+  }
+
+  .client-profile-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .client-avatar-wrap {
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .client-avatar-img {
+    width: 68px;
+    height: 68px;
+    border-radius: 16px;
+    object-fit: cover;
+    border: 2px solid var(--sh-border);
+    background: var(--sh-bg);
+  }
+
+  .client-avatar-fallback {
+    width: 68px;
+    height: 68px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--sh-green);
+    background: #050B18;
+    border: 2px solid var(--sh-border);
+  }
+
+  .client-avatar-badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    background: var(--sh-green);
+    color: #050B18;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    border: 2px solid var(--sh-card);
+  }
+
+  .client-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .client-greeting {
+    font-size: 13px;
+    color: var(--sh-text-muted);
+    margin: 0 0 2px 0;
+    font-weight: 600;
+  }
+
+  .client-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--sh-text);
+    margin: 0 0 6px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .client-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .client-pill {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--sh-text-muted);
+    border: 1px solid var(--sh-border);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 8px;
+  }
+
+  .client-pill-verified {
+    background: var(--sh-green-subtle);
+    color: var(--sh-green);
+    border: 1px solid rgba(32, 214, 107, 0.3);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 8px;
+  }
+
+  /* Section Body */
+  .client-section-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 16px;
+  }
+
+  .client-section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--sh-text-muted);
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  .client-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .client-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .client-card-btn {
+    background: var(--sh-card);
+    border: 1px solid var(--sh-border);
+    border-radius: 16px;
+    padding: 16px 14px;
+    text-align: center;
+    text-decoration: none !important;
+    color: var(--sh-text) !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .client-card-btn:hover {
+    background: var(--sh-card-hover);
+    border-color: var(--sh-green);
+    transform: translateY(-2px);
+    text-decoration: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .client-card-btn:focus,
+  .client-card-btn:active {
+    text-decoration: none !important;
+    color: var(--sh-text) !important;
+  }
+
+  .client-card-icon {
+    font-size: 26px;
+    line-height: 1;
+  }
+
+  .client-card-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--sh-text);
+    margin: 0;
+    text-decoration: none !important;
+  }
+
+  .client-card-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    text-decoration: none !important;
+  }
+
+  .badge-blue {
+    background: rgba(33, 150, 243, 0.12);
+    color: #64B5F6;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+  }
+
+  .badge-yellow {
+    background: rgba(255, 201, 40, 0.12);
+    color: #FFC928;
+    border: 1px solid rgba(255, 201, 40, 0.3);
+  }
+
+  .badge-gray {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--sh-text-muted);
+    border: 1px solid var(--sh-border);
+  }
+
+  /* Order Status Summary Cards */
+  .client-order-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .summary-pill-box {
+    background: var(--sh-card);
+    border: 1px solid var(--sh-border);
+    border-radius: 14px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+
+  .summary-pill-box span {
+    display: block;
+    font-size: 11px;
+    color: var(--sh-text-muted);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .summary-pill-box strong {
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .summary-pill-box.waiting strong { color: #FFC928; }
+  .summary-pill-box.accepted strong { color: var(--sh-green); }
+  .summary-pill-box.rejected strong { color: #EF4444; }
+
+  /* Action Buttons */
+  .client-actions-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-client-primary {
+    background: var(--sh-green);
+    color: #050B18 !important;
+    font-weight: 800;
+    font-size: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    text-decoration: none !important;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(32, 214, 107, 0.35);
+  }
+
+  .btn-client-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(32, 214, 107, 0.5);
+    color: #050B18 !important;
+    text-decoration: none !important;
+  }
+
+  .btn-client-logout {
+    background: transparent;
+    color: #EF4444 !important;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    text-decoration: none !important;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .btn-client-logout:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #EF4444;
+    text-decoration: none !important;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
+<div class="client-container-pro">
 
-<div class="account-container">
+  <!-- En-tête Client -->
+  <div class="client-header-card">
+    <div class="client-header-inner">
+      
+      <!-- Stats Commandes -->
+      <div class="client-top-stats">
+        <div class="client-stat-box">
+          <span class="client-stat-icon">📦</span>
+          <div>
+            <p class="client-stat-label">Total Commandes</p>
+            <p class="client-stat-value">{{ commandes|length }}</p>
+          </div>
+        </div>
+        {% if nb_commandes_acceptees > 0 %}
+        <span class="client-pill-verified">
+          ✨ {{ nb_commandes_acceptees }} acceptée(s)
+        </span>
+        {% endif %}
+      </div>
 
-  <div class="client-header-premium">
-    <div class="client-orb orb-one"></div>
-    <div class="client-orb orb-two"></div>
-    <div class="client-orb orb-three"></div>
+      <!-- Profil Client -->
+      <div class="client-profile-row">
+        <div class="client-avatar-wrap">
+          <form method="post" action="{% url 'upload_photo_client' %}" enctype="multipart/form-data" id="photo-form-client">
+            {% csrf_token %}
+            <label for="photo-input-client" style="cursor:pointer; margin:0; display:block;">
+              {% if client.photo %}
+                <img src="{{ client.photo.url }}" alt="{{ client.nom }}" class="client-avatar-img">
+              {% else %}
+                <div class="client-avatar-fallback">
+                  {{ client.nom|first|upper }}
+                </div>
+              {% endif %}
+              <div class="client-avatar-badge">📷</div>
+            </label>
+            <input type="file" id="photo-input-client" name="photo" accept="image/*" style="display:none;" onchange="document.getElementById('photo-form-client').submit()">
+          </form>
+        </div>
 
-    <div class="client-stats-row">
-      <div class="client-stat-item glass-card">
-        <span class="client-stat-icon">📦</span>
-        <div>
-          <p class="client-stat-label">Total commandes</p>
-          <p class="client-stat-value">{{ commandes|length }}</p>
+        <div class="client-info">
+          <p class="client-greeting">{{ salutation }} 👋</p>
+          <h3 class="client-name">{{ client.nom }}</h3>
+          <div class="client-badges">
+            <span class="client-pill-verified">✅ Client vérifié</span>
+            <span class="client-pill">📍 {{ client.ville }}</span>
+            <span class="client-pill">📱 {{ client.numero }}</span>
+          </div>
         </div>
       </div>
-      {% if nb_commandes_acceptees > 0 %}
-      <div class="client-stat-badge">
-        ✨ {{ nb_commandes_acceptees }} acceptée(s)
-      </div>
-      {% endif %}
-    </div>
 
-    <div class="dashboard-profile glass-card profile-card">
-      <form method="post" action="{% url 'upload_photo_client' %}"
-            enctype="multipart/form-data" id="photo-form-client">
-        {% csrf_token %}
-        <label for="photo-input-client" class="client-avatar-wrapper">
-          {% if client.photo %}
-            <img src="{{ client.photo.url }}" alt="{{ client.nom }}"
-                 class="client-avatar-img"
-                 {% if client.photo %}onclick="voirPhoto('{{ client.photo.url }}')"{% endif %}>
-          {% else %}
-            <div class="client-avatar-placeholder">
-              {{ client.nom|first|upper }}
-            </div>
-          {% endif %}
-          <div class="client-avatar-edit">📷</div>
-          <span class="client-online-dot"></span>
-        </label>
-        <input type="file" id="photo-input-client" name="photo" accept="image/*"
-               onchange="document.getElementById('photo-form-client').submit()">
-      </form>
-
-      <div class="dashboard-profile-info">
-        <p class="dashboard-salutation">{{ salutation }} 👋</p>
-        <h3 class="dashboard-name">{{ client.nom }}</h3>
-        <div class="dashboard-meta">
-          <span class="dashboard-verified">✅ Client vérifié</span>
-          <span class="dashboard-city">📍 {{ client.ville }}</span>
-          <span class="dashboard-city">📱 {{ client.numero }}</span>
-        </div>
-      </div>
     </div>
   </div>
 
-  <style>
-    .account-container {
-      background:
-        radial-gradient(circle at top left, rgba(15, 23, 42, 0.08), transparent 24%),
-        linear-gradient(135deg, #f8fbff 0%, #f3f7ff 100%);
-      min-height: 100vh;
-      padding-bottom: 40px;
-      font-family: 'Inter', 'Segoe UI', sans-serif;
-    }
-
-    .client-header-premium {
-      position: relative;
-      overflow: hidden;
-      padding: 24px 18px 72px;
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #7c3aed 100%);
-      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
-    }
-
-    .client-orb {
-      position: absolute;
-      border-radius: 999px;
-      filter: blur(2px);
-      opacity: 0.85;
-      pointer-events: none;
-      animation: floatOrb 8s ease-in-out infinite;
-    }
-
-    .orb-one {
-      width: 220px;
-      height: 220px;
-      top: -70px;
-      right: -40px;
-      background: radial-gradient(circle, rgba(255,255,255,0.35), rgba(255,255,255,0));
-    }
-
-    .orb-two {
-      width: 140px;
-      height: 140px;
-      bottom: -30px;
-      left: -30px;
-      background: radial-gradient(circle, rgba(34,211,238,0.25), rgba(34,211,238,0));
-      animation-delay: 2s;
-    }
-
-    .orb-three {
-      width: 100px;
-      height: 100px;
-      top: 40%;
-      left: 40%;
-      background: radial-gradient(circle, rgba(255,255,255,0.22), rgba(255,255,255,0));
-      animation-delay: 4s;
-    }
-
-    @keyframes floatOrb {
-      0%, 100% { transform: translateY(0px) scale(1); }
-      50% { transform: translateY(-12px) scale(1.04); }
-    }
-
-    .client-stats-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .glass-card {
-      backdrop-filter: blur(18px);
-      background: rgba(255,255,255,0.16);
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
-    }
-
-    .client-stat-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      color: white;
-    }
-
-    .client-stat-icon {
-      font-size: 20px;
-      background: rgba(255,255,255,0.2);
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .client-stat-label {
-      margin: 0;
-      font-size: 11px;
-      opacity: 0.82;
-      color: white;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .client-stat-value {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 800;
-      color: white;
-    }
-
-    .client-stat-badge {
-      background: linear-gradient(135deg, rgba(34,211,238,0.25), rgba(168,85,247,0.25));
-      color: #ecfeff;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .profile-card {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px;
-      border-radius: 24px;
-      position: relative;
-      z-index: 2;
-      transform: translateY(12px);
-    }
-
-    .client-avatar-wrapper {
-      position: relative;
-      width: 86px;
-      height: 86px;
-      flex-shrink: 0;
-      cursor: pointer;
-      border-radius: 50%;
-      padding: 3px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.25));
-      box-shadow: 0 10px 24px rgba(0,0,0,0.22);
-      transition: all 0.3s ease;
-    }
-
-    .client-avatar-wrapper:hover {
-      transform: scale(1.05) rotate(2deg);
-      box-shadow: 0 16px 30px rgba(0,0,0,0.28);
-    }
-
-    .client-avatar-wrapper:hover .client-avatar-edit {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    .client-avatar-img, .client-avatar-placeholder {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(255,255,255,0.8);
-    }
-
-    .client-avatar-placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: 800;
-      color: white;
-      background: linear-gradient(135deg, #38bdf8, #8b5cf6);
-    }
-
-    .client-avatar-edit {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: rgba(2,6,23,0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      opacity: 0;
-      transition: all 0.3s ease;
-    }
-
-    .client-online-dot {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #22c55e;
-      border: 3px solid white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      animation: clientDotPulse 2s ease-in-out infinite;
-    }
-
-    @keyframes clientDotPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-      50% { box-shadow: 0 0 0 5px rgba(34, 197, 94, 0); }
-    }
-
-    .dashboard-profile-info {
-      flex: 1;
-      color: white;
-    }
-
-    .dashboard-salutation {
-      margin: 0 0 4px 0;
-      font-size: 14px;
-      opacity: 0.9;
-    }
-
-    .dashboard-name {
-      margin: 0 0 8px 0;
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-
-    .dashboard-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 12px;
-    }
-
-    .dashboard-verified, .dashboard-city {
-      background: rgba(255,255,255,0.16);
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.18);
-      backdrop-filter: blur(8px);
-    }
-
-    .account-menu {
-      margin-top: -28px;
-      padding: 0 14px 16px;
-      position: relative;
-      z-index: 3;
-    }
-
-    .account-menu-card {
-      background: rgba(255,255,255,0.95);
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-    }
-
-    .account-menu-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 18px;
-      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
-      text-decoration: none;
-      color: #0f172a;
-      transition: all 0.25s ease;
-    }
-
-    .account-menu-item:hover {
-      background: linear-gradient(90deg, rgba(59,130,246,0.08), rgba(124,58,237,0.08));
-      transform: translateX(2px);
-    }
-
-    .account-menu-item-icon {
-      background: linear-gradient(135deg, #dbeafe, #e0e7ff);
-      border-radius: 12px;
-      width: 42px;
-      height: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-      margin-right: 12px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
-    }
-
-    .account-menu-item-icon.orders { background: linear-gradient(135deg, #fef3c7, #fde68a); }
-    .account-menu-item-icon.favorites { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
-    .account-menu-item-icon.notifications { background: linear-gradient(135deg, #fee2e2, #fecaca); }
-    .account-menu-item-icon.messages { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
-    .account-menu-item-icon.settings { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
-
-    .account-menu-item-text {
-      flex: 1;
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .account-menu-item-badge {
-      background: linear-gradient(135deg, #ef4444, #f97316);
-      color: white;
-      border-radius: 999px;
-      min-width: 22px;
-      height: 22px;
-      font-size: 11px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 7px;
-      margin-right: 8px;
-      box-shadow: 0 6px 14px rgba(239, 68, 68, 0.2);
-    }
-
-    .account-summary-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      padding: 0 14px 14px;
-    }
-
-    .summary-card {
-      background: white;
-      border-radius: 18px;
-      padding: 14px;
-      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    .summary-card.waiting { background: linear-gradient(135deg, #fff7ed, #ffedd5); }
-    .summary-card.accepted { background: linear-gradient(135deg, #ecfdf5, #d1fae5); }
-    .summary-card.rejected { background: linear-gradient(135deg, #fef2f2, #fee2e2); }
-
-    .account-buttons-single {
-      padding: 0 14px 14px;
-    }
-
-    .account-btn-success {
-      background: linear-gradient(135deg, #0f766e, #14b8a6);
-      border: none;
-      box-shadow: 0 12px 24px rgba(20, 184, 166, 0.25);
-      color: white;
-      border-radius: 16px;
-      font-weight: 700;
-      padding: 14px 16px;
-    }
-
-    .account-logout {
-      padding: 0 14px 20px;
-    }
-
-    .account-btn-danger {
-      background: linear-gradient(135deg, #dc2626, #ef4444);
-      border: none;
-      box-shadow: 0 12px 24px rgba(239, 68, 68, 0.25);
-      color: white;
-      border-radius: 16px;
-      font-weight: 700;
-      padding: 14px 16px;
-    }
-
-    @media (max-width: 768px) {
-      .account-summary-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .profile-card {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .dashboard-meta {
-        justify-content: flex-start;
-      }
-    }
-  </style>
-
-  <!-- Grid Raccourcis Espace Client -->
-  <div class="container my-3 px-3">
-    <div class="row g-3">
-      <!-- Factures / Achats -->
-      <div class="col-6 col-md-4">
-        <a href="{% url 'mes_factures' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
-          <div class="fs-2 mb-1 text-primary">📋</div>
-          <h6 class="fw-bold text-dark mb-1 fs-7">Mes Factures</h6>
-          <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small">Historique</span>
-        </a>
-      </div>
+  <!-- Contenu Principal -->
+  <div class="client-section-wrap">
+    
+    <!-- Raccourcis -->
+    <p class="client-section-title">Mes Services</p>
+    <div class="client-grid">
+      <!-- Factures -->
+      <a href="{% url 'mes_factures' %}" class="client-card-btn">
+        <span class="client-card-icon">📋</span>
+        <span class="client-card-title">Mes Factures</span>
+        <span class="client-card-badge badge-blue">Historique</span>
+      </a>
 
       <!-- Notifications -->
-      <div class="col-6 col-md-4">
-        <a href="{% url 'mes_notifications' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
-          <div class="fs-2 mb-1 text-warning">🔔</div>
-          <h6 class="fw-bold text-dark mb-1 fs-7">Notifications</h6>
-          <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill small">
-            {% if nb_notifications > 0 %}{{ nb_notifications }} nouvelle(s){% else %}Alertes{% endif %}
-          </span>
-        </a>
-      </div>
+      <a href="{% url 'mes_notifications' %}" class="client-card-btn">
+        <span class="client-card-icon">🔔</span>
+        <span class="client-card-title">Notifications</span>
+        <span class="client-card-badge badge-yellow">
+          {% if nb_notifications > 0 %}{{ nb_notifications }} nouvelle(s){% else %}Alertes{% endif %}
+        </span>
+      </a>
 
       <!-- Paramètres -->
-      <div class="col-12 col-md-4">
-        <a href="{% url 'parametres_client' %}" class="card h-100 border-0 shadow-sm rounded-4 text-decoration-none transition-hover p-3 text-center bg-body">
-          <div class="fs-2 mb-1 text-secondary">⚙️</div>
-          <h6 class="fw-bold text-dark mb-1 fs-7">Paramètres</h6>
-          <span class="badge bg-secondary-subtle text-secondary border rounded-pill small">Mon profil</span>
-        </a>
+      <a href="{% url 'parametres_client' %}" class="client-card-btn">
+        <span class="client-card-icon">⚙️</span>
+        <span class="client-card-title">Paramètres</span>
+        <span class="client-card-badge badge-gray">Profil</span>
+      </a>
+    </div>
+
+    <!-- Statut des commandes -->
+    <p class="client-section-title">Suivi des commandes</p>
+    <div class="client-order-summary">
+      <div class="summary-pill-box waiting">
+        <span>⏳ En attente</span>
+        <strong>{{ commandes_attente }}</strong>
+      </div>
+      <div class="summary-pill-box accepted">
+        <span>✅ Acceptées</span>
+        <strong>{{ commandes_acceptees }}</strong>
+      </div>
+      <div class="summary-pill-box rejected">
+        <span>❌ Refusées</span>
+        <strong>{{ commandes_refusees }}</strong>
       </div>
     </div>
-  </div>
 
-
-  <!-- Order summary -->
-  <div class="account-summary-grid">
-    <div class="summary-card waiting">
-      <span>⏳ En attente</span>
-      <strong>{{ commandes_attente }}</strong>
+    <!-- Actions -->
+    <div class="client-actions-wrap">
+      <a href="{% url 'catalogue' %}" class="btn-client-primary">
+        🛒 Parcourir le Catalogue
+      </a>
+      <a href="{% url 'deconnexion_vendeur' %}" class="btn-client-logout">
+        🚪 Se déconnecter
+      </a>
     </div>
-    <div class="summary-card accepted">
-      <span>✅ Acceptées</span>
-      <strong>{{ commandes_acceptees }}</strong>
-    </div>
-    <div class="summary-card rejected">
-      <span>❌ Refusées / Annulées</span>
-      <strong>{{ commandes_refusees }}</strong>
-    </div>
-  </div>
 
-  <!-- Boutons action -->
-  <div class="account-buttons-single">
-    <a href="{% url 'catalogue' %}" class="account-btn account-btn-success account-btn-block">
-      🛒 Parcourir le catalogue
-    </a>
-  </div>
-
-  <!-- Déconnexion -->
-  <div class="account-logout">
-    <a href="{% url 'deconnexion_vendeur' %}" class="account-btn account-btn-danger account-btn-block">
-      🚪 Se déconnecter
-    </a>
   </div>
 
 </div>
