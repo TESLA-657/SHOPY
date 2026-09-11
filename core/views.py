@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from .models import Client, Vendeur, Produit, Commande, Abonnement, Notification, PlanAbonnement, Categorie, Favori, Evaluation, MessageNegociation, ChatMessage, Panier, PanierItem, PaiementPanier, FideliteClientVendeur
+from .models import Client, Vendeur, Produit, Commande, Abonnement, Notification, PlanAbonnement, Categorie, Favori, Evaluation, MessageNegociation, ChatMessage, Panier, PanierItem, PaiementPanier, FideliteClientVendeur, PubliciteProduit
 from .models import GarantieAcheteur, FlashSale, AlertePrix, EvaluationVendeur
 from .serializers import ClientSerializer, VendeurSerializer, ProduitSerializer, CommandeSerializer, AbonnementSerializer, NotificationSerializer
 from .audit import log_action, AuditLog
@@ -71,6 +71,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 def get_loyalty_discount(client, vendeur):
+    if not vendeur.fidelite_active:
+        return 0
     try:
         fidelite = FideliteClientVendeur.objects.get(client=client, vendeur=vendeur)
     except FideliteClientVendeur.DoesNotExist:
@@ -102,7 +104,7 @@ def apply_loyalty_discount(prix, reduction_pct):
 
 
 def update_loyalty_record(client, vendeur, montant):
-    if not client or not vendeur:
+    if not client or not vendeur or not vendeur.fidelite_active:
         return None
     record, created = FideliteClientVendeur.objects.get_or_create(client=client, vendeur=vendeur)
     record.commandes_count += 1
@@ -262,6 +264,11 @@ def ajouter_produit_legacy(request):
 
 @login_required
 def liste_produits_vendeur(request):
+    if request.GET.get('clear') == '1':
+        request.session.pop('limite_atteinte', None)
+        request.session.pop('plan_actuel', None)
+        request.session.pop('limite', None)
+        return redirect('liste_produits_vendeur')
     # Vérifier les promos expirées
     verifier_promos_expirees()
     
@@ -284,12 +291,21 @@ def liste_produits_vendeur(request):
     produits_promo = produits.filter(promo=True)
     produits_non_promo = produits.filter(promo=False)
 
+    # Compute additional vendor context for header
+    try:
+        commandes_en_attente = Commande.objects.filter(vendeur=vendeur, statut='en_attente').count()
+    except Exception:
+        commandes_en_attente = 0
+    salutation = get_salutation_with_name(vendeur.nom_boutique)
+
     return render(request, 'core/liste_produits_vendeur.html', {
         'produits': produits,
         'produits_promo': produits_promo,
         'produits_non_promo': produits_non_promo,
         'vendeur': vendeur,
         'recherche': recherche,
+        'commandes_en_attente': commandes_en_attente,
+        'salutation': salutation,
     })
 
 @login_required
@@ -300,7 +316,18 @@ def commandes_vendeur_legacy(request):
     vendeur=vendeur, archivee=False
     ).order_by('-date_commande')
 
-    return render(request, 'core/commandes_vendeur.html', {'commandes': commandes, 'vendeur': vendeur})
+    try:
+        commandes_en_attente = Commande.objects.filter(vendeur=vendeur, statut='en_attente').count()
+    except Exception:
+        commandes_en_attente = 0
+    salutation = get_salutation_with_name(vendeur.nom_boutique)
+
+    return render(request, 'core/commandes_vendeur.html', {
+        'commandes': commandes,
+        'vendeur': vendeur,
+        'commandes_en_attente': commandes_en_attente,
+        'salutation': salutation,
+    })
 
 @login_required
 def ajouter_produit(request):
@@ -314,7 +341,7 @@ def ajouter_produit(request):
         abonnement = vendeur.abonnement
         plan = abonnement.plan
         if plan.limite_produits != -1:
-            nb_produits = Produit.objects.filter(vendeur=vendeur).count()
+            nb_produits = Produit.objects.filter(vendeur=vendeur, visible=True).count()
             if nb_produits >= plan.limite_produits:
                 request.session['limite_atteinte'] = True
                 request.session['plan_actuel'] = plan.nom
@@ -447,6 +474,7 @@ def parametres_client(request):
 def dashboard_vendeur(request):
     aujourd_hui = timezone.now().date()
     vendeur = get_object_or_404(Vendeur, user=request.user)
+    debut_mois = aujourd_hui.replace(day=1)
     
     # Reset des ventes du mois au nouveau mois
     if vendeur.dernier_reset_ventes:
@@ -479,15 +507,33 @@ def dashboard_vendeur(request):
         abonnement = None
 
     produits_en_ligne = Produit.objects.filter(vendeur=vendeur, visible=True).count()
+    ventes_du_mois = PaiementCommande.objects.filter(
+        commande__vendeur=vendeur,
+        statut='valide',
+        date_soumission__date__gte=debut_mois,
+        date_soumission__date__lte=aujourd_hui,
+    ).aggregate(total=Sum('montant'))['total'] or 0
     produits_en_promo = Produit.objects.filter(vendeur=vendeur, visible=True, promo=True).count()
     produits_sans_promo = Produit.objects.filter(vendeur=vendeur, visible=True, promo=False).count()
-    commandes_en_attente = Commande.objects.filter(vendeur=vendeur, statut='en_attente').count()
-    dernieres_commandes = Commande.objects.filter(vendeur=vendeur).order_by('-date_commande')[:5]
+    commandes_en_attente = Commande.objects.filter(
+        vendeur=vendeur,
+        statut='en_attente',
+        paiement__statut='valide',
+    ).count()
+    dernieres_commandes = Commande.objects.filter(
+        vendeur=vendeur,
+        paiement__statut='valide',
+    ).order_by('-date_commande')[:5]
     paiement_en_attente = PaiementAbonnement.objects.filter(vendeur=vendeur, statut='en_attente').exists()
     clients_fideles = FideliteClientVendeur.objects.filter(
         vendeur=vendeur,
         validite_jusqua__gte=aujourd_hui
     ).order_by('-commandes_count')[:5]
+    fidelite_regles = [
+        {'achats': 3, 'reduction': 3},
+        {'achats': 6, 'reduction': 5},
+        {'achats': 10, 'reduction': 8},
+    ]
     
     # Messages non lus pour le vendeur
     # Compter les négociations non lues ET les ChatMessage non lus du vendeur
@@ -545,6 +591,7 @@ def dashboard_vendeur(request):
     if vendeur.statut == 'actif':
         return render(request, 'core/dashboard_vendeur.html', {
             'vendeur':vendeur, 
+            'ventes_du_mois': ventes_du_mois,
             'produits_en_ligne':produits_en_ligne, 
             'produits_en_promo': produits_en_promo,
             'produits_sans_promo': produits_sans_promo,
@@ -552,6 +599,7 @@ def dashboard_vendeur(request):
             'dernieres_commandes':dernieres_commandes,
             'abonnement': abonnement,
             'clients_fideles': clients_fideles,
+            'fidelite_regles': fidelite_regles,
             'nb_messages_non_lus': nb_messages_non_lus,
             'nb_alertes_vendeur': nb_alertes_vendeur,
             'salutation': salutation,
@@ -559,16 +607,94 @@ def dashboard_vendeur(request):
     elif vendeur.statut == 'suspendu':
         return render(request, 'core/dashboard_vendeur.html', {
             'vendeur': vendeur,
+            'ventes_du_mois': ventes_du_mois,
             'produits_en_ligne': produits_en_ligne,
             'commandes_en_attente': commandes_en_attente,
             'dernieres_commandes': dernieres_commandes,
             'abonnement': abonnement,
             'clients_fideles': clients_fideles,
+            'fidelite_regles': fidelite_regles,
             'suspendu': True,
             'paiement_en_attente': paiement_en_attente,
             'nb_messages_non_lus': nb_messages_non_lus,
             'salutation': salutation,
         })
+
+@login_required
+def activer_fidelite_vendeur(request):
+    vendeur = get_object_or_404(Vendeur, user=request.user)
+    if request.method == 'POST':
+        vendeur.fidelite_active = True
+        vendeur.save(update_fields=['fidelite_active'])
+        messages.success(request, 'Le système de fidélité est maintenant activé pour votre boutique.')
+    return redirect('dashboard_vendeur')
+
+
+PUBLICITE_TARIFS = {7: 10000, 15: 20000, 30: 35000}
+
+
+@login_required
+def creer_publicite(request):
+    vendeur = get_object_or_404(Vendeur, user=request.user)
+    produits = Produit.objects.filter(vendeur=vendeur, visible=True).order_by('nom')
+    if request.method == 'POST':
+        produit = get_object_or_404(produits, pk=request.POST.get('produit'))
+        try:
+            duree = int(request.POST.get('duree_jours'))
+        except (TypeError, ValueError):
+            duree = 0
+        numero = request.POST.get('numero_paiement', '').strip()
+        reference = request.POST.get('reference', '').strip()
+        if duree not in PUBLICITE_TARIFS or not numero:
+            messages.error(request, 'Choisissez une durée et indiquez le numéro utilisé pour le paiement.')
+        else:
+            PubliciteProduit.objects.create(
+                produit=produit,
+                vendeur=vendeur,
+                duree_jours=duree,
+                montant=PUBLICITE_TARIFS[duree],
+                numero_paiement=numero,
+                reference=reference,
+            )
+            messages.success(request, 'Votre demande publicitaire a été envoyée. Elle sera activée après validation du paiement.')
+            return redirect('creer_publicite')
+
+    publicites = PubliciteProduit.objects.filter(vendeur=vendeur).select_related('produit').order_by('-date_soumission')
+    return render(request, 'core/creer_publicite.html', {
+        'vendeur': vendeur,
+        'produits': produits,
+        'publicites': publicites,
+        'tarifs': PUBLICITE_TARIFS,
+    })
+
+
+@login_required
+def admin_publicites(request):
+    if not request.user.is_staff:
+        return redirect('Welcome')
+    publicites = PubliciteProduit.objects.select_related('produit', 'vendeur').order_by('-date_soumission')
+    if request.method == 'POST':
+        publicite = get_object_or_404(PubliciteProduit, pk=request.POST.get('publicite'))
+        action = request.POST.get('action')
+        if action == 'valider' and publicite.statut == 'en_attente':
+            maintenant = timezone.now()
+            publicite.statut = 'active'
+            publicite.date_debut = maintenant
+            publicite.date_fin = maintenant + timedelta(days=publicite.duree_jours)
+            publicite.save(update_fields=['statut', 'date_debut', 'date_fin'])
+            messages.success(request, 'Publicité activée dans le catalogue.')
+        elif action == 'refuser':
+            publicite.statut = 'refusee'
+            publicite.save(update_fields=['statut'])
+            messages.success(request, 'Publicité refusée.')
+        return redirect('admin_publicites')
+    return render(request, 'core/admin_publicites.html', {'publicites': publicites})
+
+
+def actualiser_publicites_expirees():
+    PubliciteProduit.objects.filter(
+        statut='active', date_fin__isnull=False, date_fin__lte=timezone.now()
+    ).update(statut='expiree')
 
 @login_required
 def modifier_produit(request, pk):
@@ -616,6 +742,7 @@ def upload_photo_vendeur(request):
 
 def detail_produit(request, pk):
     produit = get_object_or_404(Produit, pk=pk, visible=True)
+    verifier_promos_expirees()
     log_action(request, 'product_view', f'Produit {produit.pk} - {produit.nom}')
     est_favori = False
     
@@ -628,7 +755,7 @@ def detail_produit(request, pk):
         except Client.DoesNotExist:
             pass
     
-    evaluations = produit.evaluations.all()
+    evaluations = produit.evaluations.order_by('-date')[:3]
     
     return render(request, 'core/detail_produit.html', {
         'produit': produit,
@@ -637,8 +764,9 @@ def detail_produit(request, pk):
     })
 def passer_commande(request, pk):
     produit = get_object_or_404(Produit, pk=pk, visible=True)
+    verifier_promos_expirees()
     erreur = None
-    prix_base = produit.prix_promo if (produit.promo and produit.prix_promo) else produit.prix
+    prix_base = produit.prix_promo if produit.promo_active() else produit.prix
 
     # Si client connecté, pré-remplir ses infos
     client_connecte = None
@@ -703,7 +831,7 @@ def passer_commande(request, pk):
         numero_client = request.GET.get('numero_client', '') or '0000000000'
         ville_client = request.GET.get('ville_client', '') or 'Conakry'
 
-    # Créer commande immédiatement pour permettre l'affichage du formulaire de paiement
+    # Ancien parcours : créer la commande préparatoire puis choisir le mode de paiement.
     commande = Commande.objects.create(
         produit=produit,
         vendeur=produit.vendeur,
@@ -742,6 +870,7 @@ def commandes_vendeur(request):
     commandes = Commande.objects.filter(
         vendeur=vendeur,
         archivee=False,
+        paiement__statut='valide',
     ).order_by('-date_commande')
     
     # Calcul des compteurs par statut
@@ -786,23 +915,16 @@ def changer_statut_commande(request, pk):
             produit.quantite += commande.quantite
             produit.save()
 
-# Ajouter aux ventes si acceptée
         if nouveau_statut == 'acceptee' and ancien_statut != 'acceptee':
-            # Notification désactivée selon la demande de l'utilisateur
-            pass
-            '''
+            # ✅ Le chiffre d'affaires est enregistré à la confirmation du paiement.
+            # ❌ NE PAS ajouter à nouveau aux ventes_du_mois ici - double comptage!
             creer_notification(
-            user=commande.vendeur.user,
-            type='commande',
-            titre='✅ Commande acceptée',
-            message=f'La commande #{commande.pk} de {commande.nom_client} a été acceptée.',
-            lien='/mes-commandes/'
-        )
-            '''
-            vendeur = commande.vendeur
-            montant = commande.produit.prix * commande.quantite
-            vendeur.ventes_du_mois += montant
-            vendeur.save()
+                user=commande.vendeur.user,
+                type='commande',
+                titre='✅ Commande acceptée',
+                message=f'La commande #{commande.pk} de {commande.nom_client} a été acceptée.',
+                lien='/mes-commandes/'
+            )
 
     return redirect('commandes_vendeur')
 
@@ -840,6 +962,18 @@ def abonnement_vendeur(request):
         'abonnement': abonnement,
         'paiements': paiements,
     })
+
+@login_required
+def supprimer_historique_paiements(request):
+    vendeur = get_object_or_404(Vendeur, user=request.user)
+    if request.method == 'POST':
+        seuil = timezone.now() - timedelta(days=30)
+        PaiementAbonnement.objects.filter(
+            vendeur=vendeur,
+            date_soumission__lt=seuil,
+        ).delete()
+        messages.success(request, 'Les paiements de plus d’un mois ont été supprimés.')
+    return redirect('abonnement_vendeur')
 
 
 @login_required
@@ -989,12 +1123,14 @@ def admin_valider_paiement_commande(request, pk):
     if request.method == 'POST':
         action = request.POST.get('action')
         if action == 'valider':
+            was_pending = paiement.statut != 'valide'
             paiement.statut = 'valide'
             paiement.save()
             # Ajouter aux ventes du mois
             vendeur = paiement.commande.vendeur
-            vendeur.ventes_du_mois += paiement.montant
-            vendeur.save()
+            if was_pending:
+                vendeur.ventes_du_mois += paiement.montant
+                vendeur.save(update_fields=['ventes_du_mois'])
         elif action == 'refuser':
             paiement.statut = 'refuse'
             paiement.save()
@@ -1133,18 +1269,19 @@ def payer_commande(request, pk):
             else:
                 numero = 'N/A'
 
-        PaiementCommande.objects.create(
+        paiement = PaiementCommande.objects.create(
             commande=commande,
             mode_paiement=mode_paiement,
             numero_paiement=numero,
             montant=montant,
             reference=reference,
+            statut='valide',
         )
         log_action(request, 'payment', f'Commande {commande.pk} mode {mode_paiement} montant {montant}')
 
-        if commande.vendeur:
+        if commande.vendeur and paiement.statut == 'valide':
             commande.vendeur.ventes_du_mois += montant
-            commande.vendeur.save()
+            commande.vendeur.save(update_fields=['ventes_du_mois'])
 
         if client_connecte and client_connecte.numero == commande.numero_client:
             update_loyalty_record(client_connecte, commande.vendeur, montant)
@@ -1205,10 +1342,11 @@ def confirmation_paiement_commande(request):
         try:
             client = Client.objects.get(user=request.user)
             # Get the most recent paid command for this client by phone number
-            commande = Commande.objects.filter(
-                numero_client=client.numero,
-                statut__in=['en_attente', 'acceptee', 'refusee']
-            ).order_by('-date_commande').first()
+            paiement = PaiementCommande.objects.filter(
+                commande__numero_client=client.numero,
+                statut='valide',
+            ).select_related('commande').order_by('-date_soumission').first()
+            commande = paiement.commande if paiement else None
         except Client.DoesNotExist:
             # User is authenticated but not a client (e.g., vendor or admin)
             # Try to find the most recent PaiementCommande
@@ -1217,12 +1355,8 @@ def confirmation_paiement_commande(request):
     # If no commande found or user is anonymous, get the most recent paid order
     if not commande:
         dernier_paiement = PaiementCommande.objects.filter(
-            statut='en_attente'
+            statut='valide'
         ).order_by('-date_soumission').first()
-        
-        if not dernier_paiement:
-            # Try to get any recent commande regardless of payment status
-            dernier_paiement = PaiementCommande.objects.order_by('-date_soumission').first()
         
         commande = dernier_paiement.commande if dernier_paiement else None
     
@@ -1277,12 +1411,13 @@ def payer_commande_orange(request, pk):
         if not numero_paiement:
             numero_paiement = 'N/A'
         
-        PaiementCommande.objects.create(
+        paiement = PaiementCommande.objects.create(
             commande=commande,
             mode_paiement='orange_money',
             numero_paiement=numero_paiement,
             montant=commande.prix_total,
             reference=reference,
+            statut='valide',
         )
         log_action(request, 'payment', f'Commande {commande.pk} mode orange_money montant {commande.prix_total}')
         
@@ -1345,12 +1480,13 @@ def payer_commande_mobile(request, pk):
         if not numero_paiement:
             numero_paiement = 'N/A'
         
-        PaiementCommande.objects.create(
+        paiement = PaiementCommande.objects.create(
             commande=commande,
             mode_paiement='mobile_money',
             numero_paiement=numero_paiement,
             montant=commande.prix_total,
             reference=reference,
+            statut='valide',
         )
         log_action(request, 'payment', f'Commande {commande.pk} mode mobile_money montant {commande.prix_total}')
         
@@ -1413,12 +1549,13 @@ def payer_commande_livraison(request, pk):
         # Pour paiement à la livraison, le numéro est utilisé pour livrer
         numero = commande.numero_client
         
-        PaiementCommande.objects.create(
+        paiement = PaiementCommande.objects.create(
             commande=commande,
             mode_paiement='paiement_livraison',
             numero_paiement=numero,
             montant=commande.prix_total,
             reference=adresse_livraison + (' | ' + instructions if instructions else ''),
+            statut='valide',
         )
         log_action(request, 'payment', f'Commande {commande.pk} mode paiement_livraison montant {commande.prix_total}')
         
@@ -1508,8 +1645,6 @@ def verifier_promos_expirees():
         produit.promo = False
         produit.prix_promo = None
         produit.jours_promo = None
-        produit.date_fin_promo = None
-        produit.date_debut_promo = None
         produit.save()
 
 # ============================================
@@ -1966,6 +2101,10 @@ def espace_client(request):
     
     # Générer la salutation personnalisée
     salutation = get_salutation_with_name(client.nom)
+    vendeurs_fidelite = Vendeur.objects.filter(
+        statut='actif',
+        fidelite_active=True,
+    ).order_by('nom_boutique')
 
     return render(request, 'core/espace_client.html', {
         'client': client,
@@ -1980,6 +2119,7 @@ def espace_client(request):
         'proposer_suppression_historique': proposer_suppression_historique,
         'nb_messages_non_lus': nb_messages_non_lus,
         'salutation': salutation,
+        'vendeurs_fidelite': vendeurs_fidelite,
     })
 
 @login_required
@@ -2016,9 +2156,13 @@ def supprimer_historique_commandes_client(request):
 # SECURITY: AJAX views now require CSRF token
 # Les appels AJAX doivent inclure le token CSRF dans l'en-tête X-CSRFToken
 
-@login_required
 def toggle_favori(request, produit_pk):
     """Basculer l'état favori d'un produit (retourne JSON pour AJAX)"""
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'success': False,
+            'error': 'Vous devez avoir un compte client pour ajouter un produit aux favoris.'
+        }, status=401)
     try:
         client = Client.objects.get(user=request.user)
         produit = get_object_or_404(Produit, pk=produit_pk)
@@ -2059,11 +2203,15 @@ def mes_favoris(request):
         client = Client.objects.get(user=request.user)
     except Client.DoesNotExist:
         return redirect('Welcome')
-    
+
+    # Nettoyer les favoris en base qui pointent vers un produit masqué/supprimé.
+    Favori.objects.filter(client=client, produit__visible=False).delete()
+
     favoris = Favori.objects.filter(
-        client=client
+        client=client,
+        produit__visible=True,
     ).select_related('produit', 'produit__vendeur').order_by('-date_ajout')
-    
+
     return render(request, 'core/mes_favoris.html', {
         'favoris': favoris,
         'client': client,
@@ -2191,6 +2339,17 @@ def evaluer_produit(request, pk):
     
     if request.method == 'POST':
         if client:
+            achat = Commande.objects.filter(
+                produit=produit,
+                numero_client=client.numero,
+                paiement__statut='valide',
+            ).exists()
+            if not achat:
+                messages.error(request, 'Vous devez avoir payé ce produit pour laisser un avis.')
+                return redirect('detail_produit', pk=pk)
+            if Evaluation.objects.filter(produit=produit, client_numero=client.numero).exists():
+                messages.info(request, 'Vous avez déjà laissé un avis pour ce produit.')
+                return redirect('detail_produit', pk=pk)
             Evaluation.objects.create(
                 produit=produit,
                 client_nom=client.nom,
@@ -2243,7 +2402,7 @@ def statistiques_vendeur(request):
 
     commandes_acceptees_vendeur = Commande.objects.filter(
         vendeur=vendeur,
-        statut='acceptee'
+        paiement__statut='valide',
     )
 
     # Construire une fenêtre de 12 mois jusqu'au mois actuel
@@ -2258,10 +2417,13 @@ def statistiques_vendeur(request):
 
     # Agréger les ventes acceptées par année/mois
     from django.db.models.functions import ExtractYear, ExtractMonth
-    ventes_par_mois = commandes_acceptees_vendeur.annotate(
-        annee=ExtractYear('date_commande'),
-        mois=ExtractMonth('date_commande')
-    ).values('annee', 'mois').annotate(total=Sum('prix_total')).order_by('annee', 'mois')
+    ventes_par_mois = PaiementCommande.objects.filter(
+        commande__vendeur=vendeur,
+        statut='valide',
+    ).annotate(
+        annee=ExtractYear('date_soumission'),
+        mois=ExtractMonth('date_soumission')
+    ).values('annee', 'mois').annotate(total=Sum('montant')).order_by('annee', 'mois')
 
     ventes_par_mois_dict = {
         f"{item['annee']}-{item['mois']:02d}": int(item['total'] or 0)
@@ -2310,9 +2472,11 @@ def catalogue(request):
     
     choisir_abonnement()
     verifier_promos_expirees()
+    actualiser_publicites_expirees()
     selected_ville = request.GET.get('ville', '')
     recherche = request.GET.get('q', '')
     categorie_slug = request.GET.get('categorie', '')
+    tri = request.GET.get('tri', 'nom')
 
     default_ville = ''
     if request.user.is_authenticated:
@@ -2330,7 +2494,7 @@ def catalogue(request):
 
     if selected_ville:
         produits = produits.filter(vendeur__ville__icontains=selected_ville)
-    elif default_ville:
+    if default_ville and not selected_ville and tri == 'nom':
         produits = produits.annotate(
             priority=Case(
                 When(vendeur__ville__iexact=default_ville, then=Value(0)),
@@ -2338,6 +2502,14 @@ def catalogue(request):
                 output_field=IntegerField()
             )
         ).order_by('priority', 'nom')
+    else:
+        ordre = {
+            'nom': 'nom',
+            'prix_croissant': 'prix',
+            'prix_decroissant': '-prix',
+            'nouveautes': '-id',
+        }.get(tri, 'nom')
+        produits = produits.order_by(ordre)
 
     if recherche:
         produits = produits.filter(
@@ -2355,7 +2527,23 @@ def catalogue(request):
 
     categories = Categorie.objects.all()
     villes = Vendeur.objects.filter(statut='actif').values_list('ville', flat=True).distinct()
-    promos = Produit.objects.filter(visible=True, promo=True, vendeur__statut='actif')[:10]
+    now = timezone.now()
+    promos = Produit.objects.filter(
+        visible=True,
+        vendeur__statut='actif',
+        promo=True,
+        prix_promo__isnull=False,
+    ).filter(
+        Q(date_debut_promo__isnull=True) | Q(date_debut_promo__lte=now),
+        Q(date_fin_promo__isnull=True) | Q(date_fin_promo__gt=now),
+    ).order_by('-date_debut_promo')[:10]
+    publicites_catalogue = PubliciteProduit.objects.filter(
+        statut='active',
+        date_debut__lte=timezone.now(),
+        date_fin__gt=timezone.now(),
+        produit__visible=True,
+        vendeur__statut='actif',
+    ).select_related('produit', 'vendeur').order_by('-date_debut')[:8]
 
     return render(request, 'core/catalogue.html', {
         'produits': produits,
@@ -2364,7 +2552,9 @@ def catalogue(request):
         'ville_selectionnee': ville_selectionnee,
         'recherche': recherche,
         'categorie_selectionnee': categorie_slug,
+        'tri': tri,
         'promos': promos,
+        'publicites_catalogue': publicites_catalogue,
     })
 
 @login_required
@@ -2385,6 +2575,10 @@ def supprimer_historique_commandes(request):
 
 def proposer_prix(request, pk):
     produit = get_object_or_404(Produit, pk=pk, visible=True)
+    verifier_promos_expirees()
+    if produit.promo_active():
+        messages.info(request, 'La négociation est indisponible pendant une promotion.')
+        return redirect('detail_produit', pk=pk)
     client_connecte = None
     if request.user.is_authenticated:
         try:
@@ -2770,10 +2964,11 @@ def admin_dashboard(request):
     if not request.user.is_staff:
         return redirect('Welcome')
 
-    from .models import PaiementAbonnement, PaiementCommande, Signalement
+    from .models import PaiementAbonnement, PaiementCommande, Signalement, PubliciteProduit
 
     paiements_abonnement = PaiementAbonnement.objects.filter(statut='en_attente').order_by('-date_soumission')
     paiements_commandes = PaiementCommande.objects.filter(statut='en_attente').order_by('-date_soumission')
+    publicites_en_attente = PubliciteProduit.objects.filter(statut='en_attente').order_by('-date_soumission')
     signalements = Signalement.objects.filter(traite=False).order_by('-date')
 
     vendeurs = Vendeur.objects.all()
@@ -2827,8 +3022,10 @@ def admin_dashboard(request):
         'revenus_7j': revenus_7j,
         'paiements_abonnement': paiements_abonnement,
         'paiements_commandes': paiements_commandes,
+        'publicites_en_attente': publicites_en_attente,
         'signalements': signalements,
     })
+
 
 
 @login_required
