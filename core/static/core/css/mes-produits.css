@@ -517,6 +517,25 @@
   }
 }
 
+/* When vendor header is present, visually merge the page header with it */
+.dashboard-header-premium + .mpc-container .mpc-header {
+  background: transparent;
+  border: none;
+  padding-top: 12px;
+  margin-top: -28px;
+}
+
+.dashboard-header-premium + .mpc-container .mpc-title-section h1 {
+  color: white;
+  font-size: 20px;
+}
+
+.dashboard-header-premium + .mpc-container .mpc-add-btn {
+  box-shadow: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.04));
+  color: white;
+}
+
 /* ============================================
    ANIMATIONS
    ============================================ */

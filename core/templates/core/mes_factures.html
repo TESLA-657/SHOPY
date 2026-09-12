@@ -6,128 +6,316 @@
 <link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
 {% endblock %}
 
-{% block title %}Mes Factures - Shopy Guin%C3%A9e{% endblock %}
+{% block title %}Mes Factures - SHOPY Guin%C3%A9e{% endblock %}
 
 {% block content %}
-<div class="account-container">
-    <div class="text-center mb-3">
-        <a href="{% url 'espace_client' %}" class="account-btn account-btn-primary fw-bold text-white" style="background-color: forestgreen; border-radius: 8px;">← Retour à mon espace</a>
-    </div>
-    
-    <div class="account-header">
-        <div class="account-stats">
-            <p class="account-stats-label">Mes commandes</p>
-            <div class="account-stats-value">{{ commandes|length }} commande(s)</div>
-        </div>
+<div class="account-container invoices-page">
+    <div class="invoices-back-wrap">
+        <a href="{% url 'espace_client' %}" class="account-btn account-btn-primary fw-bold text-white invoices-back-btn">← Retour à mon espace</a>
     </div>
 
-<div class="account-content">
-        <!-- En attente -->
-        <div class="facture-card mb-4">
-            <div class="facture-card-header">
-                <div class="facture-card-header-icon waiting">⏳</div>
-                <h3 class="facture-card-header-title">En attente</h3>
-            </div>
-            {% for commande in commandes %}
-                {% if commande.statut == 'en_attente' %}
-                    <div class="facture-item">
-                        {% if commande.produit.photo %}
-                            <img src="{{ commande.produit.photo.url }}" class="facture-item-image">
-                        {% else %}
-                            <div class="facture-item-placeholder">📦</div>
-                        {% endif %}
-                        <div class="facture-item-content">
-                            <p class="facture-item-title">{{ commande.produit.nom }}</p>
-                            <p class="facture-item-meta">🏪 {{ commande.vendeur.nom_boutique }} · 📍 {{ commande.vendeur.ville }}</p>
-                            <p class="facture-item-meta">Quantité: {{ commande.quantite }}</p>
-                            <p class="facture-item-price">{{ commande.prix_total|format_prix }} GNF</p>
-                        </div>
-                        <div>
-                            <span class="facture-status-badge waiting">⏳ En attente</span>
-                            <p class="facture-item-date mt-2">{{ commande.date_commande|date:"d/m/Y H:i" }}</p>
-                        </div>
-                    </div>
-                {% endif %}
-            {% empty %}
-                <div class="facture-empty-state">
-                    <div class="facture-empty-icon">🛒</div>
-                    <p class="facture-empty-title">Aucune commande en attente</p>
-                    <p class="facture-empty-subtitle">Vos commandes en attente apparaîtront ici.</p>
-                </div>
-            {% endfor %}
+    <div class="invoices-header">
+        <div class="invoices-header-copy">
+            <p class="invoices-kicker">Historique</p>
+            <h1>Mes factures</h1>
         </div>
-
-        <!-- Acceptées -->
-        <div class="facture-card mb-4">
-            <div class="facture-card-header">
-                <div class="facture-card-header-icon accepted">✅</div>
-                <h3 class="facture-card-header-title">Acceptées</h3>
-            </div>
-            {% for commande in commandes %}
-                {% if commande.statut == 'acceptee' %}
-                    <div class="facture-item">
-                        {% if commande.produit.photo %}
-                            <img src="{{ commande.produit.photo.url }}" class="facture-item-image">
-                        {% else %}
-                            <div class="facture-item-placeholder">📦</div>
-                        {% endif %}
-                        <div class="facture-item-content">
-                            <p class="facture-item-title">{{ commande.produit.nom }}</p>
-                            <p class="facture-item-meta">🏪 {{ commande.vendeur.nom_boutique }} · 📍 {{ commande.vendeur.ville }}</p>
-                            <p class="facture-item-meta">Quantité: {{ commande.quantite }}</p>
-                            <p class="facture-item-price">{{ commande.prix_total|format_prix }} GNF</p>
-                        </div>
-                        <div>
-                            <a href="{% url 'telecharger_facture' commande.pk %}" class="facture-download-btn" target="_blank">
-                                📥 Télécharger Facture
-                            </a>
-                            <p class="facture-item-date mt-2">{{ commande.date_commande|date:"d/m/Y H:i" }}</p>
-                        </div>
-                    </div>
-                {% endif %}
-            {% empty %}
-                <div class="facture-empty-state">
-                    <div class="facture-empty-icon">🎉</div>
-                    <p class="facture-empty-title">Aucune commande acceptée</p>
-                    <p class="facture-empty-subtitle">Vos commandes acceptées apparaîtront ici.</p>
-                </div>
-            {% endfor %}
+        <div class="invoices-summary" aria-label="Nombre d'achats">
+            <span>{{ commandes|length }}</span>
+            <small>produit{{ commandes|length|pluralize }} acheté{{ commandes|length|pluralize }}</small>
         </div>
+    </div>
 
-        <!-- Refusées -->
-        <div class="facture-card">
-            <div class="facture-card-header">
-                <div class="facture-card-header-icon rejected">❌</div>
-                <h3 class="facture-card-header-title">Refusées/Annulées</h3>
-            </div>
+    <div class="account-content">
+        <div class="invoice-list-panel">
             {% for commande in commandes %}
-                {% if commande.statut == 'refusee' or commande.statut == 'annulee' %}
-                    <div class="facture-item">
-                        {% if commande.produit.photo %}
-                            <img src="{{ commande.produit.photo.url }}" class="facture-item-image">
-                        {% else %}
-                            <div class="facture-item-placeholder">📦</div>
-                        {% endif %}
-                        <div class="facture-item-content">
-                            <p class="facture-item-title">{{ commande.produit.nom }}</p>
-                            <p class="facture-item-meta">🏪 {{ commande.vendeur.nom_boutique }} · 📍 {{ commande.vendeur.ville }}</p>
-                            <p class="facture-item-meta">Quantité: {{ commande.quantite }}</p>
-                            <p class="facture-item-price">{{ commande.prix_total|format_prix }} GNF</p>
-                        </div>
-                        <div>
-                            <span class="facture-status-badge rejected">{% if commande.statut == 'refusee' %}❌ Refusée{% else %}🚫 Annulée{% endif %}</span>
-                            <p class="facture-item-date mt-2">{{ commande.date_commande|date:"d/m/Y H:i" }}</p>
-                        </div>
-                    </div>
+            <article class="invoice-item">
+                {% if commande.produit.photo %}
+                    <img src="{{ commande.produit.photo.url }}" class="invoice-item-image" alt="{{ commande.produit.nom }}">
+                {% else %}
+                    <div class="invoice-item-placeholder">📦</div>
                 {% endif %}
-            {% empty %}
-                <div class="facture-empty-state">
-                    <div class="facture-empty-icon">👍</div>
-                    <p class="facture-empty-title">Aucune commande refusée</p>
-                    <p class="facture-empty-subtitle">Vos commandes refusées ou annulées apparaîtront ici.</p>
+
+                <div class="invoice-item-content">
+                    <div class="invoice-headline">
+                        <h3>{{ commande.produit.nom }}</h3>
+                        <span class="invoice-status {% if commande.statut == 'acceptee' %}accepted{% elif commande.statut == 'en_attente' %}waiting{% else %}rejected{% endif %}">
+                            {% if commande.statut == 'acceptee' %}✅ Acceptée{% elif commande.statut == 'en_attente' %}⏳ En attente{% elif commande.statut == 'refusee' %}❌ Refusée{% else %}🚫 Annulée{% endif %}
+                        </span>
+                    </div>
+
+                    <p class="invoice-meta">🏪 {{ commande.vendeur.nom_boutique }} · 📍 {{ commande.vendeur.ville }}</p>
+                    <p class="invoice-meta">Quantité : {{ commande.quantite }}</p>
+                    <p class="invoice-meta">Commande du {{ commande.date_commande|date:"d/m/Y H:i" }}</p>
+
+                    <div class="invoice-footer">
+                        <span class="invoice-price">{{ commande.prix_total|format_prix }} GNF</span>
+                        {% if commande.statut == 'acceptee' %}
+                        <a href="{% url 'telecharger_facture' commande.pk %}" class="invoice-download" target="_blank">
+                            📥 Facture
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
+            </article>
+            {% empty %}
+            <div class="facture-empty-state premium-empty">
+                <div class="facture-empty-icon">🛒</div>
+                <p class="facture-empty-title">Aucune facture pour le moment</p>
+                <p class="facture-empty-subtitle">Vos produits achetés apparaîtront ici dans l’ordre de commande.</p>
+            </div>
             {% endfor %}
         </div>
     </div>
 </div>
+
+<style>
+.invoices-page {
+    background:
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.08), transparent 22%),
+        linear-gradient(180deg, #f6fbf8 0%, #edf6f1 100%);
+}
+
+.invoices-back-wrap {
+    padding: 18px 14px 0;
+}
+
+.invoices-back-btn {
+    background: linear-gradient(135deg, #0f766e, #16a34a) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 12px 22px rgba(22, 163, 74, 0.18);
+}
+
+.invoices-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 12px 14px 18px;
+    padding: 22px 20px;
+    background: linear-gradient(135deg, rgba(15, 118, 110, 0.98), rgba(22, 163, 74, 0.95));
+    border-radius: 22px;
+    box-shadow: 0 18px 34px rgba(15, 118, 110, 0.18);
+    color: white;
+}
+
+.invoices-kicker {
+    margin: 0 0 6px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    font-weight: 700;
+}
+
+.invoices-header h1 {
+    margin: 0;
+    font-size: clamp(26px, 4vw, 34px);
+    line-height: 1.1;
+    font-weight: 900;
+}
+
+.invoices-summary {
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 18px;
+    padding: 14px 16px;
+    backdrop-filter: blur(8px);
+}
+
+.invoices-summary span {
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.invoices-summary small {
+    margin-top: 6px;
+    font-size: 11px;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.invoice-list-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 6px;
+}
+
+.invoice-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(255,255,255,0.96);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 20px;
+    box-shadow: 0 18px 28px rgba(15, 23, 42, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.invoice-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 22px 34px rgba(15, 23, 42, 0.09);
+}
+
+.invoice-item-image,
+.invoice-item-placeholder {
+    width: 88px;
+    height: 88px;
+    border-radius: 18px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #e7f9ef, #dff4e9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    flex-shrink: 0;
+    border: 1px solid rgba(34, 197, 94, 0.16);
+}
+
+.invoice-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.invoice-headline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.invoice-headline h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.3;
+}
+
+.invoice-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 130px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    border: 1px solid transparent;
+}
+
+.invoice-status.waiting {
+    background: rgba(245, 158, 11, 0.12);
+    color: #b45309;
+    border-color: rgba(245, 158, 11, 0.22);
+}
+
+.invoice-status.accepted {
+    background: rgba(34, 197, 94, 0.12);
+    color: #166534;
+    border-color: rgba(34, 197, 94, 0.22);
+}
+
+.invoice-status.rejected {
+    background: rgba(239, 68, 68, 0.10);
+    color: #991b1b;
+    border-color: rgba(239, 68, 68, 0.18);
+}
+
+.invoice-meta {
+    margin: 4px 0;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.invoice-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.invoice-price {
+    font-weight: 900;
+    font-size: 18px;
+    color: #0f172a;
+}
+
+.invoice-download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #0f766e, #16a34a);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 10px 18px rgba(22, 163, 74, 0.15);
+}
+
+.premium-empty {
+    background: rgba(255,255,255,0.9);
+    border: 1px dashed rgba(34, 197, 94, 0.35);
+    border-radius: 20px;
+    padding: 40px 20px;
+    text-align: center;
+    box-shadow: 0 12px 22px rgba(15, 23, 42, 0.03);
+}
+
+.facture-empty-icon {
+    font-size: 54px;
+    margin-bottom: 12px;
+}
+
+.facture-empty-title {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.facture-empty-subtitle {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+@media (max-width: 640px) {
+    .invoices-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .invoices-summary {
+        width: 100%;
+    }
+
+    .invoice-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .invoice-headline {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .invoice-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
 {% endblock %}

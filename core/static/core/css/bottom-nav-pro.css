@@ -1,243 +1,356 @@
 /* ===================================================================
-   SHOPY PRO — Bottom Navigation Bar (Style RevendeurTech & TikTok)
+   SHOPY PRO — Bottom Navigation Bar (Inspiré de RevendeurTech / Souaré Store)
    =================================================================== */
 
 :root {
   --shopy-bnav-bg: #071122;
   --shopy-bnav-border: #173b68;
-  --shopy-bnav-text: #94a3b8;
+  --shopy-bnav-text: #8a99ad;
   --shopy-bnav-active: #20d66b;
-  --shopy-bnav-active-bg: rgba(32, 214, 107, 0.12);
-  --shopy-height: 68px;
+  --shopy-bnav-accent: #20d66b;
+  --shopy-height: 66px;
 }
 
 [data-theme="light"] {
-  --shopy-bnav-bg: #ffffff;
-  --shopy-bnav-border: #e2e8f0;
+  --shopy-bnav-bg: rgba(255, 255, 255, 0.96);
+  --shopy-bnav-border: rgba(203, 213, 225, 0.8);
   --shopy-bnav-text: #64748b;
   --shopy-bnav-active: #059669;
-  --shopy-bnav-active-bg: rgba(5, 150, 105, 0.1);
 }
 
 body.has-bottom-nav {
-  padding-bottom: calc(var(--shopy-height) + 16px) !important;
+  padding-bottom: calc(var(--shopy-height) + 12px) !important;
 }
 
-/* Conteneur fixe tout en bas */
+/* Wrapper principal fixe en bas */
 .shopy-bottom-nav-wrapper {
-  position: fixed !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 99999 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  pointer-events: none !important;
-  display: flex !important;
-  justify-content: center !important;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  padding: 0;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
 }
 
 .shopy-bottom-nav {
-  pointer-events: auto !important;
-  width: 100% !important;
-  max-width: 640px !important;
-  height: var(--shopy-height) !important;
-  background: var(--shopy-bnav-bg) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border-top: 1px solid var(--shopy-bnav-border) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-around !important;
-  box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.4) !important;
-  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
-  margin: 0 !important;
+  pointer-events: auto;
+  width: 100%;
+  max-width: 600px;
+  height: var(--shopy-height);
+  background: var(--shopy-bnav-bg);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-top: 1px solid var(--shopy-bnav-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Item de navigation individuel (Lien <a>) */
-a.shopy-nav-item,
 .shopy-nav-item {
-  flex: 1 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-decoration: none !important;
-  color: var(--shopy-bnav-text) !important;
-  padding: 8px 0 !important;
-  position: relative !important;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  cursor: pointer !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
-  -webkit-tap-highlight-color: transparent !important;
-  border: none !important;
-  background: transparent !important;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--shopy-bnav-text);
+  padding: 6px 0;
+  position: relative;
+  transition: all 0.2s ease;
 }
 
-a.shopy-nav-item:hover,
-a.shopy-nav-item:focus,
-a.shopy-nav-item:active,
-a.shopy-nav-item:visited {
-  text-decoration: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* Boîte d'icône */
 .shopy-nav-icon-box {
-  position: relative !important;
-  font-size: 21px !important;
-  height: 26px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: inherit !important;
-  transition: transform 0.2s ease, color 0.2s ease !important;
+  position: relative;
+  font-size: 22px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.shopy-nav-icon-box i {
-  font-style: normal !important;
-  line-height: 1 !important;
-  font-size: 21px !important;
-}
-
-/* Libellé texte de l'onglet */
 .shopy-nav-label {
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  margin-top: 3px !important;
-  letter-spacing: 0.2px !important;
-  line-height: 1.1 !important;
-  color: inherit !important;
-  text-decoration: none !important;
-  transition: color 0.2s ease, font-weight 0.2s ease !important;
-  white-space: nowrap !important;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 2px;
+  letter-spacing: 0.2px;
+  transition: color 0.2s ease;
 }
 
-a.shopy-nav-item:hover {
-  color: #ffffff !important;
+.shopy-nav-item:hover {
+  color: #ffffff;
 }
 
-[data-theme="light"] a.shopy-nav-item:hover {
-  color: #0f172a !important;
-}
-
-a.shopy-nav-item:hover .shopy-nav-icon-box {
-  transform: translateY(-2px) !important;
-}
-
-/* ===================================================================
-   ONGLET ACTIF (Vert Émeraude Vibrant #20D66B)
-   =================================================================== */
-a.shopy-nav-item.active,
+/* Tab Actif - Vert Émeraude Premium */
 .shopy-nav-item.active {
-  color: var(--shopy-bnav-active) !important;
+  color: var(--shopy-bnav-active);
 }
 
-a.shopy-nav-item.active .shopy-nav-icon-box {
-  transform: translateY(-2px) scale(1.12) !important;
-  color: var(--shopy-bnav-active) !important;
-  filter: drop-shadow(0 0 10px rgba(32, 214, 107, 0.6)) !important;
+.shopy-nav-item.active .shopy-nav-icon-box {
+  transform: translateY(-2px) scale(1.1);
+  color: var(--shopy-bnav-active);
+  filter: drop-shadow(0 0 8px rgba(32, 214, 107, 0.5));
 }
 
-a.shopy-nav-item.active .shopy-nav-label {
-  color: var(--shopy-bnav-active) !important;
-  font-weight: 800 !important;
-  text-decoration: none !important;
+.shopy-nav-item.active .shopy-nav-label {
+  color: var(--shopy-bnav-active);
+  font-weight: 800;
 }
 
-/* Indicateur supérieur lumineux */
-a.shopy-nav-item.active::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  width: 28px !important;
-  height: 3px !important;
-  background: var(--shopy-bnav-active) !important;
-  border-radius: 0 0 4px 4px !important;
-  box-shadow: 0 0 12px var(--shopy-bnav-active) !important;
+/* Ligne supérieure active */
+.shopy-nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: var(--shopy-bnav-active);
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 0 10px var(--shopy-bnav-active);
 }
 
-/* ===================================================================
-   BOUTON CENTRAL D'ACTION RAPIDE (Bouton '+' Vendeur / Panier Client)
-   =================================================================== */
+/* Badge de notification */
+.shopy-nav-badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  background: #ff3b30;
+  color: white;
+  font-size: 9px;
+  font-weight: 800;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid var(--shopy-bnav-bg);
+}
+
+/* TikTok / RevendeurTech Center Button (+ / Action) */
 .shopy-nav-center-item {
-  flex: 0 0 auto !important;
-  padding: 0 6px !important;
+  flex: 0 0 auto;
+  padding: 0 4px;
 }
 
 .shopy-tiktok-btn {
-  position: relative !important;
-  width: 46px !important;
-  height: 34px !important;
-  background: #20d66b !important;
-  border-radius: 11px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  box-shadow: 0 0 14px rgba(32, 214, 107, 0.45) !important;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  position: relative;
+  width: 44px;
+  height: 32px;
+  background: #20d66b;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(32, 214, 107, 0.4);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .shopy-tiktok-btn-inner {
-  width: 42px !important;
-  height: 30px !important;
-  background: #071122 !important;
-  border-radius: 9px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: #20d66b !important;
-  font-size: 18px !important;
-  font-weight: 900 !important;
-  border: 1px solid rgba(32, 214, 107, 0.35) !important;
+  width: 40px;
+  height: 28px;
+  background: #0b1426;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #20d66b;
+  font-size: 17px;
+  font-weight: 900;
+  border: 1px solid rgba(32, 214, 107, 0.3);
 }
 
 .shopy-tiktok-btn:hover {
-  transform: scale(1.12) rotate(2deg) !important;
+  transform: scale(1.1) rotate(2deg);
 }
 
 .shopy-tiktok-btn:active {
-  transform: scale(0.94) !important;
-}
-
-/* Variante Client (Bouton Panier) */
-.shopy-tiktok-btn.client-btn {
-  background: #20d66b !important;
-  box-shadow: 0 0 14px rgba(32, 214, 107, 0.45) !important;
-}
-
-.shopy-tiktok-btn.client-btn .shopy-tiktok-btn-inner {
-  color: #20d66b !important;
-}
-
-/* ===================================================================
-   BADGES DE NOTIFICATION
-   =================================================================== */
-.shopy-nav-badge {
-  position: absolute !important;
-  top: -5px !important;
-  right: -9px !important;
-  background: #ef4444 !important;
-  color: #ffffff !important;
-  font-size: 9px !important;
-  font-weight: 800 !important;
-  min-width: 17px !important;
-  height: 17px !important;
-  border-radius: 99px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 4px !important;
-  border: 2px solid var(--shopy-bnav-bg) !important;
-  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4) !important;
+  transform: scale(0.95);
 }
 
 @media print {
   .shopy-bottom-nav-wrapper {
     display: none !important;
+  }
+}
+
+/* Prevent underlines and ensure readable size in bottom nav */
+.shopy-bottom-nav a, .shopy-bottom-nav a * {
+  text-decoration: none !important;
+}
+
+/* Navigation fixe horizontale, avec noms de classes utilisés par le template. */
+:root {
+  --SHOPY-nav-height: 72px;
+  --SHOPY-nav-bg: rgba(10, 18, 32, 0.97);
+  --SHOPY-nav-border: rgba(255, 255, 255, 0.12);
+  --SHOPY-nav-text: #aab6c8;
+  --SHOPY-nav-active: #20d66b;
+}
+
+body.has-bottom-nav {
+  padding-bottom: calc(var(--SHOPY-nav-height) + env(safe-area-inset-bottom, 0px) + 14px) !important;
+}
+
+.SHOPY-bottom-nav-wrapper {
+  position: fixed;
+  z-index: 9999;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  padding: 0 12px env(safe-area-inset-bottom, 0px);
+}
+
+.SHOPY-bottom-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 4px;
+  width: min(100%, 760px);
+  min-height: var(--SHOPY-nav-height);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  pointer-events: auto;
+  background: var(--SHOPY-nav-bg);
+  border: 1px solid var(--SHOPY-nav-border);
+  border-bottom: 0;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+
+.SHOPY-bottom-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.SHOPY-nav-item {
+  position: relative;
+  display: flex;
+  flex: 1 0 112px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--SHOPY-nav-height);
+  padding: 8px 12px 7px;
+  color: var(--SHOPY-nav-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 180ms ease, background 180ms ease;
+}
+
+.SHOPY-nav-item:hover,
+.SHOPY-nav-item:focus-visible,
+.SHOPY-nav-item.active {
+  color: var(--SHOPY-nav-active);
+}
+
+.SHOPY-nav-item.active {
+  background: rgba(32, 214, 107, 0.09);
+}
+
+.SHOPY-nav-icon-box {
+  position: relative;
+  display: grid;
+  width: 30px;
+  height: 28px;
+  place-items: center;
+  font-size: 21px;
+}
+
+.SHOPY-nav-label {
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.SHOPY-nav-center-item {
+  flex: 0 0 76px;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
+.SHOPY-tiktok-btn {
+  display: grid;
+  width: 46px;
+  height: 34px;
+  place-items: center;
+  background: var(--SHOPY-nav-active);
+  border-radius: 10px;
+  box-shadow: 0 5px 18px rgba(32, 214, 107, 0.28);
+}
+
+.SHOPY-tiktok-btn-inner {
+  display: grid;
+  width: 40px;
+  height: 28px;
+  place-items: center;
+  color: var(--SHOPY-nav-active);
+  background: #0b1426;
+  border: 1px solid rgba(32, 214, 107, 0.35);
+  border-radius: 8px;
+  font-size: 17px;
+}
+
+.SHOPY-nav-badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  display: grid;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  place-items: center;
+  color: #fff;
+  background: #ef4444;
+  border: 2px solid var(--SHOPY-nav-bg);
+  border-radius: 99px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .SHOPY-bottom-nav-wrapper {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .SHOPY-bottom-nav {
+    justify-content: flex-start;
+    width: 100%;
+    border-right: 0;
+    border-left: 0;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .SHOPY-nav-item {
+    flex-basis: 92px;
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .SHOPY-nav-center-item {
+    flex-basis: 68px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .SHOPY-nav-item,
+  .SHOPY-tiktok-btn {
+    transition: none;
   }
 }

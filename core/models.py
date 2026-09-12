@@ -123,6 +123,7 @@ class Vendeur(models.Model):
     ventes_du_mois = models.IntegerField(default=0)
     dernier_reset_ventes = models.DateField(null=True, blank=True)
     total_produits_crees = models.IntegerField(default=0)
+    fidelite_active = models.BooleanField(default=False)
     
 # === CHAMPS VENDEUR CERTIFIÉ (Fonctionnalité 6) ===
     est_certifie = models.BooleanField(default=False)
@@ -135,6 +136,28 @@ class Vendeur(models.Model):
     def __str__(self):
         badge = " ✅" if self.est_certifie else ""
         return f"{self.nom_boutique}{badge}"
+    
+    def reset_ventes_si_nouveau_mois(self):
+        """
+        Réinitialise les ventes du mois si le mois a changé.
+        À appeler avant toute opération utilisant ventes_du_mois.
+        """
+        from django.utils import timezone
+        from datetime import date
+        
+        aujourd_hui = timezone.now().date()
+        
+        # Si dernier_reset_ventes n'est pas défini ou est du mois dernier
+        if not self.dernier_reset_ventes or (
+            self.dernier_reset_ventes.year < aujourd_hui.year or
+            self.dernier_reset_ventes.month < aujourd_hui.month
+        ):
+            # Réinitialiser les ventes du mois
+            self.ventes_du_mois = 0
+            self.dernier_reset_ventes = aujourd_hui
+            self.save(update_fields=['ventes_du_mois', 'dernier_reset_ventes'])
+            return True
+        return False
 
 class FideliteClientVendeur(models.Model):
     vendeur = models.ForeignKey('Vendeur', on_delete=models.CASCADE, related_name='client_fidelites')
@@ -203,6 +226,16 @@ class Produit(models.Model):
             if prix_normal <= 0 or prix_promo_val >= prix_normal:
                 return 0
             return int(round((prix_normal - prix_promo_val) / prix_normal * 100))
+
+        def promo_active(self):
+            if not self.promo or self.prix_promo is None:
+                return False
+            now = timezone.now()
+            if self.date_debut_promo and now < self.date_debut_promo:
+                return False
+            if self.date_fin_promo and now >= self.date_fin_promo:
+                return False
+            return True
 
         def __str__(self):
             return self.nom
@@ -432,6 +465,37 @@ class PaiementAbonnement(models.Model):
 
     def __str__(self):
         return f"{self.vendeur.nom_boutique} - {self.plan.nom} - {self.statut}"
+
+
+class PubliciteProduit(models.Model):
+    DUREE_CHOICES = [
+        (7, '7 jours'),
+        (15, '15 jours'),
+        (30, '30 jours'),
+    ]
+    STATUT_CHOICES = [
+        ('en_attente', 'Paiement en attente'),
+        ('active', 'Active'),
+        ('expiree', 'Expirée'),
+        ('refusee', 'Refusée'),
+    ]
+    produit = models.ForeignKey(Produit, on_delete=models.CASCADE, related_name='publicites')
+    vendeur = models.ForeignKey(Vendeur, on_delete=models.CASCADE, related_name='publicites')
+    duree_jours = models.PositiveIntegerField(choices=DUREE_CHOICES)
+    montant = models.PositiveIntegerField()
+    numero_paiement = models.CharField(max_length=20)
+    reference = models.CharField(max_length=100, blank=True)
+    statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='en_attente')
+    date_soumission = models.DateTimeField(auto_now_add=True)
+    date_debut = models.DateTimeField(null=True, blank=True)
+    date_fin = models.DateTimeField(null=True, blank=True)
+
+    def est_active(self):
+        now = timezone.now()
+        return self.statut == 'active' and self.date_debut and self.date_fin and self.date_debut <= now < self.date_fin
+
+    def __str__(self):
+        return f"Pub {self.produit.nom} - {self.vendeur.nom_boutique}"
 
 
 class Signalement(models.Model):

@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+{% load static custom_filters %}
+{% block content %}
+<div class="account-container" style="padding:24px 14px;">
+  <div style="max-width:760px;margin:0 auto;background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:24px;box-shadow:0 14px 30px rgba(15,23,42,.08);">
+    <p style="margin:0 0 4px;color:#64748b;font-size:12px;text-transform:uppercase;font-weight:700;">Visibilité catalogue</p>
+    <h1 style="margin:0;color:#0f172a;font-size:25px;font-weight:800;">Mettre un produit en publicité</h1>
+    <p style="color:#475569;line-height:1.55;">Tous les vendeurs peuvent acheter une mise en avant, quel que soit leur abonnement. Votre publicité apparaît après validation du paiement et reste signalée comme sponsorisée.</p>
+
+    <form method="post" style="display:grid;gap:14px;margin-top:22px;">
+      {% csrf_token %}
+      <label>Produit à mettre en avant
+        <select name="produit" required style="display:block;width:100%;padding:12px;margin-top:6px;border:1px solid #cbd5e1;border-radius:10px;">
+          {% for produit in produits %}<option value="{{ produit.pk }}">{{ produit.nom }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Durée
+        <select name="duree_jours" required style="display:block;width:100%;padding:12px;margin-top:6px;border:1px solid #cbd5e1;border-radius:10px;">
+          <option value="7">7 jours - 10 000 GNF</option>
+          <option value="15">15 jours - 20 000 GNF</option>
+          <option value="30">30 jours - 35 000 GNF</option>
+        </select>
+      </label>
+      <label>Numéro utilisé pour le paiement
+        <input name="numero_paiement" required placeholder="Ex: 621 00 00 00" style="display:block;width:100%;padding:12px;margin-top:6px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+      <label>Référence du paiement (facultatif)
+        <input name="reference" placeholder="Référence de transaction" style="display:block;width:100%;padding:12px;margin-top:6px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+      <button type="submit" style="padding:13px;border:0;border-radius:10px;background:#2563eb;color:#fff;font-weight:800;cursor:pointer;">Envoyer la demande de publicité</button>
+    </form>
+
+    <h2 style="margin:28px 0 12px;font-size:18px;color:#0f172a;">Mes demandes</h2>
+    {% for publicite in publicites %}
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-top:1px solid #e2e8f0;">
+        <span><strong>{{ publicite.produit.nom }}</strong><br><small>{{ publicite.duree_jours }} jours - {{ publicite.montant|format_prix }} GNF</small></span>
+        <strong>{{ publicite.get_statut_display }}</strong>
+      </div>
+    {% empty %}<p style="color:#64748b;">Aucune demande publicitaire.</p>{% endfor %}
+  </div>
+</div>
+{% endblock %}

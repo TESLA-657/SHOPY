@@ -63,55 +63,60 @@
 .account-profile {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+    margin-top: -24px;
+    padding: 0 12px 16px;
 }
 
 .account-profile-avatar {
-  position: relative;
-  cursor: pointer;
-}
-
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(15,23,42,0.06);
+    border: 1px solid var(--border-light);
+    padding: 8px;
+    display: grid;
+    gap: 8px;
 .account-profile-avatar-img {
   width: 56px;
   height: 56px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 3px solid rgba(255, 255, 255, 0.4);
-  object-fit: cover;
-}
-
-.account-profile-avatar-placeholder {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 3px solid rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    text-decoration: none !important;
+    color: var(--text-primary);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.00));
+    border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  font-weight: bold;
-  color: white;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+    background: linear-gradient(90deg, rgba(98, 92, 255, 0.03), rgba(124, 58, 237, 0.02));
   background: linear-gradient(135deg, #3498db, #2980b9);
 }
 
+    transform: translateY(-1px) scale(0.998);
 .account-profile-avatar-placeholder.vendor {
   background: linear-gradient(135deg, #f39c12, #e67e22);
 }
+    outline: 3px solid rgba(37,99,235,0.12);
+    outline-offset: 2px;
 
 .account-profile-avatar-icon {
   position: absolute;
-  bottom: -2px;
-  right: -2px;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
+    background: #eef2ff;
+    border-radius: 10px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-right: 12px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
   background: #3949ab;
 }
 
@@ -123,19 +128,29 @@
 .vendor-online-dot {
   position: absolute;
   right: 0;
-  bottom: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
+    flex: 1;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-primary);
   background: #2ecc71;
   border: 2px solid rgba(255, 255, 255, 0.95);
   box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.18);
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 4px;
   z-index: 3;
 }
 
+    font-size: 20px;
+    color: var(--text-muted);
+    margin-left: 8px;
 
 /* little pop animation */
 @keyframes vendorDotPop {
+    transform: scale(1.08) translateY(-2px);
+    box-shadow: 0 6px 18px rgba(2,6,23,0.08);
   from { transform: scale(0.6); opacity: 0.2; }
   to { transform: scale(1); opacity: 1; }
 }
@@ -240,9 +255,13 @@
   align-items: center;
   padding: 18px 20px;
   border-bottom: 1px solid var(--border-light);
-  text-decoration: none;
+  text-decoration: none !important;
   color: var(--text-primary);
-  transition: all 0.3s ease;
+  transition: all 0.18s ease;
+  font-size: 16px;
+  line-height: 1.2;
+  gap: 12px;
+  background: transparent;
 }
 
 .account-menu-item:last-child {
@@ -250,7 +269,9 @@
 }
 
 .account-menu-item:hover {
-  background: rgba(230, 0, 18, 0.05);
+  background: linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
+  transform: translateX(4px);
+  box-shadow: var(--shadow-hover);
 }
 
 .account-menu-item-icon {
@@ -296,8 +317,40 @@
 
 .account-menu-item-text {
   flex: 1;
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+/* Ensure no underlines on any nested anchor text */
+.account-menu-item, .account-menu-item * {
+  text-decoration: none !important;
+}
+
+/* Compact layout on very small screens */
+@media (max-width: 420px) {
+  .account-menu-item {
+    padding: 14px 12px;
+    font-size: 15px;
+  }
+  .account-menu-item-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+  .account-menu-item-text { font-size: 15px; }
+}
+
+/* Strong defaults for links inside account areas to avoid small underlined links */
+.account-container a {
+  text-decoration: none !important;
+  color: inherit !important;
+  font-size: 16px !important;
+}
+
+.account-container .account-menu-item-arrow {
+  font-size: 20px;
+  color: #9aa4b2;
 }
 
 .account-menu-item-sub {

@@ -344,9 +344,9 @@
           <h4>{{ produit.nom }}</h4>
           <div class="proposer-prix-actuel">
             <span class="prix-label">Prix actuel:</span>
-            <span class="prix-value">{{ produit.prix|format_prix }} GNF</span>
-            {% if produit.promo and produit.prix_promo %}
-            <span class="badge-promo">PROMO -{{ produit.prix|sub:produit.prix_promo|div:produit.prix|mul:100|floatformat:0 }}%</span>
+            <span class="prix-value">{% if produit.promo_active %}{{ produit.prix_promo|format_prix }}{% else %}{{ produit.prix|format_prix }}{% endif %} GNF</span>
+            {% if produit.promo_active %}
+            <span class="badge-promo">PROMO -{{ produit.reduction_pourcentage }}%</span>
             {% endif %}
           </div>
           <p class="proposer-vendeur">🏪 {{ produit.vendeur.nom_boutique }} • 📍 {{ produit.vendeur.ville }}</p>

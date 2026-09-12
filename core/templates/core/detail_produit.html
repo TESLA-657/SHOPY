@@ -31,7 +31,7 @@
                     </div>
                 {% endif %}
                 
-                {% if produit.promo and produit.prix_promo %}
+                {% if produit.promo_active %}
                     <div class="promo-badge-large">
                         <span class="promo-text">PROMO</span>
                         <span class="promo-discount">-{{ produit.reduction_pourcentage }}%</span>
@@ -41,7 +41,6 @@
             
             <!-- Quick Actions -->
             <div class="quick-actions">
-                {% if user.is_authenticated %}
                 <button class="action-btn {% if est_favori %}active{% endif %}" onclick="toggleFavori({{ produit.pk }})" id="btn-favori-{{ produit.pk }}">
                     {% if est_favori %}
                         <span class="action-icon">❤️</span> <span>Retirer des favoris</span>
@@ -49,7 +48,6 @@
                         <span class="action-icon">🤍</span> <span>Ajouter aux favoris</span>
                     {% endif %}
                 </button>
-                {% endif %}
                 <button class="action-btn share" onclick="shareProduct()">
                     <span class="action-icon">📤</span> <span>Partager</span>
                 </button>
@@ -93,7 +91,7 @@
 
             <!-- Pricing Card -->
             <div class="pricing-card">
-                {% if produit.promo and produit.prix_promo %}
+                {% if produit.promo_active %}
                     <div class="price-current">
                         <span class="price-label">Prix promo</span>
                         <span class="price-value">{{ produit.prix_promo|format_prix }} GNF</span>
@@ -132,9 +130,11 @@
                     <a href="{% url 'passer_commande' produit.pk %}" class="btn-secondary btn-large">
                         <span>💰</span> Commander maintenant
                     </a>
-                    <a href="{% url 'proposer_prix' produit.pk %}" class="btn-outline btn-large">
-                        <span>💬</span> Négocier le prix
-                    </a>
+                    {% if not produit.promo_active %}
+                        <a href="{% url 'proposer_prix' produit.pk %}" class="btn-outline btn-large">
+                            <span>💬</span> Négocier le prix
+                        </a>
+                    {% endif %}
                 {% else %}
                     <button class="btn-disabled btn-large" disabled>
                         ❌ Rupture de stock
@@ -231,6 +231,56 @@
     </div>
 </div>
 
+<!-- Modal for authentication required - Panier -->
+<div id="modal-connexion-panier" class="modal-connexion-overlay">
+    <div class="modal-connexion-content">
+        <button class="modal-connexion-close" onclick="fermerModalConnexionPanier()">×</button>
+        
+        <div class="modal-connexion-icon">🛒</div>
+        
+        <h2 class="modal-connexion-title">Compte client requis</h2>
+        
+        <p class="modal-connexion-message">
+            Vous devez avoir un compte client pour ajouter des produits au panier. 
+            Connectez-vous ou créez un compte pour débloquer cette fonctionnalité.
+        </p>
+        
+        <div class="modal-connexion-actions">
+            <a href="/connexion-client/" class="modal-connexion-btn modal-connexion-btn-primary">
+                <span>🔓</span> Se connecter
+            </a>
+            <a href="/inscription-client/" class="modal-connexion-btn modal-connexion-btn-secondary">
+                <span>✨</span> Créer un compte
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for authentication required - Favoris -->
+<div id="modal-connexion-favori" class="modal-connexion-overlay">
+    <div class="modal-connexion-content">
+        <button class="modal-connexion-close" onclick="fermerModalConnexionFavori()">×</button>
+        
+        <div class="modal-connexion-icon">❤️</div>
+        
+        <h2 class="modal-connexion-title">Compte client requis</h2>
+        
+        <p class="modal-connexion-message">
+            Vous devez avoir un compte client pour ajouter des produits à vos favoris. 
+            Connectez-vous ou créez un compte pour débloquer cette fonctionnalité.
+        </p>
+        
+        <div class="modal-connexion-actions">
+            <a href="/connexion-client/" class="modal-connexion-btn modal-connexion-btn-primary">
+                <span>🔓</span> Se connecter
+            </a>
+            <a href="/inscription-client/" class="modal-connexion-btn modal-connexion-btn-secondary">
+                <span>✨</span> Créer un compte
+            </a>
+        </div>
+    </div>
+</div>
+
 <script>
 // Tab functionality
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -281,6 +331,12 @@ function ajouterAuPanier(produitPk) {
             return;
         }
 
+        if (response.status === 401) {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            afficherModalConnexionPanier();
+            return null;
+        }
         if (!response.ok) {
             throw new Error(data.error || 'Erreur serveur. Veuillez réessayer.');
         }
@@ -338,6 +394,11 @@ function toggleFavori(produitPk) {
     .then(response => response.json())
     .then(data => {
         btn.disabled = false;
+        if (!data.success) {
+            // Afficher le modal pour favoris au lieu d'une alerte
+            afficherModalConnexionFavori();
+            return;
+        }
         if (data.is_favori) {
             btn.innerHTML = '<span class="action-icon">❤️</span> <span>Retirer des favoris</span>';
             btn.classList.add('active');
@@ -386,5 +447,55 @@ function updatePanierCount() {
         if (countElement) countElement.innerHTML = data.count;
     });
 }
+
+// Modal Functions for Authentication
+function afficherModalConnexionPanier() {
+    var modal = document.getElementById('modal-connexion-panier');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function fermerModalConnexionPanier() {
+    var modal = document.getElementById('modal-connexion-panier');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function afficherModalConnexionFavori() {
+    var modal = document.getElementById('modal-connexion-favori');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function fermerModalConnexionFavori() {
+    var modal = document.getElementById('modal-connexion-favori');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Close modal when clicking outside content
+document.addEventListener('DOMContentLoaded', function() {
+    var modalPanier = document.getElementById('modal-connexion-panier');
+    if (modalPanier) {
+        modalPanier.addEventListener('click', function(event) {
+            if (event.target === this) {
+                fermerModalConnexionPanier();
+            }
+        });
+    }
+    
+    var modalFavori = document.getElementById('modal-connexion-favori');
+    if (modalFavori) {
+        modalFavori.addEventListener('click', function(event) {
+            if (event.target === this) {
+                fermerModalConnexionFavori();
+            }
+        });
+    }
+});
 </script>
 {% endblock %}

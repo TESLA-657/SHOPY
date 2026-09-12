@@ -8,6 +8,8 @@
 
 {% block content %}
 
+{% include 'core/_vendor_header.html' %}
+
 <div class="mpc-container">
   <div class="mpc-wrapper">
 
@@ -45,7 +47,7 @@
             💳 Choisir un abonnement
           </a>
         {% else %}
-          <a href="mailto:admin@shopy-guinee.com" class="mpc-suspended-btn-contact">
+          <a href="bahrytesla@gmail.com" class="mpc-suspended-btn-contact">
             📧 Contacter l'administrateur
           </a>
         {% endif %}
@@ -190,7 +192,7 @@
     <a href="{% url 'choisir_abonnement' %}" style="display:block; background: var(--mp-primary); color:white; padding:14px; border-radius: var(--mp-radius); font-weight:bold; text-decoration:none; margin-bottom:10px;">
       🚀 Upgrader mon abonnement
     </a>
-    <a href="{% url 'liste_produits_vendeur' %}?clear=1" style="display:block; color: var(--mp-text-muted); font-size:13px; text-decoration:none; padding:10px;">
+    <a href="{% url 'liste_produits_vendeur' %}?clear=1" onclick="document.getElementById('popup-limite').remove();" style="display:block; color: var(--mp-text-muted); font-size:13px; text-decoration:none; padding:10px;">
       Fermer
     </a>
   </div>

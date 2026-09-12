@@ -55,6 +55,10 @@
 
           <!-- Historique paiements -->
           <h6 class="ab-section-title">Historique des paiements</h6>
+          <form method="post" action="{% url 'supprimer_historique_paiements' %}" style="margin-bottom:12px;">
+            {% csrf_token %}
+            <button type="submit" class="ab-plan-btn">Supprimer les paiements de plus d’un mois</button>
+          </form>
           {% if paiements %}
             {% for p in paiements %}
               <div class="ab-payment-item">

@@ -52,7 +52,7 @@
               <p class="page-note" style="color:#08d44c; margin-top:4px; font-weight:700;">Fidélité appliquée : -{{ discount_pct }}% chez {{ produit.vendeur.nom_boutique }}</p>
             {% endif %}          </div>
           <span class="summary-chip" style="background-color: #1e1e2e;">
-            {% if produit.promo and produit.prix_promo %}
+            {% if produit.promo_active %}
               {{ produit.prix_promo|format_prix }} GNF
             {% else %}
               {{ produit.prix|format_prix }} GNF

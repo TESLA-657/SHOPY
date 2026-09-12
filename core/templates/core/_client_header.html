@@ -1,0 +1,99 @@
+{% load static %}
+<!-- Client header partial: reusable header for client dashboard and client sections -->
+<div class="client-header-premium">
+  <div class="client-orb orb-one"></div>
+  <div class="client-orb orb-two"></div>
+  <div class="client-orb orb-three"></div>
+
+  <div class="client-stats-row">
+    <div class="client-stat-item glass-card">
+      <span class="client-stat-icon">📦</span>
+      <div>
+        <p class="client-stat-label">Total commandes</p>
+        <p class="client-stat-value">{{ commandes|length }}</p>
+      </div>
+    </div>
+    {% if nb_commandes_acceptees > 0 %}
+    <div class="client-stat-badge">✨ {{ nb_commandes_acceptees }} acceptée(s)</div>
+    {% endif %}
+  </div>
+
+  <div class="dashboard-profile glass-card profile-card">
+    <form method="post" action="{% url 'upload_photo_client' %}" enctype="multipart/form-data" id="photo-form-client">
+      {% csrf_token %}
+      <label for="photo-input-client" class="client-avatar-wrapper">
+        <span class="client-avatar-frame">
+          {% if client.photo %}
+            <img src="{{ client.photo.url }}" alt="{{ client.nom }}" class="client-avatar-img" {% if client.photo %}onclick="voirPhoto('{{ client.photo.url }}')"{% endif %}>
+          {% else %}
+            <span class="client-avatar-placeholder">{{ client.nom|first|upper }}</span>
+          {% endif %}
+        </span>
+        <div class="client-avatar-edit">📷</div>
+        <span class="client-online-dot"></span>
+      </label>
+      <input type="file" id="photo-input-client" name="photo" accept="image/*" onchange="document.getElementById('photo-form-client').submit()">
+    </form>
+
+    <div class="dashboard-profile-info">
+      <p class="dashboard-salutation">{{ salutation }} 👋</p>
+      <h3 class="dashboard-name">{{ client.nom }}</h3>
+      <div class="dashboard-meta">
+        <span class="dashboard-verified">✅ Client vérifié</span>
+        <span class="dashboard-city">📍 {{ client.ville }}</span>
+        <span class="dashboard-city">📱 {{ client.numero }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.client-header-premium {
+  position: relative;
+  overflow: hidden;
+  padding: 24px 18px 72px;
+  background:
+    radial-gradient(800px 360px at 20% 0%, rgba(35, 134, 54, 0.18), transparent 45%),
+    linear-gradient(135deg, rgba(13, 17, 23, 0.98), rgba(22, 27, 34, 0.96));
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.client-orb { position:absolute; border-radius:999px; filter:blur(2px); opacity:0.85; pointer-events:none; animation:floatOrb 8s ease-in-out infinite }
+.orb-one { width:220px; height:220px; top:-70px; right:-40px; background: radial-gradient(circle, rgba(255,255,255,0.18), rgba(255,255,255,0)) }
+.orb-two { width:140px; height:140px; bottom:-30px; left:-30px; background: radial-gradient(circle, rgba(35, 134, 54, 0.22), rgba(35, 134, 54, 0)); animation-delay:2s }
+.orb-three { width:100px; height:100px; top:40%; left:40%; background: radial-gradient(circle, rgba(56, 139, 253, 0.16), rgba(56, 139, 253, 0)); animation-delay:4s }
+@keyframes floatOrb { 0%,100%{ transform: translateY(0px) scale(1) } 50% { transform: translateY(-12px) scale(1.04) } }
+.client-stats-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; position:relative; z-index:2 }
+.glass-card { backdrop-filter: blur(18px); background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); box-shadow:0 12px 32px rgba(0,0,0,0.16) }
+.client-stat-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:16px; color:white }
+.client-stat-icon { font-size:20px; background: rgba(255,255,255,0.12); width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center }
+.client-stat-value { margin:0; font-size:20px; font-weight:800; color:white }
+.client-stat-label { margin:0; font-size:11px; opacity:0.82; color:rgba(255,255,255,0.8); text-transform:uppercase; letter-spacing:0.06em }
+.client-stat-badge { background: rgba(35, 134, 54, 0.18); color:#d9f7e4; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; border:1px solid rgba(35, 134, 54, 0.35) }
+.dashboard-profile {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:16px;
+  border-radius:20px;
+  position:relative;
+  z-index:2;
+  background: rgba(22, 27, 34, 0.72);
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.22);
+  transform: translateY(8px);
+}
+.dashboard-profile-info { flex:1; color:white }
+.dashboard-salutation { margin:0 0 4px 0; font-size:14px; opacity:0.9 }
+.dashboard-name { margin:0 0 8px 0; font-size:22px; font-weight:800; color:#ffffff }
+.dashboard-meta { display:flex; flex-wrap:wrap; gap:8px; font-size:12px }
+.dashboard-verified, .dashboard-city { background: rgba(255,255,255,0.08); color:#ebf2ff; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.12) }
+.client-avatar-wrapper { position:relative; width:86px; height:86px; aspect-ratio:1; flex-shrink:0; cursor:pointer; border-radius:50%; overflow:visible; background:transparent; transition:all 0.3s ease; }
+.client-avatar-wrapper:hover { transform:translateY(-2px) scale(1.02); }
+.client-avatar-frame { position:absolute; inset:0; display:block; width:100%; height:100%; aspect-ratio:1; overflow:hidden; border:4px solid rgba(255,255,255,0.85); border-radius:50%; background:#16202d; box-shadow:0 0 0 3px rgba(59,130,246,0.35), 0 6px 20px rgba(0,0,0,0.35); }
+.client-avatar-img, .client-avatar-placeholder { display:block; width:100%; height:100%; border-radius:50%; object-fit:cover; border:0; }
+.client-avatar-placeholder { display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:white; background:linear-gradient(135deg,#238636 0%,#388bfd 100%); }
+.client-avatar-edit { position:absolute; right:0; bottom:0; width:28px; height:28px; border:2px solid white; border-radius:50%; background:#388bfd; display:flex; align-items:center; justify-content:center; font-size:12px; opacity:1; }
+.client-online-dot { position:absolute; right:-4px; top:-4px; width:15px; height:15px; border:3px solid #16202d; border-radius:50%; background:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,0.22), 0 3px 10px rgba(37,99,235,0.55); animation:clientOnlinePulse 2s ease-in-out infinite; }
+@keyframes clientOnlinePulse { 0%,100% { box-shadow:0 0 0 3px rgba(59,130,246,0.22), 0 3px 10px rgba(37,99,235,0.55); } 50% { box-shadow:0 0 0 6px rgba(59,130,246,0.08), 0 3px 12px rgba(37,99,235,0.7); } }
+</style>

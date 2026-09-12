@@ -1,0 +1,108 @@
+{% load static custom_filters %}
+<!-- Vendor header partial: reusable header for vendor dashboard and vendor sections -->
+<div class="dashboard-header-premium">
+
+  <!-- Stats vendeur -->
+  <div class="dashboard-stats-row">
+    <div class="dashboard-stat-item">
+      <span class="dashboard-stat-icon">💰</span>
+      <div>
+        <p class="dashboard-stat-label">Ventes du mois</p>
+        <p class="dashboard-stat-value">{{ ventes_du_mois|default:vendeur.ventes_du_mois|default:0|format_prix }} GNF</p>
+      </div>
+    </div>
+    {% if commandes_en_attente|default:0 %}
+    <div class="dashboard-stat-badge">
+      🔔 {{ commandes_en_attente|default:0 }} commande(s) en attente
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Profil vendeur -->
+  <div class="dashboard-profile">
+    <div class="dashboard-profile-avatar-wrapper">
+      <form method="post" action="{% url 'upload_photo_vendeur' %}"
+            enctype="multipart/form-data" id="photo-form">
+        {% csrf_token %}
+        <label for="photo-input" class="dashboard-avatar">
+          {% if vendeur.photo %}
+            <img src="{{ vendeur.photo.url }}" alt="{{ vendeur.nom_boutique }}"
+                 class="dashboard-avatar-img">
+          {% else %}
+            <div class="dashboard-avatar-placeholder">
+              {{ vendeur.nom_boutique|first|upper }}
+            </div>
+          {% endif %}
+          <div class="dashboard-avatar-edit">📷</div>
+        </label>
+        <input type="file" id="photo-input" name="photo" accept="image/*"
+               onchange="document.getElementById('photo-form').submit()">
+      </form>
+
+      <div class="dashboard-profile-info">
+        <p class="dashboard-salutation">{{ salutation|default:"Bonjour" }} 👋</p>
+        <h3 class="dashboard-name">{{ vendeur.nom_boutique }}</h3>
+        <div class="dashboard-meta">
+          {% if vendeur.statut == 'actif' %}
+          <span class="dashboard-verified">✅ Boutique vérifiée</span>
+          {% elif vendeur.statut == 'suspendu' %}
+          <span class="dashboard-suspended">⏸️ Suspendu</span>
+          {% else %}
+          <span class="dashboard-pending">⏳ En attente</span>
+          {% endif %}
+          <span class="dashboard-city">📍 {{ vendeur.ville }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.dashboard-header-premium {
+  position: relative;
+  overflow: hidden;
+  padding: 24px 20px 60px;
+  background:
+    radial-gradient(700px 260px at 15% 0%, rgba(35, 134, 54, 0.20), transparent 45%),
+    linear-gradient(135deg, rgba(13, 17, 23, 0.98), rgba(22, 27, 34, 0.96));
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.dashboard-header-premium::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(35, 134, 54, 0.08), transparent, rgba(56, 139, 253, 0.06));
+  pointer-events:none;
+}
+.dashboard-stats-row { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; position:relative; z-index:1 }
+.dashboard-stat-item { display:flex; align-items:center; gap:12px; color:white }
+.dashboard-stat-icon { font-size:32px; opacity:0.9 }
+.dashboard-stat-label { font-size:12px; text-transform:uppercase; letter-spacing:1px; opacity:0.7; margin:0 }
+.dashboard-stat-value { font-size:22px; font-weight:800; margin:0; text-shadow:0 2px 4px rgba(0,0,0,0.2) }
+.dashboard-stat-badge { background: rgba(35, 134, 54, 0.15); color:#d9f7e4; padding:8px 14px; border-radius:20px; font-size:13px; font-weight:600; border:1px solid rgba(35, 134, 54, 0.35) }
+.dashboard-profile {
+  position: relative;
+  z-index: 1;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:16px;
+  border-radius:20px;
+  background: rgba(22, 27, 34, 0.72);
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 14px 28px rgba(0,0,0,0.22);
+}
+.dashboard-profile-avatar-wrapper { display:flex; align-items:center; gap:16px }
+.dashboard-avatar { position:relative; display:block; width:72px; height:72px; }
+.dashboard-avatar-img { width:72px; height:72px; border-radius:50%; object-fit:cover; border:3px solid rgba(255,255,255,0.4); box-shadow:0 4px 15px rgba(0,0,0,0.2) }
+.dashboard-avatar-placeholder { width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:white; background:linear-gradient(135deg,#238636 0%,#388bfd 100%); border:3px solid rgba(255,255,255,0.4); box-shadow:0 4px 15px rgba(0,0,0,0.2) }
+.dashboard-avatar-edit { position:absolute; bottom:0; right:0; width:28px; height:28px; background:#238636; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; border:2px solid white }
+.dashboard-profile-info { color:white }
+.dashboard-salutation { font-size:14px; margin:0 0 4px 0; opacity:0.9 }
+.dashboard-name { font-size:22px; font-weight:800; margin:0 0 8px 0; color:#fff }
+.dashboard-meta { display:flex; gap:10px; flex-wrap:wrap }
+.dashboard-verified { background: rgba(35, 134, 54, 0.3); color:#d9f7e4; padding:5px 10px; border-radius:12px; font-size:11px; font-weight:600 }
+.dashboard-suspended { background: rgba(248, 81, 73, 0.28); color:#ffd7d4; padding:5px 10px; border-radius:12px; font-size:11px; font-weight:600 }
+.dashboard-pending { background: rgba(210, 153, 34, 0.26); color:#f8e7b3; padding:5px 10px; border-radius:12px; font-size:11px; font-weight:600 }
+.dashboard-city { background: rgba(255,255,255,0.08); color:#ebf2ff; padding:5px 10px; border-radius:12px; font-size:11px; border:1px solid rgba(255,255,255,0.1) }
+</style>

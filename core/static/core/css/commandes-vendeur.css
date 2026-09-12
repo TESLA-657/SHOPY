@@ -57,6 +57,18 @@
   flex-wrap: wrap;
 }
 
+/* Merge commandes header with vendor premium header when present */
+.dashboard-header-premium + #cv-commandes-container .cv-header {
+  background: transparent;
+  margin-top: -28px;
+  padding-top: 8px;
+}
+
+.dashboard-header-premium + #cv-commandes-container .cv-header-left h4 {
+  color: white;
+  font-size: 20px;
+}
+
 .cv-header-left h4 {
   color: var(--cv-text);
   font-weight: 900;

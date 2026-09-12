@@ -99,14 +99,14 @@
 
   <script>
     // Appliquer le thème sauvegardé
-    const theme = localStorage.getItem('shopy-theme') || 'light';
+    const theme = localStorage.getItem('SHOPY-theme') || 'light';
     document.body.setAttribute('data-theme', theme);
 
     function toggleTheme() {
       const current = document.body.getAttribute('data-theme');
       const nouveau = current === 'light' ? 'dark' : 'light';
       document.body.setAttribute('data-theme', nouveau);
-      localStorage.setItem('shopy-theme', nouveau);
+      localStorage.setItem('SHOPY-theme', nouveau);
 
       const btn = document.getElementById('theme-btn');
       if (btn) btn.textContent = nouveau === 'dark' ? '☀️ Mode clair' : '🌙 Mode sombre';

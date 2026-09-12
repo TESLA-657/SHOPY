@@ -3,483 +3,669 @@
 {% load static %}
 
 {% block extra_head %}
-<style>
-  /* ===================================================================
-     SHOPY CLIENT SPACE — Dark Theme (Inspiré de RevendeurTech)
-     =================================================================== */
-  :root {
-    --sh-bg: #050B18;
-    --sh-card: #0B1426;
-    --sh-card-hover: #0F1D38;
-    --sh-border: #173B68;
-    --sh-green: #20D66B;
-    --sh-green-subtle: rgba(32, 214, 107, 0.12);
-    --sh-text: #FFFFFF;
-    --sh-text-muted: #8A99AD;
-  }
-
-  body {
-    background-color: var(--sh-bg) !important;
-    color: var(--sh-text) !important;
-  }
-
-  .client-container-pro {
-    background-color: var(--sh-bg);
-    min-height: 100vh;
-    padding-bottom: 80px;
-  }
-
-  /* Header Client */
-  .client-header-card {
-    background: linear-gradient(180deg, #071122 0%, #0B1426 100%);
-    border-bottom: 1px solid var(--sh-border);
-    padding: 24px 20px;
-  }
-
-  .client-header-inner {
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .client-top-stats {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(5, 11, 24, 0.6);
-    border: 1px solid var(--sh-border);
-    border-radius: 16px;
-    padding: 14px 18px;
-    margin-bottom: 20px;
-  }
-
-  .client-stat-box {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .client-stat-icon {
-    font-size: 26px;
-    line-height: 1;
-  }
-
-  .client-stat-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--sh-text-muted);
-    margin: 0;
-    font-weight: 700;
-  }
-
-  .client-stat-value {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--sh-green);
-    margin: 2px 0 0 0;
-  }
-
-  .client-profile-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .client-avatar-wrap {
-    position: relative;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .client-avatar-img {
-    width: 68px;
-    height: 68px;
-    border-radius: 16px;
-    object-fit: cover;
-    border: 2px solid var(--sh-border);
-    background: var(--sh-bg);
-  }
-
-  .client-avatar-fallback {
-    width: 68px;
-    height: 68px;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--sh-green);
-    background: #050B18;
-    border: 2px solid var(--sh-border);
-  }
-
-  .client-avatar-badge {
-    position: absolute;
-    bottom: -4px;
-    right: -4px;
-    background: var(--sh-green);
-    color: #050B18;
-    width: 24px;
-    height: 24px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    border: 2px solid var(--sh-card);
-  }
-
-  .client-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .client-greeting {
-    font-size: 13px;
-    color: var(--sh-text-muted);
-    margin: 0 0 2px 0;
-    font-weight: 600;
-  }
-
-  .client-name {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--sh-text);
-    margin: 0 0 6px 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .client-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-  }
-
-  .client-pill {
-    background: rgba(255, 255, 255, 0.06);
-    color: var(--sh-text-muted);
-    border: 1px solid var(--sh-border);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 8px;
-  }
-
-  .client-pill-verified {
-    background: var(--sh-green-subtle);
-    color: var(--sh-green);
-    border: 1px solid rgba(32, 214, 107, 0.3);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 8px;
-  }
-
-  /* Section Body */
-  .client-section-wrap {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px 16px;
-  }
-
-  .client-section-title {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--sh-text-muted);
-    font-weight: 800;
-    margin-bottom: 12px;
-  }
-
-  .client-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  @media (max-width: 640px) {
-    .client-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .client-card-btn {
-    background: var(--sh-card);
-    border: 1px solid var(--sh-border);
-    border-radius: 16px;
-    padding: 16px 14px;
-    text-align: center;
-    text-decoration: none !important;
-    color: var(--sh-text) !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .client-card-btn:hover {
-    background: var(--sh-card-hover);
-    border-color: var(--sh-green);
-    transform: translateY(-2px);
-    text-decoration: none !important;
-    color: #ffffff !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-  }
-
-  .client-card-btn:focus,
-  .client-card-btn:active {
-    text-decoration: none !important;
-    color: var(--sh-text) !important;
-  }
-
-  .client-card-icon {
-    font-size: 26px;
-    line-height: 1;
-  }
-
-  .client-card-title {
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--sh-text);
-    margin: 0;
-    text-decoration: none !important;
-  }
-
-  .client-card-badge {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 6px;
-    text-decoration: none !important;
-  }
-
-  .badge-blue {
-    background: rgba(33, 150, 243, 0.12);
-    color: #64B5F6;
-    border: 1px solid rgba(33, 150, 243, 0.3);
-  }
-
-  .badge-yellow {
-    background: rgba(255, 201, 40, 0.12);
-    color: #FFC928;
-    border: 1px solid rgba(255, 201, 40, 0.3);
-  }
-
-  .badge-gray {
-    background: rgba(255, 255, 255, 0.06);
-    color: var(--sh-text-muted);
-    border: 1px solid var(--sh-border);
-  }
-
-  /* Order Status Summary Cards */
-  .client-order-summary {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .summary-pill-box {
-    background: var(--sh-card);
-    border: 1px solid var(--sh-border);
-    border-radius: 14px;
-    padding: 12px 10px;
-    text-align: center;
-  }
-
-  .summary-pill-box span {
-    display: block;
-    font-size: 11px;
-    color: var(--sh-text-muted);
-    font-weight: 700;
-    margin-bottom: 2px;
-  }
-
-  .summary-pill-box strong {
-    font-size: 18px;
-    font-weight: 800;
-  }
-
-  .summary-pill-box.waiting strong { color: #FFC928; }
-  .summary-pill-box.accepted strong { color: var(--sh-green); }
-  .summary-pill-box.rejected strong { color: #EF4444; }
-
-  /* Action Buttons */
-  .client-actions-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .btn-client-primary {
-    background: var(--sh-green);
-    color: #050B18 !important;
-    font-weight: 800;
-    font-size: 14px;
-    padding: 14px;
-    border-radius: 14px;
-    border: none;
-    text-decoration: none !important;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 4px 15px rgba(32, 214, 107, 0.35);
-  }
-
-  .btn-client-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(32, 214, 107, 0.5);
-    color: #050B18 !important;
-    text-decoration: none !important;
-  }
-
-  .btn-client-logout {
-    background: transparent;
-    color: #EF4444 !important;
-    font-weight: 700;
-    font-size: 13px;
-    padding: 12px;
-    border-radius: 12px;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    text-decoration: none !important;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .btn-client-logout:hover {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: #EF4444;
-    text-decoration: none !important;
-  }
-</style>
+<link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="client-container-pro">
 
-  <!-- En-tête Client -->
-  <div class="client-header-card">
-    <div class="client-header-inner">
-      
-      <!-- Stats Commandes -->
-      <div class="client-top-stats">
-        <div class="client-stat-box">
-          <span class="client-stat-icon">📦</span>
-          <div>
-            <p class="client-stat-label">Total Commandes</p>
-            <p class="client-stat-value">{{ commandes|length }}</p>
-          </div>
-        </div>
-        {% if nb_commandes_acceptees > 0 %}
-        <span class="client-pill-verified">
-          ✨ {{ nb_commandes_acceptees }} acceptée(s)
-        </span>
-        {% endif %}
+<div class="account-container">
+
+  {% include 'core/_client_header.html' %}
+
+  <div class="client-loyalty-panel">
+    <div class="client-loyalty-heading">
+      <span class="client-loyalty-icon">★</span>
+      <div>
+        <p class="client-eyebrow">Avantages client</p>
+        <h2>Programmes de fidélité disponibles</h2>
       </div>
-
-      <!-- Profil Client -->
-      <div class="client-profile-row">
-        <div class="client-avatar-wrap">
-          <form method="post" action="{% url 'upload_photo_client' %}" enctype="multipart/form-data" id="photo-form-client">
-            {% csrf_token %}
-            <label for="photo-input-client" style="cursor:pointer; margin:0; display:block;">
-              {% if client.photo %}
-                <img src="{{ client.photo.url }}" alt="{{ client.nom }}" class="client-avatar-img">
-              {% else %}
-                <div class="client-avatar-fallback">
-                  {{ client.nom|first|upper }}
-                </div>
-              {% endif %}
-              <div class="client-avatar-badge">📷</div>
-            </label>
-            <input type="file" id="photo-input-client" name="photo" accept="image/*" style="display:none;" onchange="document.getElementById('photo-form-client').submit()">
-          </form>
-        </div>
-
-        <div class="client-info">
-          <p class="client-greeting">{{ salutation }} 👋</p>
-          <h3 class="client-name">{{ client.nom }}</h3>
-          <div class="client-badges">
-            <span class="client-pill-verified">✅ Client vérifié</span>
-            <span class="client-pill">📍 {{ client.ville }}</span>
-            <span class="client-pill">📱 {{ client.numero }}</span>
-          </div>
-        </div>
-      </div>
-
     </div>
+    <p class="client-loyalty-intro">Les boutiques participantes vous accordent une réduction après plusieurs achats. Votre compte client est nécessaire pour cumuler les achats et recevoir l’avantage.</p>
+    <div class="client-loyalty-rules">
+      <span>3 achats : -3%</span>
+      <span>6 achats : -5%</span>
+      <span>10 achats : -8%</span>
+      <small>Valable 90 jours après le dernier achat</small>
+    </div>
+    {% if vendeurs_fidelite %}
+      <div class="client-loyalty-shops">
+        {% for vendeur in vendeurs_fidelite %}
+          <span>✓ {{ vendeur.nom_boutique }}</span>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="client-loyalty-empty">Aucune boutique participante pour le moment.</p>
+    {% endif %}
   </div>
 
-  <!-- Contenu Principal -->
-  <div class="client-section-wrap">
-    
-    <!-- Raccourcis -->
-    <p class="client-section-title">Mes Services</p>
-    <div class="client-grid">
-      <!-- Factures -->
-      <a href="{% url 'mes_factures' %}" class="client-card-btn">
-        <span class="client-card-icon">📋</span>
-        <span class="client-card-title">Mes Factures</span>
-        <span class="client-card-badge badge-blue">Historique</span>
+  <style>
+    .client-loyalty-panel { margin:18px 14px 0; padding:18px; background:linear-gradient(135deg,#eff6ff,#ecfdf5); border:1px solid rgba(59,130,246,.18); border-radius:20px; box-shadow:0 12px 28px rgba(15,23,42,.07); }
+    .client-loyalty-heading { display:flex; align-items:center; gap:12px; }
+    .client-loyalty-icon { display:grid; width:42px; height:42px; place-items:center; color:#854d0e; background:#fde68a; border-radius:13px; font-size:22px; }
+    .client-loyalty-panel h2 { margin:0; color:#0f172a; font-size:20px; font-weight:800; }
+    .client-loyalty-intro { margin:14px 0 0; color:#475569; font-size:13px; line-height:1.5; }
+    .client-loyalty-rules, .client-loyalty-shops { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .client-loyalty-rules span, .client-loyalty-shops span { padding:7px 10px; color:#166534; background:#dcfce7; border:1px solid #bbf7d0; border-radius:999px; font-size:12px; font-weight:700; }
+    .client-loyalty-rules small { align-self:center; color:#64748b; font-size:11px; }
+    .client-loyalty-empty { margin:12px 0 0; color:#64748b; font-size:12px; }
+
+    .account-container {
+      background:
+        radial-gradient(circle at top left, rgba(15, 23, 42, 0.08), transparent 24%),
+        linear-gradient(135deg, #f8fbff 0%, #f3f7ff 100%);
+      min-height: 100vh;
+      padding-bottom: 40px;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+
+    .client-header-premium {
+      position: relative;
+      overflow: hidden;
+      padding: 24px 18px 72px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #7c3aed 100%);
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+    }
+
+    .client-orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(2px);
+      opacity: 0.85;
+      pointer-events: none;
+      animation: floatOrb 8s ease-in-out infinite;
+    }
+
+    .orb-one {
+      width: 220px;
+      height: 220px;
+      top: -70px;
+      right: -40px;
+      background: radial-gradient(circle, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    }
+
+    .orb-two {
+      width: 140px;
+      height: 140px;
+      bottom: -30px;
+      left: -30px;
+      background: radial-gradient(circle, rgba(34,211,238,0.25), rgba(34,211,238,0));
+      animation-delay: 2s;
+    }
+
+    .orb-three {
+      width: 100px;
+      height: 100px;
+      top: 40%;
+      left: 40%;
+      background: radial-gradient(circle, rgba(255,255,255,0.22), rgba(255,255,255,0));
+      animation-delay: 4s;
+    }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-12px) scale(1.04); }
+    }
+
+    .client-stats-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .glass-card {
+      backdrop-filter: blur(18px);
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    }
+
+    .client-stat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      color: white;
+    }
+
+    .client-stat-icon {
+      font-size: 20px;
+      background: rgba(255,255,255,0.2);
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .client-stat-label {
+      margin: 0;
+      font-size: 11px;
+      opacity: 0.82;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .client-stat-value {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .client-stat-badge {
+      background: linear-gradient(135deg, rgba(34,211,238,0.25), rgba(168,85,247,0.25));
+      color: #ecfeff;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 24px;
+      position: relative;
+      z-index: 2;
+      transform: translateY(12px);
+    }
+
+    .client-avatar-wrapper {
+      position: relative;
+      width: 86px;
+      height: 86px;
+      flex-shrink: 0;
+      cursor: pointer;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.25));
+      box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+      transition: all 0.3s ease;
+    }
+
+    .client-avatar-wrapper:hover {
+      transform: scale(1.05) rotate(2deg);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.28);
+    }
+
+    .client-avatar-wrapper:hover .client-avatar-edit {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .client-avatar-img, .client-avatar-placeholder {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.8);
+    }
+
+    .client-avatar-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+    }
+
+    .client-avatar-edit {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(2,6,23,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .client-online-dot {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #22c55e;
+      border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      animation: clientDotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes clientDotPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+      50% { box-shadow: 0 0 0 5px rgba(34, 197, 94, 0); }
+    }
+
+    .dashboard-profile-info {
+      flex: 1;
+      color: white;
+    }
+
+    .dashboard-salutation {
+      margin: 0 0 4px 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .dashboard-name {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .dashboard-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .dashboard-verified, .dashboard-city {
+      background: rgba(255,255,255,0.16);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+    }
+
+    .account-menu {
+      margin-top: -28px;
+      padding: 0 14px 16px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .account-menu-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .account-menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      text-decoration: none;
+      color: #0f172a;
+      transition: all 0.25s ease;
+    }
+
+    .account-menu-item:hover {
+      background: linear-gradient(90deg, rgba(59,130,246,0.08), rgba(124,58,237,0.08));
+      transform: translateX(2px);
+    }
+
+    .account-menu-item-icon {
+      background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-right: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+
+    .account-menu-item-icon.orders { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+    .account-menu-item-icon.favorites { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
+    .account-menu-item-icon.notifications { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+    .account-menu-item-icon.messages { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+    .account-menu-item-icon.settings { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+
+    .account-menu-item-text {
+      flex: 1;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .account-menu-item-badge {
+      background: linear-gradient(135deg, #ef4444, #f97316);
+      color: white;
+      border-radius: 999px;
+      min-width: 22px;
+      height: 22px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 7px;
+      margin-right: 8px;
+      box-shadow: 0 6px 14px rgba(239, 68, 68, 0.2);
+    }
+
+    .account-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 0 14px 14px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .summary-card.waiting { background: linear-gradient(135deg, #fff7ed, #ffedd5); }
+    .summary-card.accepted { background: linear-gradient(135deg, #ecfdf5, #d1fae5); }
+    .summary-card.rejected { background: linear-gradient(135deg, #fef2f2, #fee2e2); }
+
+    .client-profile-panel {
+      margin: 18px 14px 0;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 24px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      padding: 18px;
+    }
+
+    .client-profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .client-eyebrow {
+      margin: 0 0 4px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .client-profile-header h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .client-profile-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .client-mini-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 18px;
+      padding: 16px 14px;
+      transition: all 0.25s ease;
+      color: #0f172a;
+    }
+
+    .client-mini-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      border-color: rgba(59, 130, 246, 0.25);
+    }
+
+    .client-mini-icon {
+      flex-shrink: 0;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: #eef2ff;
+    }
+
+    .client-mini-icon.blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+    .client-mini-icon.yellow { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+    .client-mini-icon.gray { background: linear-gradient(135deg, #e2e8f0, #cbd5e1); }
+    .client-mini-icon.green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
+
+    .client-mini-content {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .client-mini-content h3 {
+      margin: 0 0 4px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .client-mini-content p {
+      margin: 0;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    .client-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .client-summary-card {
+      background: white;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 18px;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.04);
+    }
+
+    .client-summary-card.waiting {
+      background: linear-gradient(135deg, #fff7ed, #ffedd5);
+      border-color: rgba(245, 158, 11, 0.22);
+    }
+
+    .client-summary-card.accepted {
+      background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+      border-color: rgba(16, 185, 129, 0.22);
+    }
+
+    .client-summary-card.rejected {
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      border-color: rgba(239, 68, 68, 0.18);
+    }
+
+    .client-summary-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .client-summary-card strong {
+      font-size: 30px;
+      line-height: 1;
+      color: #0f172a;
+      font-weight: 900;
+    }
+
+    .client-action-row {
+      margin-top: 18px;
+    }
+
+    .client-main-btn,
+    .client-logout-btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 52px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 800;
+      transition: all 0.25s ease;
+      padding: 0 18px;
+    }
+
+    .client-main-btn.primary {
+      display: flex;
+      width: 100%;
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      color: white;
+      box-shadow: 0 10px 18px rgba(34, 197, 94, 0.22);
+    }
+
+    .client-main-btn:hover,
+    .client-logout-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .client-logout-row {
+      margin-top: 14px;
+    }
+
+    .client-logout-btn {
+      display: flex;
+      width: 100%;
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      color: #991b1b;
+      border: 1px solid rgba(239, 68, 68, 0.18);
+    }
+
+    @media (max-width: 768px) {
+      .client-summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .client-profile-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 480px) {
+      .client-profile-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .dashboard-meta {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+
+  <!-- Section Profil -->
+  <div class="client-profile-panel">
+    <div class="client-profile-header">
+      <div>
+        <p class="client-eyebrow">Profil</p>
+        <h2>Mon espace</h2>
+      </div>
+    </div>
+
+    <div class="client-profile-grid">
+      <a href="{% url 'mes_factures' %}" class="client-mini-card">
+        <span class="client-mini-icon blue">📋</span>
+        <div class="client-mini-content">
+          <h3>Mes Factures</h3>
+          <p>Historique</p>
+        </div>
       </a>
 
-      <!-- Notifications -->
-      <a href="{% url 'mes_notifications' %}" class="client-card-btn">
-        <span class="client-card-icon">🔔</span>
-        <span class="client-card-title">Notifications</span>
-        <span class="client-card-badge badge-yellow">
-          {% if nb_notifications > 0 %}{{ nb_notifications }} nouvelle(s){% else %}Alertes{% endif %}
-        </span>
+      <a href="{% url 'mes_notifications' %}" class="client-mini-card">
+        <span class="client-mini-icon yellow">🔔</span>
+        <div class="client-mini-content">
+          <h3>Notifications</h3>
+          <p>
+            {% if nb_notifications > 0 %}{{ nb_notifications }} nouvelle(s){% else %}Alertes{% endif %}
+          </p>
+        </div>
       </a>
 
-      <!-- Paramètres -->
-      <a href="{% url 'parametres_client' %}" class="client-card-btn">
-        <span class="client-card-icon">⚙️</span>
-        <span class="client-card-title">Paramètres</span>
-        <span class="client-card-badge badge-gray">Profil</span>
+      <a href="{% url 'parametres_client' %}" class="client-mini-card">
+        <span class="client-mini-icon gray">⚙️</span>
+        <div class="client-mini-content">
+          <h3>Paramètres</h3>
+          <p>Mon profil</p>
+        </div>
+      </a>
+
+      <a href="{% url 'mes_messages_client' %}" class="client-mini-card">
+        <span class="client-mini-icon green">💬</span>
+        <div class="client-mini-content">
+          <h3>Messages</h3>
+          <p>Échanger avec les vendeurs</p>
+        </div>
       </a>
     </div>
 
-    <!-- Statut des commandes -->
-    <p class="client-section-title">Suivi des commandes</p>
-    <div class="client-order-summary">
-      <div class="summary-pill-box waiting">
-        <span>⏳ En attente</span>
+    <div class="client-summary-grid">
+      <div class="client-summary-card waiting">
+        <span class="client-summary-label">En attente</span>
         <strong>{{ commandes_attente }}</strong>
       </div>
-      <div class="summary-pill-box accepted">
-        <span>✅ Acceptées</span>
+      <div class="client-summary-card accepted">
+        <span class="client-summary-label">Acceptées</span>
         <strong>{{ commandes_acceptees }}</strong>
       </div>
-      <div class="summary-pill-box rejected">
-        <span>❌ Refusées</span>
+      <div class="client-summary-card rejected">
+        <span class="client-summary-label">Refusées / Annulées</span>
         <strong>{{ commandes_refusees }}</strong>
       </div>
     </div>
 
-    <!-- Actions -->
-    <div class="client-actions-wrap">
-      <a href="{% url 'catalogue' %}" class="btn-client-primary">
-        🛒 Parcourir le Catalogue
-      </a>
-      <a href="{% url 'deconnexion_vendeur' %}" class="btn-client-logout">
-        🚪 Se déconnecter
+    <div class="client-action-row">
+      <a href="{% url 'catalogue' %}" class="client-main-btn primary">
+        🛒 Parcourir le catalogue
       </a>
     </div>
 
+    <div class="client-logout-row">
+      <a href="{% url 'deconnexion_vendeur' %}" class="client-logout-btn">
+        🚪 Se déconnecter
+      </a>
+    </div>
   </div>
 
 </div>

@@ -8,6 +8,8 @@
 
 {% block content %}
 
+{% include 'core/_vendor_header.html' %}
+
 <div id="cv-commandes-container">
   <div id="cv-commandes-wrapper">
 
@@ -85,6 +87,7 @@
                   <span>📍 {{ commande.ville_client }}</span>
                 </div>
                 <div class="cv-commande-qte">Quantité: {{ commande.quantite }}</div>
+                <div class="cv-commande-message">Message : {{ commande.message|default:"Aucun message" }}</div>
               </div>
               <div class="cv-commande-actions">
                 <form method="post" action="{% url 'changer_statut_commande' commande.pk %}" class="cv-select-form">
@@ -135,6 +138,7 @@
                   <span>📍 {{ commande.ville_client }}</span>
                 </div>
                 <div class="cv-commande-qte">Quantité: {{ commande.quantite }}</div>
+                <div class="cv-commande-message">Message : {{ commande.message|default:"Aucun message" }}</div>
               </div>
               <div class="cv-commande-actions">
                 <span class="cv-commande-status accepted">✓ Acceptée</span>
@@ -178,6 +182,7 @@
                   <span>📍 {{ commande.ville_client }}</span>
                 </div>
                 <div class="cv-commande-qte">Quantité: {{ commande.quantite }}</div>
+                <div class="cv-commande-message">Message : {{ commande.message|default:"Aucun message" }}</div>
               </div>
               <div class="cv-commande-actions">
                 <span class="cv-commande-status rejected">✕ Refusée</span>

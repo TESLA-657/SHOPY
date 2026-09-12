@@ -120,7 +120,7 @@
 
 <script>
 function updateThemeButton() {
-  const theme = localStorage.getItem('shopy-theme') || 'light';
+  const theme = localStorage.getItem('SHOPY-theme') || 'light';
   const btn = document.getElementById('theme-btn');
   if (btn) btn.textContent = theme === 'dark' ? '☀️ Mode clair' : '🌙 Mode sombre';
 }

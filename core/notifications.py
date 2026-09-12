@@ -203,7 +203,7 @@ def email_inscription_client(client):
     """Email de bienvenue pour nouveau client."""
     return send_email(
         to_email=client.user.email,
-        subject='🎉 Bienvenue sur SHOPY Guinea!',
+        subject='🎉 Bienvenue sur SHOPY Guinée!',
         template_name='bienvenue_client',
         context={'client': client},
         html=True

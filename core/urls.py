@@ -38,6 +38,8 @@ urlpatterns = [
     
     # Dashboard Vendeur
     path('mon_espace_vendeur/', views.dashboard_vendeur, name='dashboard_vendeur'),
+    path('mon_espace_vendeur/fidelite/activer/', views.activer_fidelite_vendeur, name='activer_fidelite_vendeur'),
+    path('mon_espace_vendeur/publicite/', views.creer_publicite, name='creer_publicite'),
     path('mes-produits/', views.liste_produits_vendeur, name='liste_produits_vendeur'),
     path('mes-commandes/', views.commandes_vendeur, name='commandes_vendeur'),
     path('mes-parametres/', views.parametres_vendeur, name='parametres_vendeur'),
@@ -67,6 +69,7 @@ urlpatterns = [
     path('admin-paiements/', views.admin_paiements, name='admin_paiements'),
     path('admin-paiements/<int:pk>/valider/', views.admin_valider_paiement_abonnement, name='admin_valider_paiement_abonnement'),
     path('admin-paiements-commandes/', views.admin_paiements_commandes, name='admin_paiements_commandes'),
+    path('admin-publicites/', views.admin_publicites, name='admin_publicites'),
     path('admin-vendeur/<int:pk>/action/', views.admin_valider_vendeur, name='admin_valider_vendeur'),
     path('admin-paiement-commande/<int:pk>/valider/', views.admin_valider_paiement_commande, name='admin_valider_paiement_commande'),
     path('admin-signalement/<int:pk>/traiter/', views.admin_traiter_signalement, name='admin_traiter_signalement'),
@@ -109,6 +112,7 @@ urlpatterns = [
     path('mon-compte/', views.espace_client, name='espace_client'),
     path('mon-compte/parametres/', views.parametres_client, name='parametres_client'),
     path('mon-compte/supprimer-historique/', views.supprimer_historique_commandes_client, name='supprimer_historique_commandes_client'),
+    path('abonnement/supprimer-historique/', views.supprimer_historique_paiements, name='supprimer_historique_paiements'),
     
     # Catalogue & Produits
     path('catalogue/', views.catalogue, name='catalogue'),

@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h1 class="h4 mb-3">Publicités catalogue</h1>
+  <p class="text-muted">Validez les paiements reçus avant d'afficher les produits sponsorisés.</p>
+  {% for publicite in publicites %}
+    <div class="card mb-2 p-3">
+      <div class="d-flex justify-content-between align-items-center gap-3">
+        <div><strong>{{ publicite.produit.nom }}</strong> - {{ publicite.vendeur.nom_boutique }}<br><small>{{ publicite.montant }} GNF, {{ publicite.duree_jours }} jours, {{ publicite.numero_paiement }}{% if publicite.reference %} - {{ publicite.reference }}{% endif %}</small></div>
+        <div>{{ publicite.get_statut_display }}</div>
+        {% if publicite.statut == 'en_attente' %}
+        <form method="post" class="d-flex gap-2">
+          {% csrf_token %}<input type="hidden" name="publicite" value="{{ publicite.pk }}">
+          <button name="action" value="valider" class="btn btn-success">Valider</button>
+          <button name="action" value="refuser" class="btn btn-outline-danger">Refuser</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}<p>Aucune demande.</p>{% endfor %}
+</div>
+{% endblock %}

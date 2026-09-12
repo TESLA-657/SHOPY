@@ -27,6 +27,12 @@ staticfiles/
 .DS_Store
 Thumbs.db
 
+# Sous-dépôt SHOPY (dépôt git séparé)
+SHOPY/
+
+# Données de développement
+datadump.json
+
 # Scripts de debug (générés pendant le développement)
 check_*.py
 fix_*.py

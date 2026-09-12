@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
@@ -11,6 +12,7 @@ from .models import (
     Client,
     Categorie,
     Commande,
+    Favori,
     PaiementAbonnement,
     PaiementCommande,
     PaiementPanier,
@@ -57,6 +59,54 @@ class CatalogueTests(TestCase):
     def test_catalogue_page_loads_without_error(self):
         response = self.client.get(reverse("catalogue"))
         self.assertEqual(response.status_code, 200)
+
+
+class FavorisTests(TestCase):
+    def test_csrf_cookie_is_readable_by_javascript_for_ajax_favorites(self):
+        self.assertFalse(settings.CSRF_COOKIE_HTTPONLY)
+
+    def test_hidden_product_is_not_shown_in_client_favorites(self):
+        user = User.objects.create_user(
+            username="client-favoris-hidden",
+            email="client-favoris-hidden@test.com",
+            password="testpass123",
+        )
+        client = Client.objects.create(
+            user=user,
+            nom="Client Favoris",
+            numero="+224600000040",
+            ville="Conakry",
+        )
+        vendeur = Vendeur.objects.create(
+            user=User.objects.create_user(
+                username="vendeur-favoris-hidden",
+                email="vendeur-favoris-hidden@test.com",
+                password="testpass123",
+            ),
+            nom_boutique="Boutique cachée",
+            numero="+224600000041",
+            ville="Conakry",
+            statut="actif",
+        )
+        categorie = Categorie.objects.create(nom="Test", slug="test-hidden", icone="📦")
+        produit = Produit.objects.create(
+            vendeur=vendeur,
+            nom="Produit caché",
+            photo="produits/hidden.jpg",
+            prix=15000,
+            quantite=2,
+            description="Produit non visible",
+            categorie=categorie,
+            visible=False,
+        )
+        Favori.objects.create(client=client, produit=produit)
+
+        self.client.force_login(user)
+        response = self.client.get(reverse("mes_favoris"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["favoris"]), 0)
+        self.assertNotContains(response, "Produit caché")
 
 
 class AdminPaymentsTests(TestCase):
