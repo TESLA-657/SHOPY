@@ -17,4 +17,8 @@ echo "=== Création / vérification du superutilisateur admin ==="
 # La commande est idempotente : elle n'échoue pas si le user existe déjà.
 python manage.py ensure_superuser || echo "Avertissement: ensure_superuser a échoué (variables DJANGO_SUPERUSER_* non définies ?)"
 
+echo "=== Import des données de référence (catégories, plans) ==="
+# Idempotent : n'insère que ce qui manque (catégories + plans d'abonnement).
+python manage.py seed_data
+
 echo "=== Build terminé avec succès ==="

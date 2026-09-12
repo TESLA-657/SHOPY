@@ -74,12 +74,19 @@
         <p>Guinee</p>
       </div>
     </div>
-<div class="nav-links">
+    <div class="nav-links" id="nav-links">
       <a href="{% url 'catalogue' %}" class="nav-link">Acheter</a>
       <a href="{% url 'inscription_vendeur' %}" class="nav-link">Vendre</a>
       <a href="{% url 'connexion_client' %}" class="nav-link">Client</a>
       <a href="{% url 'connexion_vendeur' %}" class="nav-link">Vendeur</a>
     </div>
+    <!-- Bouton hamburger : visible uniquement sur mobile -->
+    <button type="button" class="nav-toggle" id="nav-toggle"
+            aria-label="Ouvrir le menu de navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>
 </nav>
 
@@ -165,6 +172,37 @@
     © {% now "Y" %} SHOPY GUINNEE — Tous droits réservés.
   </div>
 </footer>
+
+  <script>
+    // Menu de navigation responsive (mobile) : bouton hamburger
+    (function () {
+      var toggle = document.getElementById('nav-toggle');
+      var links = document.getElementById('nav-links');
+      if (!toggle || !links) return;
+
+      function setOpen(open) {
+        if (open) {
+          links.classList.add('open');
+        } else {
+          links.classList.remove('open');
+        }
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.setAttribute('aria-label', open ? 'Fermer le menu de navigation' : 'Ouvrir le menu de navigation');
+      }
+
+      toggle.addEventListener('click', function () {
+        setOpen(!links.classList.contains('open'));
+      });
+
+      // Fermer le menu quand on clique à l'extérieur
+      document.addEventListener('click', function (e) {
+        if (!links.classList.contains('open')) return;
+        if (!links.contains(e.target) && !toggle.contains(e.target)) {
+          setOpen(false);
+        }
+      });
+    })();
+  </script>
 
 </body>
 </html>

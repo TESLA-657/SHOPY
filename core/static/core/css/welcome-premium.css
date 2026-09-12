@@ -203,6 +203,45 @@ body::after {
   background: var(--glass);
 }
 
+/* Bouton hamburger mobile (masqué sur desktop) */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-toggle span {
+  width: 22px;
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.95);
+  display: block;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Animation : le hamburger se transforme en croix quand le menu est ouvert */
+.nav-toggle[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
 /* ===== MAIN CONTENT ===== */
 .welcome-main {
   min-height: 100vh;
@@ -470,33 +509,108 @@ body::after {
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
+/* Tablette et téléphone : menu replié derrière le bouton hamburger */
+@media (max-width: 992px) {
   .premium-nav {
     padding: 12px 16px;
   }
-  
+
+  .premium-nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-container {
+    min-width: 0;
+  }
+
   .brand-logo {
     width: 44px;
     height: 44px;
     font-size: 22px;
+    flex-shrink: 0;
   }
-  
+
   .brand-text h1 {
-    font-size: 16px;
+    font-size: 17px;
   }
-  
+
+  .brand-text p {
+    font-size: 10px;
+  }
+
   .nav-links {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 16px;
+    right: 16px;
+    z-index: 1001;
     display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
   }
-  
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-link {
+    width: 100%;
+    text-align: center;
+    padding: 12px 0;
+    border-radius: 12px;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+}
+
+/* Très petits écrans : cadre parfaitement équilibré, logo toujours visible */
+@media (max-width: 480px) {
+  .premium-nav {
+    padding: 10px 12px;
+  }
+
+  .brand-logo {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .nav-links {
+    left: 12px;
+    right: 12px;
+  }
+
+  .nav-toggle {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* Ajustements du contenu sur écrans moyens/petits */
+@media (max-width: 768px) {
   .hero-card {
     padding: 32px 20px;
   }
-  
+
   .choice-card {
     padding: 20px;
   }
-  
+
   .choice-icon-wrap {
     width: 50px;
     height: 50px;

@@ -338,13 +338,21 @@ body.has-bottom-nav {
   }
 
   .SHOPY-nav-item {
-    flex-basis: 92px;
-    padding-right: 8px;
-    padding-left: 8px;
+    flex: 1 1 0;
+    min-width: 52px;
+    padding-right: 6px;
+    padding-left: 6px;
   }
 
   .SHOPY-nav-center-item {
-    flex-basis: 68px;
+    flex: 0 0 68px;
+  }
+
+  .SHOPY-nav-label {
+    font-size: 10px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
