@@ -11,4 +11,10 @@ python manage.py collectstatic --no-input
 echo "=== Application des migrations ==="
 python manage.py migrate
 
+echo "=== Création / vérification du superutilisateur admin ==="
+# Utilise les variables DJANGO_SUPERUSER_USERNAME / EMAIL / PASSWORD
+# à configurer dans le dashboard Render (Environment).
+# La commande est idempotente : elle n'échoue pas si le user existe déjà.
+python manage.py ensure_superuser || echo "Avertissement: ensure_superuser a échoué (variables DJANGO_SUPERUSER_* non définies ?)"
+
 echo "=== Build terminé avec succès ==="

@@ -39,6 +39,14 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
+# Origines HTTPS autorisées (obligatoire derrière un proxy comme Render
+# pour que les formulaires de connexion admin/POST fonctionnent en production)
+CSRF_TRUSTED_ORIGINS = [
+    f'https://{host}'
+    for host in ALLOWED_HOSTS
+    if host not in ('localhost', '127.0.0.1')
+]
+
 # ============================================
 # CONFIGURATION EMAIL/SMTP
 # ============================================
