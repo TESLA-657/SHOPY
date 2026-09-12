@@ -139,7 +139,28 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Base de données : PostgreSQL en production (Render), SQLite en développement
+# Base de données : PostgreSQL en production (Render), SQLite en développement.
+#
+# ⚠️ IMPORTANT (plan gratuit Render) :
+# Le système de fichiers des web services gratuits est ÉPHÉMÈRE : toute donnée
+# écrite sur disque (donc SQLite db.sqlite3) est DÉTRUITE à chaque redémarrage,
+# redéploiement ou réveil après mise en veille. C'est pour cela que les comptes
+# créés « disparaissent » : ils étaient écrits dans SQLite.
+# En production, DATABASE_URL (PostgreSQL managé par Render) est donc OBLIGATOIRE.
+
+if not DEBUG:
+    _database_url = os.environ.get('DATABASE_URL', '')
+    if not _database_url:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured(
+            "DATABASE_URL est absente en production. Créez la base PostgreSQL "
+            "dans Render (Dashboard → New + → PostgreSQL), copiez l'Internal "
+            "Database URL, puis ajoutez-la dans le service (Environment → "
+            "DATABASE_URL). Sans elle l'application utilise SQLite sur un "
+            "disque éphémère et toutes les données disparaissent à chaque "
+            "redémarrage (comptes créés puis introuvables)."
+        )
+
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{BASE_DIR}/db.sqlite3',
