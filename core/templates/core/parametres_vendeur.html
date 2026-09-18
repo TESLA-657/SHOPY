@@ -33,6 +33,36 @@
         🏪 Informations boutique
       </div>
 
+      <!-- Photo de profil -->
+      <div class="pv-form-section">
+        <form method="post" action="{% url 'parametres_vendeur' %}" enctype="multipart/form-data" id="photo-profil-vendeur-form">
+          {% csrf_token %}
+          <div class="pv-photo-section" style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+            <div style="position:relative; width:78px; height:78px; flex-shrink:0;">
+              {% if vendeur.photo %}
+                <img src="{{ vendeur.photo.url }}" alt="Photo de profil"
+                     style="width:78px; height:78px; border-radius:50%; object-fit:cover; border:3px solid #238636;">
+              {% else %}
+                <div style="width:78px; height:78px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+                            font-size:30px; font-weight:700; color:white; background:linear-gradient(135deg,#238636,#388bfd);">
+                  {{ vendeur.nom_boutique|first|upper }}
+                </div>
+              {% endif %}
+            </div>
+            <div style="flex:1; min-width:220px;">
+              <p class="form-label-styled" style="margin-bottom:6px;">Photo de profil</p>
+              <input type="file" name="photo" accept="image/*" class="form-input-styled"
+                     style="padding:8px 12px;" onchange="document.getElementById('pv-photo-confirm-btn').style.display='inline-flex';">
+              <br>
+              <button type="submit" id="pv-photo-confirm-btn" class="account-btn account-btn-primary"
+                      style="display:none; margin-top:10px;">
+                📷 Enregistrer la photo
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
       <div class="pv-form-section">
         <form method="post" onsubmit="showBoutiqueSavedPopup(event)">
           {% csrf_token %}
@@ -57,8 +87,21 @@
             <input type="text" value="{{ vendeur.user.email }}" class="form-input-styled" disabled>
           </div>
 
+          <div class="form-group-styled">
+            <label class="form-label-styled" style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+              <input type="checkbox" name="notifications_email" style="width:auto; margin-top:3px;"
+                     {% if vendeur.notifications_email %}checked{% endif %}>
+              <span>
+                🔔 Recevoir les notifications par email
+                <small style="display:block; color:#94a3b8; font-weight:normal; margin-top:4px;">
+                  Vous recevrez un email à chaque paiement confirmé et nouvelle commande.
+                </small>
+              </span>
+            </label>
+          </div>
+
           <button type="submit" class="account-btn account-btn-primary">
-            💾 Enregistrer les changements
+             Enregistrer les changements
           </button>
         </form>
       </div>

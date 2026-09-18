@@ -113,4 +113,174 @@
 /* Popup overlay: old rules removed / replaced */
 
 
+/* ============================================================
+   SYSTÈME DE NOTIFICATIONS (toasts) - affiché en bas à droite
+   ============================================================ */
+#toast-container {
+  position: fixed;
+  bottom: 84px;
+  right: 16px;
+  z-index: 10050;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: min(92vw, 380px);
+  pointer-events: none;
+}
+
+#toast-container .toast,
+#toast-container .toast-item {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-left: 5px solid #6366f1;
+  border-radius: 14px;
+  padding: 13px 14px;
+  color: #0f172a;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.22);
+  font-size: 13px;
+  line-height: 1.45;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+#toast-container .toast.show,
+#toast-container .toast-item.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#toast-container .toast.success,
+#toast-container .toast-item.toast-success {
+  border-left-color: #22c55e;
+}
+
+#toast-container .toast.error,
+#toast-container .toast-item.toast-error {
+  border-left-color: #ef4444;
+}
+
+#toast-container .toast.info,
+#toast-container .toast-item.toast-info {
+  border-left-color: #3b82f6;
+}
+
+#toast-container .toast .icon {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+#toast-container .toast.success .icon { background: #dcfce7; color: #16a34a; }
+#toast-container .toast.error .icon { background: #fee2e2; color: #dc2626; }
+#toast-container .toast.info .icon { background: #dbeafe; color: #2563eb; }
+
+#toast-container .toast .body { flex: 1; min-width: 0; }
+#toast-container .toast .body .title { font-weight: 800; font-size: 13px; margin-bottom: 2px; }
+#toast-container .toast .body .msg { color: #475569; font-size: 12.5px; overflow-wrap: anywhere; }
+
+#toast-container .toast .close,
+#toast-container .toast-item .toast-close {
+  flex-shrink: 0;
+  background: rgba(15, 23, 42, 0.06);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: background 0.2s ease;
+}
+
+#toast-container .toast .close:hover,
+#toast-container .toast-item .toast-close:hover {
+  background: rgba(15, 23, 42, 0.14);
+  color: #0f172a;
+}
+
+#toast-container .toast-item .toast-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+#toast-container .toast-item .toast-content { flex: 1; min-width: 0; }
+#toast-container .toast-item .toast-title { font-weight: 800; font-size: 13px; margin-bottom: 2px; }
+#toast-container .toast-item .toast-message { color: #475569; font-size: 12.5px; overflow-wrap: anywhere; }
+
+@media (max-width: 480px) {
+  #toast-container { right: 10px; left: 10px; bottom: 78px; max-width: none; }
+}
+
+
+/* ============================================================
+   BARRE D'ANNONCES (spam informatif) - au-dessus de l'espace vendeur
+   ============================================================ */
+.shopy-annonce-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(90deg, #16202d, #1e3a8a);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 13px;
+  position: relative;
+  z-index: 5;
+}
+
+.shopy-annonce-bar .annonce-icon { font-size: 18px; flex-shrink: 0; }
+.shopy-annonce-bar .annonce-content { flex: 1; min-width: 0; }
+.shopy-annonce-bar .annonce-title { font-weight: 800; margin-bottom: 2px; display: block; }
+.shopy-annonce-bar .annonce-message { opacity: 0.9; line-height: 1.4; overflow-wrap: anywhere; }
+.shopy-annonce-bar .annonce-lien {
+  color: #7dd3fc;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.shopy-annonce-bar .annonce-lien:hover { text-decoration: underline; }
+
+.shopy-annonce-bar .annonce-close {
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.14);
+  border: none;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+.shopy-annonce-bar .annonce-close:hover { background: rgba(255,255,255,0.3); }
+
+@media (max-width: 640px) {
+  .shopy-annonce-bar { flex-wrap: wrap; padding: 10px 12px; }
+  .shopy-annonce-bar .annonce-lien { white-space: normal; }
+}
+
+
 

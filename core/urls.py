@@ -109,10 +109,15 @@ urlpatterns = [
     # Authentication Client
     path('inscription-client/', views.inscription_client, name='inscription_client'),
     path('connexion-client/', views.connexion_client, name='connexion_client'),
+    path('mot-de-passe-oublie/', views.mot_de_passe_oublie, name='mot_de_passe_oublie'),
+    path('reinitialiser-mot-de-passe/<str:uidb64>/<str:token>/', views.reinitialiser_mot_de_passe, name='reinitialiser_mot_de_passe'),
     path('mon-compte/', views.espace_client, name='espace_client'),
     path('mon-compte/parametres/', views.parametres_client, name='parametres_client'),
     path('mon-compte/supprimer-historique/', views.supprimer_historique_commandes_client, name='supprimer_historique_commandes_client'),
     path('abonnement/supprimer-historique/', views.supprimer_historique_paiements, name='supprimer_historique_paiements'),
+    
+    # Manuel d'utilisation
+    path('mode-d-emploi/', views.mode_emploi, name='mode_emploi'),
     
     # Catalogue & Produits
     path('catalogue/', views.catalogue, name='catalogue'),

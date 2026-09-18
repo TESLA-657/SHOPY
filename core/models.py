@@ -64,6 +64,7 @@ class Client(models.Model):
         validators=[validate_secure_image]  # Validation sécurisée
     )
     date_inscription = models.DateTimeField(auto_now_add=True)
+    notifications_email = models.BooleanField(default=True)  # Recevoir les notifs par email
 
     def __str__(self):
         return self.nom
@@ -124,6 +125,7 @@ class Vendeur(models.Model):
     dernier_reset_ventes = models.DateField(null=True, blank=True)
     total_produits_crees = models.IntegerField(default=0)
     fidelite_active = models.BooleanField(default=False)
+    notifications_email = models.BooleanField(default=True)  # Recevoir les notifs par email
     
 # === CHAMPS VENDEUR CERTIFIÉ (Fonctionnalité 6) ===
     est_certifie = models.BooleanField(default=False)
@@ -264,6 +266,20 @@ class Commande(models.Model):
 
     def __str__(self):
         return f"Commande {self.pk} - {self.produit.nom}"
+
+    def mode_paiement_label(self):
+        """Libellé du mode de paiement utilisé (commande directe ou panier)."""
+        from .payment_providers import get_payment_label
+        mode = ''
+        try:
+            paiement = getattr(self, 'paiement', None)
+            if paiement and paiement.mode_paiement:
+                mode = paiement.mode_paiement
+        except Exception:
+            mode = ''
+        if not mode and self.paiement_panier and self.paiement_panier.mode_paiement:
+            mode = self.paiement_panier.mode_paiement
+        return get_payment_label(mode) if mode else ''
 
 
 # Message de Négociation entre le vendeur et le client
@@ -465,6 +481,41 @@ class PaiementAbonnement(models.Model):
 
     def __str__(self):
         return f"{self.vendeur.nom_boutique} - {self.plan.nom} - {self.statut}"
+
+
+class Annonce(models.Model):
+    """Barre d'annonce affichée en haut de l'espace vendeur (spam informatif fermable)."""
+    CIBLE_CHOICES = [
+        ('vendeur', 'Espace vendeur'),
+        ('client', 'Espace client'),
+        ('tous', 'Tout le monde'),
+    ]
+    titre = models.CharField(max_length=100)
+    message = models.TextField(blank=True)
+    lien = models.CharField(max_length=300, blank=True)
+    icone = models.CharField(max_length=20, default='🎉')
+    cible = models.CharField(max_length=20, choices=CIBLE_CHOICES, default='vendeur')
+    actif = models.BooleanField(default=True)
+    date_debut = models.DateTimeField(null=True, blank=True)
+    date_fin = models.DateTimeField(null=True, blank=True)
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date_creation']
+
+    def __str__(self):
+        return self.titre
+
+    def est_active(self, moment=None):
+        from django.utils import timezone
+        moment = moment or timezone.now()
+        if not self.actif:
+            return False
+        if self.date_debut and moment < self.date_debut:
+            return False
+        if self.date_fin and moment > self.date_fin:
+            return False
+        return True
 
 
 class PubliciteProduit(models.Model):

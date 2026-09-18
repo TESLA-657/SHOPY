@@ -668,5 +668,67 @@
     </div>
   </div>
 
+  <!-- Section Mes commandes (du plus récent au plus ancien) -->
+  <div class="client-orders-panel">
+    <div class="client-orders-header">
+      <div>
+        <p class="client-eyebrow">Historique</p>
+        <h2>📦 Mes commandes</h2>
+      </div>
+      <a href="{% url 'mes_factures' %}" class="client-orders-all-btn">Voir tout →</a>
+    </div>
+
+    {% if commandes %}
+      {% for cmd in commandes|slice:":8" %}
+      <div class="client-order-row">
+        {% if cmd.produit.photo %}
+          <img src="{{ cmd.produit.photo.url }}" alt="{{ cmd.produit.nom }}" class="client-order-img">
+        {% else %}
+          <div class="client-order-img place">📦</div>
+        {% endif %}
+        <div class="client-order-info">
+          <div class="client-order-name">{{ cmd.produit.nom }}</div>
+          <div class="client-order-meta">
+            <span>🏪 {{ cmd.vendeur.nom_boutique }}</span>
+            <span>🧾 {{ cmd.prix_total|default:"0"|format_prix }} GNF</span>
+            <span>📅 {{ cmd.date_commande|date:"d/m/Y H:i" }}</span>
+          </div>
+        </div>
+        <span class="client-order-status st-{{ cmd.statut }}">
+          {% if cmd.statut == 'en_attente' %}⏳ En attente
+          {% elif cmd.statut == 'acceptee' %}✅ Acceptée
+          {% elif cmd.statut == 'refusee' %}❌ Refusée
+          {% elif cmd.statut == 'annulee' %}🚫 Annulée
+          {% else %}{{ cmd.statut }}{% endif %}
+        </span>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="client-orders-empty">
+        🛒 Vous n'avez pas encore de commande.
+        <a href="{% url 'catalogue' %}">Parcourir le catalogue →</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <style>
+    .client-orders-panel { margin:18px 14px 0; padding:18px; background:rgba(255,255,255,0.92); border:1px solid rgba(148,163,184,0.18); border-radius:22px; box-shadow:0 14px 32px rgba(15,23,42,0.07); }
+    .client-orders-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+    .client-orders-header h2 { margin:0; font-size:20px; font-weight:800; color:#0f172a; }
+    .client-orders-all-btn { color:#238636; font-weight:700; text-decoration:none; font-size:13px; }
+    .client-order-row { display:flex; align-items:center; gap:12px; padding:12px 8px; border-top:1px solid rgba(148,163,184,0.12); }
+    .client-order-img { width:48px; height:48px; border-radius:12px; object-fit:cover; background:#eef2f7; flex-shrink:0; }
+    .client-order-img.place { display:flex; align-items:center; justify-content:center; font-size:20px; color:#64748b; }
+    .client-order-info { flex:1; min-width:0; }
+    .client-order-name { font-weight:700; font-size:14px; color:#0f172a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .client-order-meta { display:flex; flex-wrap:wrap; gap:10px; margin-top:4px; font-size:12px; color:#64748b; }
+    .client-order-status { flex-shrink:0; font-size:11px; font-weight:700; padding:5px 10px; border-radius:999px; }
+    .client-order-status.st-en_attente { background:#fef3c7; color:#b45309; }
+    .client-order-status.st-acceptee { background:#dcfce7; color:#166534; }
+    .client-order-status.st-refusee, .client-order-status.st-annulee { background:#fee2e2; color:#991b1b; }
+    .client-orders-empty { text-align:center; padding:24px 10px; color:#64748b; font-size:14px; }
+    .client-orders-empty a { color:#238636; font-weight:700; text-decoration:none; }
+  </style>
+
 </div>
 {% endblock %}

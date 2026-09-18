@@ -23,7 +23,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.core.mail import send_mail
 from django.conf import settings
-from django.db.models import Q, Case, When, Value, IntegerField, Count, Sum
+from django.db.models import Q, Case, When, Value, IntegerField, Count, Sum, Avg
 
 # ============================================
 # SYSTÈME DE SALUTATION
@@ -410,6 +410,11 @@ def parametres_vendeur(request):
         vendeur.nom_boutique = request.POST.get('nom_boutique', vendeur.nom_boutique)
         vendeur.numero = request.POST.get('numero', vendeur.numero)
         vendeur.ville = request.POST.get('ville', vendeur.ville)
+        if request.FILES.get('photo'):
+            vendeur.photo = request.FILES['photo']
+        # Préférence de réception des notifications (in-app + email)
+        if 'notifications_email' in request.POST:
+            vendeur.notifications_email = request.POST.get('notifications_email') == 'on'
         vendeur.save()
         messages.success(request, 'Paramètres mis à jour !')
         return redirect('parametres_vendeur')
@@ -418,6 +423,11 @@ def parametres_vendeur(request):
         'vendeur': vendeur,
         'abonnement': abonnement,
     })
+
+
+def mode_emploi(request):
+    """Manuel d'utilisation SHOPY (pour vendeurs et clients)."""
+    return render(request, 'core/mode_emploi.html')
 def welcome(request):
     return render(request,'core/welcome.html')
 
@@ -461,6 +471,11 @@ def parametres_client(request):
         if request.FILES.get('photo'):
             client.photo = request.FILES['photo']
             client.save()
+
+        # Préférence de réception des notifications par email
+        if 'notifications_email' in request.POST:
+            client.notifications_email = request.POST.get('notifications_email') == 'on'
+            client.save(update_fields=['notifications_email'])
         
         messages.success(request, 'Paramètres mis à jour !')
         return redirect('parametres_client')
@@ -475,19 +490,9 @@ def dashboard_vendeur(request):
     aujourd_hui = timezone.now().date()
     vendeur = get_object_or_404(Vendeur, user=request.user)
     debut_mois = aujourd_hui.replace(day=1)
-    
-    # Reset des ventes du mois au nouveau mois
-    if vendeur.dernier_reset_ventes:
-        if vendeur.dernier_reset_ventes.month != aujourd_hui.month or \
-            vendeur.dernier_reset_ventes.year != aujourd_hui.year:
-            # Nouveau mois détecté - reset des ventes
-            vendeur.ventes_du_mois = 0
-            vendeur.dernier_reset_ventes = aujourd_hui
-            vendeur.save()
-    else:
-        # Premier accès - initialiser la date
-        vendeur.dernier_reset_ventes = aujourd_hui
-        vendeur.save()
+
+    # Reset des ventes du mois au nouveau mois (remise à 0 le 1er de chaque mois)
+    vendeur.reset_ventes_si_nouveau_mois()
 
 # Vérifier les promos expirées
     verifier_promos_expirees()
@@ -507,23 +512,15 @@ def dashboard_vendeur(request):
         abonnement = None
 
     produits_en_ligne = Produit.objects.filter(vendeur=vendeur, visible=True).count()
-    ventes_du_mois = PaiementCommande.objects.filter(
-        commande__vendeur=vendeur,
-        statut='valide',
-        date_soumission__date__gte=debut_mois,
-        date_soumission__date__lte=aujourd_hui,
-    ).aggregate(total=Sum('montant'))['total'] or 0
+    # Ventes du mois : commandes payées (directes ET panier), calculées sur le mois en cours
+    ventes_du_mois = calculer_ventes_vendeur(vendeur, (aujourd_hui.year, aujourd_hui.month))
     produits_en_promo = Produit.objects.filter(vendeur=vendeur, visible=True, promo=True).count()
     produits_sans_promo = Produit.objects.filter(vendeur=vendeur, visible=True, promo=False).count()
-    commandes_en_attente = Commande.objects.filter(
-        vendeur=vendeur,
-        statut='en_attente',
-        paiement__statut='valide',
-    ).count()
-    dernieres_commandes = Commande.objects.filter(
-        vendeur=vendeur,
-        paiement__statut='valide',
-    ).order_by('-date_commande')[:5]
+    commandes_payees = Commande.objects.filter(vendeur=vendeur).filter(
+        Q(paiement__statut='valide') | Q(paiement_panier__statut='valide')
+    )
+    commandes_en_attente = commandes_payees.filter(statut='en_attente').count()
+    dernieres_commandes = commandes_payees.order_by('-date_commande')[:5]
     paiement_en_attente = PaiementAbonnement.objects.filter(vendeur=vendeur, statut='en_attente').exists()
     clients_fideles = FideliteClientVendeur.objects.filter(
         vendeur=vendeur,
@@ -756,11 +753,17 @@ def detail_produit(request, pk):
             pass
     
     evaluations = produit.evaluations.order_by('-date')[:3]
+    total_evaluations = produit.evaluations.count()
+    autres_evaluations = produit.evaluations.order_by('-date')[3:]
+    moyenne = produit.evaluations.aggregate(moyenne=Avg('note'))['moyenne'] or 0
     
     return render(request, 'core/detail_produit.html', {
         'produit': produit,
         'est_favori': est_favori,
-        'evaluations': evaluations,
+        'evaluations': evaluations,          # 3 derniers avis affichés
+        'autres_evaluations': autres_evaluations,  # avis révélés par « Voir plus »
+        'total_evaluations': total_evaluations,
+        'note_moyenne': round(float(moyenne), 1),
     })
 def passer_commande(request, pk):
     produit = get_object_or_404(Produit, pk=pk, visible=True)
@@ -865,12 +868,13 @@ def confirmation_commande(request):
 def commandes_vendeur(request):
     from .models import Vendeur, Commande
     from django.shortcuts import get_object_or_404, render
-    
+
     vendeur = get_object_or_404(Vendeur, user=request.user)
     commandes = Commande.objects.filter(
         vendeur=vendeur,
         archivee=False,
-        paiement__statut='valide',
+    ).filter(
+        Q(paiement__statut='valide') | Q(paiement_panier__statut='valide')
     ).order_by('-date_commande')
     
     # Calcul des compteurs par statut
@@ -1239,6 +1243,7 @@ def payer_commande(request, pk):
 
     modes_paiement = [
         ('orange_money', 'Orange Money'),
+        ('mobile_money', 'Mobile Money'),
         ('carte_bancaire', 'Carte Bancaire'),
         ('paiement_livraison', 'Paiement à la livraison'),
         ('virement_bancaire', 'Virement bancaire'),
@@ -1282,6 +1287,15 @@ def payer_commande(request, pk):
         if commande.vendeur and paiement.statut == 'valide':
             commande.vendeur.ventes_du_mois += montant
             commande.vendeur.save(update_fields=['ventes_du_mois'])
+            creer_notification(
+                user=commande.vendeur.user,
+                type='commande',
+                titre='💰 Paiement confirmé',
+                message=f'Paiement de {montant:,} GNF reçu pour la commande #{commande.pk} '
+                        f'({produit.nom} x{commande.quantite}) de {commande.nom_client}.',
+                lien='/mes-commandes/',
+                envoyer_email=True
+            )
 
         if client_connecte and client_connecte.numero == commande.numero_client:
             update_loyalty_record(client_connecte, commande.vendeur, montant)
@@ -1430,6 +1444,20 @@ def payer_commande_orange(request, pk):
         if client and client.numero == commande.numero_client:
             update_loyalty_record(client, commande.vendeur, commande.prix_total)
         
+        # Notification in-app vendeur
+        try:
+            creer_notification(
+                user=commande.vendeur.user,
+                type='commande',
+                titre='🍊 Paiement Orange Money',
+                message=f'Paiement Orange reçu pour la commande #{commande.pk} : '
+                        f'{commande.prix_total:,} GNF ({produit.nom}).',
+                lien='/mes-commandes/',
+                envoyer_email=True
+            )
+        except Exception:
+            pass
+        
         # Notification vendeur
         try:
             send_mail(
@@ -1498,6 +1526,20 @@ def payer_commande_mobile(request, pk):
             commande.vendeur.save()
         if client and client.numero == commande.numero_client:
             update_loyalty_record(client, commande.vendeur, commande.prix_total)
+        
+        # Notification in-app vendeur
+        try:
+            creer_notification(
+                user=commande.vendeur.user,
+                type='commande',
+                titre='📱 Paiement Mobile Money',
+                message=f'Paiement Mobile reçu pour la commande #{commande.pk} : '
+                        f'{commande.prix_total:,} GNF ({produit.nom}).',
+                lien='/mes-commandes/',
+                envoyer_email=True
+            )
+        except Exception:
+            pass
         
         # Notification vendeur
         try:
@@ -1568,6 +1610,20 @@ def payer_commande_livraison(request, pk):
         if client and client.numero == commande.numero_client:
             update_loyalty_record(client, commande.vendeur, commande.prix_total)
         
+        # Notification in-app vendeur
+        try:
+            creer_notification(
+                user=commande.vendeur.user,
+                type='commande',
+                titre='🚚 Paiement à la livraison',
+                message=f'Une commande à la livraison #{commande.pk} a été passée : '
+                        f'{commande.prix_total:,} GNF ({produit.nom}) par {commande.nom_client}.',
+                lien='/mes-commandes/',
+                envoyer_email=True
+            )
+        except Exception:
+            pass
+        
 # Notification vendeur
         try:
             send_mail(
@@ -1619,8 +1675,61 @@ def reducer_stock(commande):
     except Exception as e:
         print(f"Erreur lors de la réduction du stock: {e}")
 
-def creer_notification(user, type, titre, message, lien=''):
-    """Utility to create in-app notification"""
+def _user_accepte_email(user):
+    """Vérifie si l'utilisateur accepte de recevoir les notifications par email."""
+    try:
+        client = Client.objects.filter(user=user).first()
+        if client is not None:
+            return client.notifications_email
+        vendeur = Vendeur.objects.filter(user=user).first()
+        if vendeur is not None:
+            return vendeur.notifications_email
+    except Exception:
+        pass
+    return False
+
+
+def envoyer_notification_email(user, titre, message, lien=''):
+    """
+    Envoie une notification par email (si l'utilisateur a un email et a activé l'option).
+    Ne lève jamais d'exception : un échec d'email ne doit pas casser l'action en cours.
+    """
+    if not user or not getattr(user, 'email', ''):
+        return False
+    if not _user_accepte_email(user):
+        return False
+    try:
+        corps = f"""Bonjour {user.username},
+
+{titre}
+
+{message}
+"""
+        if lien:
+            if lien.startswith('/'):
+                base = getattr(settings, 'SITE_URL', '').rstrip('/')
+                lien_complet = base + lien if base else lien
+            else:
+                lien_complet = lien
+            corps += f"\nOuvrir dans SHOPY : {lien_complet}\n"
+        corps += "\n— L'équipe SHOPY\n"
+        send_mail(
+            subject=f"🔔 SHOPY — {titre}",
+            message=corps,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=True,
+        )
+        return True
+    except Exception:
+        return False
+
+
+def creer_notification(user, type, titre, message, lien='', envoyer_email=False):
+    """
+    Crée une notification in-app et, si demandé, l'envoie aussi par email.
+    `envoyer_email=True` pour les évènements importants (paiement reçu, nouvelle commande...).
+    """
     Notification.objects.create(
         user=user,
         type=type,
@@ -1628,6 +1737,28 @@ def creer_notification(user, type, titre, message, lien=''):
         message=message,
         lien=lien
     )
+    if envoyer_email:
+        envoyer_notification_email(user, titre, message, lien)
+
+
+def calculer_ventes_vendeur(vendeur, annees_mois=None):
+    """
+    Calcule le chiffre d'affaires d'un vendeur (commandes payées, directes ET panier).
+    - annees_mois : tuple (annee, mois) optionnel pour filtrer un mois précis.
+    Retourne un entier (GNF).
+    """
+    commandes_payees = Commande.objects.filter(vendeur=vendeur).filter(
+        Q(paiement__statut='valide') | Q(paiement_panier__statut='valide')
+    )
+    if annees_mois:
+        annee, mois = annees_mois
+        commandes_payees = commandes_payees.filter(
+            date_commande__year=annee,
+            date_commande__month=mois,
+        )
+    total = commandes_payees.aggregate(total=Sum('prix_total'))['total'] or 0
+    return int(total)
+
 
 def verifier_promos_expirees():
     """
@@ -1917,17 +2048,46 @@ def payer_panier(request, paiement_pk):
                 produit.quantite = 0
             produit.save()
             
+            # ✅ Créer un PaiementCommande par commande pour que le vendeur voie
+            # la commande dans son espace et que les ventes soient comptabilisées.
+            if not hasattr(commande, 'paiement') or not commande.paiement:
+                PaiementCommande.objects.create(
+                    commande=commande,
+                    paiement_panier=paiement,
+                    mode_paiement=mode,
+                    numero_paiement=numero,
+                    montant=commande.prix_total,
+                    reference=reference,
+                    statut='valide',
+                )
+            else:
+                commande.paiement.paiement_panier = paiement
+                commande.paiement.statut = 'valide'
+                commande.paiement.save()
+            
             vendeur = commande.vendeur
             montant = commande.prix_total
             vendeur.ventes_du_mois += montant
             vendeur.save()
+            vendeur.dernier_reset_ventes = vendeur.dernier_reset_ventes or timezone.now().date()
             if client:
                 update_loyalty_record(client, vendeur, montant)
+
+            # ✅ Notification in-app au vendeur concerné (bon vendeur = commande.vendeur)
+            creer_notification(
+                user=vendeur.user,
+                type='commande',
+                titre='🛒 Nouvelle commande (panier payé)',
+                message=f'Une commande #{commande.pk} ({produit.nom} x{commande.quantite}) '
+                        f'de {client.nom} a été payée via panier : {montant:,} GNF.',
+                lien='/mes-commandes/'
+            )
             
             try:
-                send_mail(
-                    subject=f'🛒 Nouvelle commande #{commande.pk} - Panier payé',
-                    message=f'''
+                if vendeur.user.email and _user_accepte_email(vendeur.user):
+                    send_mail(
+                        subject=f'🛒 Nouvelle commande #{commande.pk} - Panier payé',
+                        message=f'''
 Nouvelle commande issue du panier !
 
 Client: {client.nom}
@@ -2050,6 +2210,100 @@ def connexion_client(request):
             erreur = "Email ou mot de passe incorrect."
 
     return render(request, 'core/connexion_client.html', {'erreur': erreur})
+
+
+# ============================================
+# MOT DE PASSE OUBLIÉ (envoi par email)
+# ============================================
+def mot_de_passe_oublie(request):
+    """Formulaire : saisir son email pour recevoir un lien de réinitialisation."""
+    from django.contrib.auth.tokens import default_token_generator
+    from django.utils.http import urlsafe_base64_encode
+    from django.utils.encoding import force_bytes
+    from django.urls import reverse
+
+    envoye = False
+    erreur = None
+
+    if request.method == 'POST':
+        email = (request.POST.get('email') or '').strip().lower()
+        try:
+            user = User.objects.get(email__iexact=email)
+            # Générer le token et le lien de réinitialisation
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            lien_reset = request.build_absolute_uri(
+                reverse('reinitialiser_mot_de_passe', args=[uid, token])
+            )
+            try:
+                send_mail(
+                    subject='🔑 SHOPY — Réinitialisation de votre mot de passe',
+                    message=f'''Bonjour {user.username},
+
+Vous avez demandé la réinitialisation de votre mot de passe SHOPY.
+
+Cliquez sur le lien ci-dessous (valable 24 heures) :
+{lien_reset}
+
+Si vous n'êtes pas à l'origine de cette demande, ignorez simplement cet email.
+
+— L'équipe SHOPY
+                    ''',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=True,
+                )
+                envoye = True
+            except Exception:
+                erreur = "Un problème est survenu lors de l'envoi de l'email. Réessayez plus tard."
+        except User.DoesNotExist:
+            # On affiche le même message pour ne pas indiquer si l'email existe
+            envoye = True
+
+    return render(request, 'core/mot_de_passe_oublie.html', {
+        'envoye': envoye,
+        'erreur': erreur,
+    })
+
+
+def reinitialiser_mot_de_passe(request, uidb64, token):
+    """Page de création d'un nouveau mot de passe après clic sur le lien reçu."""
+    from django.contrib.auth.tokens import default_token_generator
+    from django.utils.http import urlsafe_base64_decode
+    from django.utils.encoding import force_str
+
+    user = None
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    token_valide = user is not None and default_token_generator.check_token(user, token)
+
+    if not token_valide:
+        return render(request, 'core/reinitialiser_mot_de_passe.html', {'invalide': True})
+
+    if request.method == 'POST':
+        nouveau = request.POST.get('nouveau_mot_de_passe', '')
+        confirmer = request.POST.get('confirmer_mot_de_passe', '')
+        if len(nouveau) < 8:
+            erreur = 'Le mot de passe doit contenir au moins 8 caractères.'
+        elif nouveau != confirmer:
+            erreur = 'Les mots de passe ne correspondent pas.'
+        else:
+            user.set_password(nouveau)
+            user.save()
+            log_action(request, 'password_reset', f'Mot de passe réinitialisé pour {user.username}')
+            return render(request, 'core/reinitialiser_mot_de_passe.html', {'succes': True})
+    else:
+        erreur = None
+
+    return render(request, 'core/reinitialiser_mot_de_passe.html', {
+        'invalide': False,
+        'succes': False,
+        'erreur': erreur,
+    })
 
 @login_required
 def espace_client(request):
@@ -2342,7 +2596,8 @@ def evaluer_produit(request, pk):
             achat = Commande.objects.filter(
                 produit=produit,
                 numero_client=client.numero,
-                paiement__statut='valide',
+            ).filter(
+                Q(paiement__statut='valide') | Q(paiement_panier__statut='valide')
             ).exists()
             if not achat:
                 messages.error(request, 'Vous devez avoir payé ce produit pour laisser un avis.')
@@ -2374,9 +2629,9 @@ def evaluer_produit(request, pk):
 def statistiques_vendeur(request):
     from django.db.models import Sum, Count
     from datetime import datetime
-    
+
     vendeur = get_object_or_404(Vendeur, user=request.user)
-    
+
     # Calcul des statistiques de base
     total_commandes = Commande.objects.filter(vendeur=vendeur).count()
     commandes_acceptees = Commande.objects.filter(vendeur=vendeur, statut='acceptee').count()
@@ -2400,52 +2655,47 @@ def statistiques_vendeur(request):
         'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'
     ]
 
-    commandes_acceptees_vendeur = Commande.objects.filter(
-        vendeur=vendeur,
-        paiement__statut='valide',
-    )
+    # ===== SÉLECTION D'UNE DATE (mois) =====
+    # La remise à 0 GNF s'applique au nouveau mois, mais l'historique des mois
+    # passés reste consultable via la sélection d'une date.
+    date_selectionnee = maintenant
+    mois_param = request.GET.get('mois', '')
+    if mois_param:
+        try:
+            annee_cible, mois_cible = mois_param.split('-')
+            date_selectionnee = datetime(int(annee_cible), int(mois_cible), 1).replace(tzinfo=timezone.now().tzinfo)
+        except (ValueError, TypeError):
+            date_selectionnee = maintenant
 
-    # Construire une fenêtre de 12 mois jusqu'au mois actuel
-    mois_annee_window = []
+    ventes_annee_mois = calculer_ventes_vendeur(vendeur, (date_selectionnee.year, date_selectionnee.month))
+
+    # Historique : ventes de chaque mois (12 derniers mois)
+    historique_mensuel = []
     for i in range(11, -1, -1):
         mois_calc = actuel_mois - i
         annee_calc = actuel_annee
         while mois_calc < 1:
             mois_calc += 12
             annee_calc -= 1
-        mois_annee_window.append((annee_calc, mois_calc))
+        total_mois = calculer_ventes_vendeur(vendeur, (annee_calc, mois_calc))
+        est_selectionne = (annee_calc == date_selectionnee.year and mois_calc == date_selectionnee.month)
+        historique_mensuel.append({
+            'annee': annee_calc,
+            'mois': mois_calc,
+            'libelle': mois_francais[mois_calc - 1],
+            'total': total_mois,
+            'selectionne': est_selectionne,
+            'cle': f"{annee_calc}-{mois_calc:02d}",
+        })
 
-    # Agréger les ventes acceptées par année/mois
-    from django.db.models.functions import ExtractYear, ExtractMonth
-    ventes_par_mois = PaiementCommande.objects.filter(
-        commande__vendeur=vendeur,
-        statut='valide',
-    ).annotate(
-        annee=ExtractYear('date_soumission'),
-        mois=ExtractMonth('date_soumission')
-    ).values('annee', 'mois').annotate(total=Sum('montant')).order_by('annee', 'mois')
+    labels_graphique = [item['libelle'] for item in historique_mensuel]
+    donnees_graphique = [item['total'] for item in historique_mensuel]
 
-    ventes_par_mois_dict = {
-        f"{item['annee']}-{item['mois']:02d}": int(item['total'] or 0)
-        for item in ventes_par_mois
-    }
+    ventes_mois_actuel = ventes_annee_mois if (date_selectionnee.year == actuel_annee and date_selectionnee.month == actuel_mois) else calculer_ventes_vendeur(vendeur, (actuel_annee, actuel_mois))
+    ventes_mois_precedent = historique_mensuel[-2]['total'] if len(historique_mensuel) >= 2 else 0
 
-    labels_graphique = []
-    donnees_graphique = []
-    for annee_calc, mois_calc in mois_annee_window:
-        clef = f"{annee_calc}-{mois_calc:02d}"
-        labels_graphique.append(mois_francais[mois_calc - 1])
-        donnees_graphique.append(ventes_par_mois_dict.get(clef, 0))
-
-    ventes_mois_actuel = donnees_graphique[-1] if donnees_graphique else 0
-
-    if len(donnees_graphique) >= 2:
-        ventes_mois_precedent = donnees_graphique[-2]
-        if ventes_mois_precedent > 0:
-            evolution_pourcent = ((ventes_mois_actuel - ventes_mois_precedent) / ventes_mois_precedent) * 100
-            evolution_pourcent = round(evolution_pourcent, 1)
-        else:
-            evolution_pourcent = None
+    if ventes_mois_precedent > 0:
+        evolution_pourcent = round(((ventes_mois_actuel - ventes_mois_precedent) / ventes_mois_precedent) * 100, 1)
     else:
         evolution_pourcent = None
 
@@ -2462,6 +2712,9 @@ def statistiques_vendeur(request):
         'labels_graphique': labels_graphique,
         'donnees_graphique': donnees_graphique,
         'evolution_pourcent': evolution_pourcent,
+        'historique_mensuel': historique_mensuel,
+        'date_selectionnee': date_selectionnee,
+        'mois_francais': mois_francais,
     })
 
 # ============================================

@@ -42,6 +42,7 @@
         <span class="dashboard-verified">✅ Client vérifié</span>
         <span class="dashboard-city">📍 {{ client.ville }}</span>
         <span class="dashboard-city">📱 {{ client.numero }}</span>
+        <a href="{% url 'mode_emploi' %}" class="dashboard-city" style="text-decoration:none;">📖 Guide d'utilisation</a>
       </div>
     </div>
   </div>
@@ -72,6 +73,7 @@
 .client-stat-badge { background: rgba(35, 134, 54, 0.18); color:#d9f7e4; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; border:1px solid rgba(35, 134, 54, 0.35) }
 .dashboard-profile {
   display:flex;
+  flex-wrap: wrap;
   align-items:center;
   gap:16px;
   padding:16px;
@@ -83,11 +85,11 @@
   box-shadow: 0 14px 28px rgba(0,0,0,0.22);
   transform: translateY(8px);
 }
-.dashboard-profile-info { flex:1; color:white }
+.dashboard-profile-info { flex:1 1 220px; min-width:0; color:white }
 .dashboard-salutation { margin:0 0 4px 0; font-size:14px; opacity:0.9 }
-.dashboard-name { margin:0 0 8px 0; font-size:22px; font-weight:800; color:#ffffff }
-.dashboard-meta { display:flex; flex-wrap:wrap; gap:8px; font-size:12px }
-.dashboard-verified, .dashboard-city { background: rgba(255,255,255,0.08); color:#ebf2ff; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.12) }
+.dashboard-name { margin:0 0 8px 0; font-size:22px; font-weight:800; color:#ffffff; word-break:break-word; overflow-wrap:anywhere }
+.dashboard-meta { display:flex; flex-wrap:wrap; gap:8px; font-size:12px; max-width:100% }
+.dashboard-verified, .dashboard-city { flex:0 1 auto; overflow-wrap:anywhere; background: rgba(255,255,255,0.08); color:#ebf2ff; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.12) }
 .client-avatar-wrapper { position:relative; width:86px; height:86px; aspect-ratio:1; flex-shrink:0; cursor:pointer; border-radius:50%; overflow:visible; background:transparent; transition:all 0.3s ease; }
 .client-avatar-wrapper:hover { transform:translateY(-2px) scale(1.02); }
 .client-avatar-frame { position:absolute; inset:0; display:block; width:100%; height:100%; aspect-ratio:1; overflow:hidden; border:4px solid rgba(255,255,255,0.85); border-radius:50%; background:#16202d; box-shadow:0 0 0 3px rgba(59,130,246,0.35), 0 6px 20px rgba(0,0,0,0.35); }

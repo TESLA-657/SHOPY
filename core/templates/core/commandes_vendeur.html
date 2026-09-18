@@ -100,6 +100,7 @@
                 </form>
                 <div class="cv-commande-price">{{ commande.prix_total|format_prix }} GNF</div>
                 <div class="cv-commande-date">{{ commande.date_commande|date:"d/m/Y H:i" }}</div>
+                <div class="cv-commande-mode">💳 {{ commande.mode_paiement_label|default:"—" }}</div>
               </div>
             </div>
           {% endif %}
@@ -144,6 +145,7 @@
                 <span class="cv-commande-status accepted">✓ Acceptée</span>
                 <div class="cv-commande-price">{{ commande.prix_total|format_prix }} GNF</div>
                 <div class="cv-commande-date">{{ commande.date_commande|date:"d/m/Y H:i" }}</div>
+                <div class="cv-commande-mode">💳 {{ commande.mode_paiement_label|default:"—" }}</div>
               </div>
             </div>
           {% endif %}
@@ -187,6 +189,7 @@
               <div class="cv-commande-actions">
                 <span class="cv-commande-status rejected">✕ Refusée</span>
                 <div class="cv-commande-date">{{ commande.date_commande|date:"d/m/Y H:i" }}</div>
+                <div class="cv-commande-mode">💳 {{ commande.mode_paiement_label|default:"—" }}</div>
               </div>
             </div>
           {% endif %}

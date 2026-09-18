@@ -1,9 +1,10 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/statistiques-avancees.css' %}">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'core/vendor/chartjs/chart.umd.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -57,6 +58,48 @@
       </div>
       <div style="height:280px; background:rgba(255,255,255,0.03); border-radius:12px; padding:16px;">
         <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Historique mensuel + sélection de date -->
+    <div class="sa-conversion-section">
+      <div class="sa-section-header">
+        <h5 class="sa-section-title">📅 Remise à zéro mensuelle &amp; historique</h5>
+      </div>
+      <p style="color:#94a3b8; font-size:13px; margin:0 0 14px;">
+        Les ventes repartent de <strong>0 GNF</strong> à chaque nouveau mois.
+        Vous pouvez consulter l'historique des mois passés en choisissant une date.
+      </p>
+
+      <form method="get" class="sa-month-select" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px;">
+        <label style="color:#cbd5e1; font-size:13px;">🕐 Choisir un mois :</label>
+        <input type="month" name="mois" value="{{ date_selectionnee|date:'Y-m' }}" style="background:#0b0e14; color:#e2e8f0; border:1px solid rgba(148,163,184,0.25); border-radius:10px; padding:8px 12px; font-size:14px;">
+        <button type="submit" class="sa-back-btn" style="border:none; cursor:pointer;">Voir les ventes</button>
+        <a href="{% url 'statistiques_vendeur' %}" class="sa-back-btn" style="text-decoration:none;">↺ Mois courant</a>
+      </form>
+
+      <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(148,163,184,0.15); border-radius:12px; padding:8px 16px;">
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+          <thead>
+            <tr style="color:#64748b; text-transform:uppercase; font-size:11px; letter-spacing:0.06em;">
+              <th style="text-align:left; padding:10px 6px;">Mois</th>
+              <th style="text-align:right; padding:10px 6px;">Ventes (GNF)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for m in historique_mensuel %}
+            <tr style="{% if m.selectionne %}background:rgba(63,185,80,0.10);{% endif %} border-top:1px solid rgba(148,163,184,0.08);">
+              <td style="padding:10px 6px; color:#e2e8f0;">
+                {{ m.libelle }} {{ m.annee }}
+                {% if m.selectionne %}<span style="color:#3fb950; font-weight:700;"> ← sélectionné</span>{% endif %}
+              </td>
+              <td style="padding:10px 6px; text-align:right; color:#3fb950; font-weight:700;">
+                {{ m.total|format_prix }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -133,11 +176,33 @@
 {{ donnees_graphique|json_script:"data-data" }}
 <script>
 //<![CDATA[
-var ctx = document.getElementById("salesChart").getContext("2d");
-// Utiliser les données dynamiques de la vue
-var labels = JSON.parse(document.getElementById('labels-data').textContent);
-var data = JSON.parse(document.getElementById('data-data').textContent);
-new Chart(ctx, {
+// Initialisation robuste du graphique : attend le DOM et la librairie Chart.js.
+(function () {
+  function initGraphiqueVentes() {
+    var canvas = document.getElementById("salesChart");
+    if (!canvas) { return; }
+    if (typeof Chart === "undefined") {
+      // Chart.js n'a pas pu être chargé : on réessaie une fois après un court délai
+      setTimeout(initGraphiqueVentes, 400);
+      return;
+    }
+    var labelsEl = document.getElementById('labels-data');
+    var dataEl = document.getElementById('data-data');
+    if (!labelsEl || !dataEl) { return; }
+    var labels, data;
+    try {
+      labels = JSON.parse(labelsEl.textContent);
+      data = JSON.parse(dataEl.textContent);
+    } catch (e) {
+      labels = [];
+      data = [];
+    }
+    if (!labels.length) {
+      labels = ['Aucune donnée'];
+      data = [0];
+    }
+    var ctx = canvas.getContext("2d");
+    new Chart(ctx, {
   type: "line",
   data: {
     labels: labels,
@@ -187,6 +252,14 @@ new Chart(ctx, {
     }
   }
 });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGraphiqueVentes);
+  } else {
+    initGraphiqueVentes();
+  }
+})();
 //]]>
 </script>
 

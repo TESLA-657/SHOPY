@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réinitialiser le mot de passe — SHOPY</title>
+  <link href="{% static 'core/css/connexion_client.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<div class="login-container">
+  <div class="login-card">
+
+    {% if invalide %}
+    <div class="login-header">
+      <div class="login-icon">
+        <span>⚠️</span>
+      </div>
+      <h4 class="login-title">Lien invalide</h4>
+      <p class="login-subtitle">Ce lien de réinitialisation est invalide ou a expiré.</p>
+    </div>
+    <div style="text-align:center;">
+      <a href="{% url 'mot_de_passe_oublie' %}" class="login-button" style="display:inline-block; text-align:center; text-decoration:none; margin-bottom:12px;">
+        Demander un nouveau lien
+      </a>
+      <br>
+      <a href="{% url 'connexion_client' %}" class="login-return">← Retour à la connexion</a>
+    </div>
+
+    {% elif succes %}
+    <div class="login-header">
+      <div class="login-icon">
+        <span>✅</span>
+      </div>
+      <h4 class="login-title">Mot de passe modifié !</h4>
+      <p class="login-subtitle">Votre mot de passe a bien été réinitialisé. Vous pouvez maintenant vous connecter.</p>
+    </div>
+    <div style="text-align:center;">
+      <a href="{% url 'connexion_client' %}" class="login-button" style="display:inline-block; text-align:center; text-decoration:none;">
+        Se connecter
+      </a>
+    </div>
+
+    {% else %}
+    <div class="login-header">
+      <div class="login-icon">
+        <span>🔑</span>
+      </div>
+      <h4 class="login-title">Nouveau mot de passe</h4>
+      <p class="login-subtitle">Choisissez un nouveau mot de passe pour votre compte</p>
+    </div>
+
+    {% if erreur %}
+    <div style="background:#fee2e2; color:#b91c1c; padding:12px 14px; border-radius:12px; font-size:14px; margin-bottom:18px;">
+      {{ erreur }}
+    </div>
+    {% endif %}
+
+    <form class="login-form" method="post" autocomplete="off">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="id_nouveau">Nouveau mot de passe</label>
+        <input
+          type="password"
+          name="nouveau_mot_de_passe"
+          id="id_nouveau"
+          class="form-input"
+          placeholder="Au moins 8 caractères"
+          required
+          minlength="8"
+          autofocus
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_confirmer">Confirmer le mot de passe</label>
+        <input
+          type="password"
+          name="confirmer_mot_de_passe"
+          id="id_confirmer"
+          class="form-input"
+          placeholder="••••••••"
+          required
+          minlength="8"
+        >
+      </div>
+
+      <button type="submit" class="login-button">
+        Réinitialiser mon mot de passe
+      </button>
+    </form>
+
+    <div style="margin-top: 12px;">
+      <a href="{% url 'connexion_client' %}" class="login-return">
+        ← Retour à la connexion
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+</body>
+</html>

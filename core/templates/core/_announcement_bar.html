@@ -1,0 +1,43 @@
+{% load static %}
+{% for annonce in annonces_actives %}
+<div class="shopy-annonce-bar" id="shopy-annonce-{{ annonce.pk }}"
+     data-annonce-hide="{{ annonce.pk }}">
+  <span class="annonce-icon">{{ annonce.icone }}</span>
+  <div class="annonce-content">
+    <span class="annonce-title">{{ annonce.titre }}</span>
+    {% if annonce.message %}<span class="annonce-message">{{ annonce.message }}</span>{% endif %}
+  </div>
+  {% if annonce.lien %}
+  <a href="{{ annonce.lien }}" class="annonce-lien" target="_blank" rel="noopener">En savoir plus →</a>
+  {% endif %}
+  <button type="button" class="annonce-close" aria-label="Fermer"
+          data-annonce-id="{{ annonce.pk }}">✕</button>
+</div>
+{% endfor %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Cacher les annonces déjà fermées par le vendeur
+  try {
+    var fermees = JSON.parse(localStorage.getItem('SHOPY-annonces-fermees') || '[]');
+    fermees.forEach(function (id) {
+      var bar = document.getElementById('shopy-annonce-' + id);
+      if (bar) bar.style.display = 'none';
+    });
+  } catch (e) {}
+
+  // Fermer une annonce au clic et s'en souvenir
+  document.querySelectorAll('.shopy-annonce-bar .annonce-close').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-annonce-id');
+      var bar = document.getElementById('shopy-annonce-' + id);
+      if (bar) bar.style.display = 'none';
+      try {
+        var fermees = JSON.parse(localStorage.getItem('SHOPY-annonces-fermees') || '[]');
+        if (fermees.indexOf(id) === -1) fermees.push(id);
+        localStorage.setItem('SHOPY-annonces-fermees', JSON.stringify(fermees));
+      } catch (e) {}
+    });
+  });
+});
+</script>

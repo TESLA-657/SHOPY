@@ -106,9 +106,11 @@ const NotificationPolling = {
       </div>
       <button class="toast-close" onclick="this.parentElement.remove()">×</button>
     `;
-    
+
     container.appendChild(toast);
-    
+    // force reflow for animation
+    requestAnimationFrame(() => toast.classList.add('show'));
+
     // Auto-supprimer après 8 secondes
     setTimeout(() => {
       if (toast.parentElement) {

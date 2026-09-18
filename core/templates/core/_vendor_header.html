@@ -1,5 +1,8 @@
 {% load static custom_filters %}
 <!-- Vendor header partial: reusable header for vendor dashboard and vendor sections -->
+
+{% include 'core/_announcement_bar.html' %}
+
 <div class="dashboard-header-premium">
 
   <!-- Stats vendeur -->
@@ -51,6 +54,7 @@
           <span class="dashboard-pending">⏳ En attente</span>
           {% endif %}
           <span class="dashboard-city">📍 {{ vendeur.ville }}</span>
+          <a href="{% url 'mode_emploi' %}" class="dashboard-city" style="text-decoration:none;">📖 Guide d'utilisation</a>
         </div>
       </div>
     </div>
@@ -84,6 +88,7 @@
   position: relative;
   z-index: 1;
   display:flex;
+  flex-wrap: wrap;
   align-items:center;
   gap:16px;
   padding:16px;
@@ -92,15 +97,16 @@
   border:1px solid rgba(255,255,255,0.12);
   box-shadow:0 14px 28px rgba(0,0,0,0.22);
 }
-.dashboard-profile-avatar-wrapper { display:flex; align-items:center; gap:16px }
-.dashboard-avatar { position:relative; display:block; width:72px; height:72px; }
+.dashboard-profile-avatar-wrapper { display:flex; flex-wrap: wrap; align-items:center; gap:16px; min-width:0 }
+.dashboard-avatar { position:relative; display:block; width:72px; height:72px; flex-shrink:0; }
 .dashboard-avatar-img { width:72px; height:72px; border-radius:50%; object-fit:cover; border:3px solid rgba(255,255,255,0.4); box-shadow:0 4px 15px rgba(0,0,0,0.2) }
 .dashboard-avatar-placeholder { width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:white; background:linear-gradient(135deg,#238636 0%,#388bfd 100%); border:3px solid rgba(255,255,255,0.4); box-shadow:0 4px 15px rgba(0,0,0,0.2) }
 .dashboard-avatar-edit { position:absolute; bottom:0; right:0; width:28px; height:28px; background:#238636; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; border:2px solid white }
-.dashboard-profile-info { color:white }
+.dashboard-profile-info { color:white; flex:1 1 220px; min-width:0 }
 .dashboard-salutation { font-size:14px; margin:0 0 4px 0; opacity:0.9 }
-.dashboard-name { font-size:22px; font-weight:800; margin:0 0 8px 0; color:#fff }
-.dashboard-meta { display:flex; gap:10px; flex-wrap:wrap }
+.dashboard-name { font-size:22px; font-weight:800; margin:0 0 8px 0; color:#fff; word-break:break-word; overflow-wrap:anywhere }
+.dashboard-meta { display:flex; gap:10px; flex-wrap:wrap; max-width:100% }
+.dashboard-verified, .dashboard-suspended, .dashboard-pending, .dashboard-city { flex:0 1 auto; overflow-wrap:anywhere }
 .dashboard-verified { background: rgba(35, 134, 54, 0.3); color:#d9f7e4; padding:5px 10px; border-radius:12px; font-size:11px; font-weight:600 }
 .dashboard-suspended { background: rgba(248, 81, 73, 0.28); color:#ffd7d4; padding:5px 10px; border-radius:12px; font-size:11px; font-weight:600 }
 .dashboard-pending { background: rgba(210, 153, 34, 0.26); color:#f8e7b3; padding:5px 10px; border-radius:12px; font-size:11px; font-weight:600 }

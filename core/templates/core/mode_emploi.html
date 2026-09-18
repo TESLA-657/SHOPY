@@ -1,0 +1,232 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Mode d'emploi — SHOPY{% endblock %}
+
+{% block extra_head %}
+<style>
+  .manuel-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 16px 60px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #0f172a;
+  }
+  .manuel-hero {
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    color: #fff;
+    border-radius: 22px;
+    padding: 32px 26px;
+    margin-bottom: 26px;
+    text-align: center;
+  }
+  .manuel-hero h1 { margin: 0 0 8px; font-size: 28px; }
+  .manuel-hero p { margin: 0; opacity: 0.85; font-size: 15px; }
+  .manuel-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .manuel-tab {
+    flex: 1;
+    min-width: 180px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    border: 2px solid rgba(15,23,42,0.12);
+    background: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+  .manuel-tab.active { background: #16a34a; border-color: #16a34a; color: #fff; }
+  .manuel-section { display: none; }
+  .manuel-section.active { display: block; }
+  .manuel-card {
+    background: #fff;
+    border: 1px solid rgba(148,163,184,0.25);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 14px rgba(15,23,42,0.04);
+  }
+  .manuel-card h3 { margin: 0 0 10px; font-size: 18px; color: #0f172a; }
+  .manuel-card ol, .manuel-card ul { margin: 0; padding-left: 20px; line-height: 1.7; }
+  .manuel-card li { margin-bottom: 6px; }
+  .manuel-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .manuel-step-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #16a34a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .manuel-note {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    margin-top: 12px;
+  }
+  .manuel-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: 8px;
+  }
+  .manuel-cta:hover { opacity: 0.9; color: #fff; }
+  @media (max-width: 640px) {
+    .manuel-hero h1 { font-size: 22px; }
+    .manuel-tab { min-width: 100%; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="manuel-container">
+
+  <div class="manuel-hero">
+    <h1>📖 Mode d'emploi SHOPY</h1>
+    <p>Apprenez à utiliser SHOPY en quelques minutes — guide complet pour vendeurs et clients.</p>
+  </div>
+
+  <div class="manuel-tabs">
+    <button type="button" class="manuel-tab active" data-cible="vendeurs" onclick="afficherGuide('vendeurs', this)">🏪 Guide vendeur</button>
+    <button type="button" class="manuel-tab" data-cible="clients" onclick="afficherGuide('clients', this)">🛒 Guide client</button>
+  </div>
+
+  <!-- ===== GUIDE VENDEUR ===== -->
+  <div class="manuel-section active" id="guide-vendeurs">
+
+<div class="manuel-card">
+      <h3>1️⃣ Créer son compte vendeur</h3>
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Cliquez sur <strong>« Vendre »</strong> depuis la page d'accueil, puis sur <strong>« Créer mon compte »</strong>.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div>Renseignez le <strong>nom de votre boutique</strong>, votre <strong>numéro WhatsApp</strong>, votre <strong>ville</strong>, votre <strong>email</strong> et un mot de passe.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">3</span><div>Votre compte passe en <strong>« En attente de validation »</strong> : l'administrateur doit l'approuver avant que vous puissiez vendre.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">4</span><div>Une fois validé, connectez-vous avec le nom de votre boutique et votre mot de passe : vous arrivez sur votre <strong>espace vendeur</strong>.</div></div>
+    </div>
+
+    <div class="manuel-card">
+      <h3>2️⃣ Ajouter un produit</h3>
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Dans votre espace vendeur, cliquez sur <strong>« + Nouveau Produit »</strong>.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div>Remplissez le nom, le prix, la quantité, la description et choisissez une photo.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">3</span><div>Validez : le produit apparaît immédiatement dans le catalogue (si votre boutique est active).</div></div>
+      <div class="manuel-note"> Vous pouvez aussi <strong>mettre un produit en promo</strong> (prix réduit sur une durée) et <strong>créer une publicité</strong> pour le mettre en avant.</div>
+    </div>
+
+    <div class="manuel-card">
+      <h3>3️⃣ Gérer les commandes</h3>
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Ouvrez <strong>« Mes commandes »</strong> depuis votre espace vendeur.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div>Pour chaque commande payée, choisissez <strong>« Accepter »</strong> ou <strong>« Refuser »</strong>.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">3</span><div>La somme des commandes payées s'ajoute automatiquement à vos <strong>Ventes du mois</strong> et à vos <strong>Statistiques</strong>.</div></div>
+      <div class="manuel-note"> Les ventes repartent de <strong>0 GNF</strong> le 1er de chaque mois. Vous pouvez consulter l'historique des mois passés dans <strong>Statistiques → Choisir un mois</strong>.</div>
+    </div>
+
+    <div class="manuel-card">
+      <h3>4️⃣ Recevoir les notifications</h3>
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Les notifications apparaissent <strong>en bas à droite</strong> de votre écran (toasts verts) dès qu'une commande est payée.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div>L'icône 🔔 en bas à droite affiche le nombre de notifications non lues ; cliquez dessus pour tout voir.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">3</span><div>Vous recevez aussi un <strong>email</strong> à chaque paiement de commande.</div></div>
+      <div class="manuel-note"> La barre en haut de votre espace vendeur affiche les <strong>annonces</strong> (nouvelles fonctionnalités, informations). Vous pouvez les fermer avec le bouton ✕.</div>
+    </div>
+
+    <div class="manuel-card">
+      <h3>5️⃣ Personnaliser son profil</h3>
+  <!-- ===== GUIDE CLIENT ===== -->
+  <div class="manuel-section" id="guide-clients">
+
+    <div class="manuel-card">
+      <h3>1️⃣ Créer son compte client</h3>
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Cliquez sur <strong>« Client »</strong> depuis la page d'accueil, puis <strong>« Créer mon compte »</strong>.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div>Renseignez votre <strong>nom</strong>, votre <strong>numéro WhatsApp</strong>, votre <strong>ville</strong>, votre <strong>email</strong> et un mot de passe.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">3</span><div>Connectez-vous ensuite avec votre <strong>email</strong> et votre mot de passe.</div></div>
+      <div class="manuel-note">🔑 Mot de passe oublié ? Cliquez sur <strong>« Mot de passe oublié ? »</strong> sur la page de connexion : un lien de réinitialisation vous est envoyé par email.</div>
+    </div>
+
+    <div class="manuel-card">
+      <h3>2️⃣ Acheter un produit</h3>
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Parcourez le <strong>catalogue</strong> et ouvrez la fiche du produit qui vous intéresse.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div>Cliquez sur <strong>« Ajouter au panier »</strong> ou <strong>« Commander maintenant »</strong>.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">3</span><div>Choisissez votre <strong>mode de paiement</strong> : Orange Money, Mobile Money, Carte bancaire, Virement ou Paiement à la livraison.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">4</span><div>Validez votre paiement : le vendeur reçoit la commande et vous recevez une <strong>facture</strong>.</div></div>
+      <div class="manuel-note">💬 Avant d'acheter, vous pouvez <strong>contacter le vendeur sur WhatsApp</strong> (bouton 💬 sur la fiche produit) avec un message prérempli pour vérifier la disponibilité.</div>
+    </div>
+
+    <div class="manuel-card">
+      <h3>3️⃣ Le panier</h3>
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Ajoutez plusieurs produits de boutiques différentes dans votre panier.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div>Cliquez sur <strong>« Commander »</strong> : chaque vendeur reçoit automatiquement sa propre commande.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">3</span><div>Payez tout en une seule fois : le panier est réparti correctement entre les vendeurs concernés.</div></div>
+    </div>
+
+    <div class="manuel-card">
+      <h3>4️⃣ Suivre ses commandes</h3>
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Dans <strong>« Mon espace »</strong>, retrouvez vos commandes classées de la <strong>plus récente à la plus ancienne</strong>.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div>Consultez vos <strong>factures</strong> dans « Mes Factures » et téléchargez-les en PDF.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">3</span><div>Laissez un <strong>avis</strong> sur un produit après l'avoir payé (3 derniers avis visibles + bouton « Voir plus d'avis »).</div></div>
+    </div>
+
+    <div class="manuel-card">
+      <h3>5️⃣ Favoris, négociation et fidélité</h3>
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Ajoutez des produits en <strong>favoris</strong> ❤️ pour les retrouver plus tard.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div><strong>Négociez le prix</strong> avec un vendeur via « Négocier le prix » sur la fiche produit.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">3</span><div>Profitez du <strong>programme de fidélité</strong> : 3 achats = -3%, 6 achats = -5%, 10 achats = -8% chez les boutiques participantes.</div></div>
+    </div>
+
+    <div class="manuel-card" style="text-align:center;">
+      <h3>Prêt à faire vos achats ?</h3>
+      <a href="{% url 'catalogue' %}" class="manuel-cta">🛒 Parcourir le catalogue</a>
+    </div>
+
+  </div><!-- /guide-clients -->
+
+  <div class="manuel-card" style="text-align:center;">
+    <h3>Besoin d'aide ?</h3>
+    <p>Consultez la page <a href="{% url 'contact' %}">Contact</a> ou écrivez à l'équipe SHOPY.</p>
+    <a href="{% url 'inscription_vendeur' %}" class="manuel-cta">🚀 Créer ma boutique</a>
+  </div>
+
+</div>
+
+<script>
+function afficherGuide(cible, btn) {
+  document.querySelectorAll('.manuel-section').forEach(function (s) {
+    s.classList.remove('active');
+  });
+  document.getElementById('guide-' + cible).classList.add('active');
+  document.querySelectorAll('.manuel-tab').forEach(function (t) {
+    t.classList.remove('active');
+  });
+  btn.classList.add('active');
+}
+</script>
+
+{% endblock %}
+
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Cliquez sur votre photo en haut de l'espace vendeur (📷) pour la changer directement.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div>Dans <strong>« Paramètres »</strong>, modifiez le nom de la boutique, le numéro WhatsApp, la ville ou la photo de profil.</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">3</span><div>Gérez votre <strong>abonnement</strong> (plan gratuit, essentiel, pro, business) et activez le <strong>programme de fidélité</strong> pour récompenser vos clients réguliers.</div></div>
+    </div>
+
+    <div class="manuel-card">
+      <h3>6️⃣ Contacter un client / être contacté</h3>
+      <div class="manuel-step"><span class="manuel-step-num">1</span><div>Le client peut vous joindre par <strong>WhatsApp</strong> directement depuis la fiche de votre produit (bouton 💬 WhatsApp).</div></div>
+      <div class="manuel-step"><span class="manuel-step-num">2</span><div>Vous pouvez aussi <strong>négocier un prix</strong> avec le client dans l'onglet « Messages ».</div></div>
+    </div>
+
+  </div><!-- /guide-vendeurs -->

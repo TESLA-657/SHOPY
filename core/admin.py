@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Vendeur, Abonnement, Produit, Commande, Notification, Administrateur, PaiementAbonnement, Signalement, Categorie, Evaluation, PaiementCommande, AuditLog
+from .models import Client, Vendeur, Abonnement, Produit, Commande, Notification, Administrateur, PaiementAbonnement, Signalement, Categorie, Evaluation, PaiementCommande, AuditLog, Annonce
 from django.core.mail import send_mail
 
 def save(self, *args, **kwargs):
@@ -115,3 +115,19 @@ class AuditLogAdmin(admin.ModelAdmin):
 
 admin.site.register(Evaluation)
 admin.site.register(PaiementCommande)
+
+@admin.register(Annonce)
+class AnnonceAdmin(admin.ModelAdmin):
+    list_display = ['titre', 'cible', 'actif', 'date_debut', 'date_fin']
+    list_filter = ['actif', 'cible']
+    actions = ['activer_annonces', 'desactiver_annonces']
+
+    def activer_annonces(self, request, queryset):
+        queryset.update(actif=True)
+        self.message_user(request, f"{queryset.count()} annonce(s) activée(s).")
+    activer_annonces.short_description = "✅ Activer les annonces sélectionnées"
+
+    def desactiver_annonces(self, request, queryset):
+        queryset.update(actif=False)
+        self.message_user(request, f"{queryset.count()} annonce(s) désactivée(s).")
+    desactiver_annonces.short_description = "⏸️ Désactiver les annonces sélectionnées"

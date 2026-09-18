@@ -81,10 +81,14 @@
                 </div>
                 <div class="seller-contact">
                     <a href="tel:{{ produit.vendeur.numero }}" class="contact-btn">
-                        <span>📱</span> Appeler
+                        <span></span> Appeler
+                    </a>
+                    <a href="{{ produit|lien_whatsapp }}" class="contact-btn whatsapp-btn"
+                       target="_blank" rel="noopener" aria-label="Contacter le vendeur sur WhatsApp">
+                        <span></span> WhatsApp
                     </a>
                     <a href="{% url 'signaler_vendeur' produit.vendeur.pk %}" class="report-btn">
-                        <span>🚨</span> Signaler
+                        <span></span> Signaler
                     </a>
                 </div>
             </div>
@@ -125,14 +129,14 @@
             <div class="action-buttons">
                 {% if produit.quantite > 0 %}
                     <button class="btn-primary btn-large" onclick="ajouterAuPanier({{ produit.pk }})" id="btn-panier-{{ produit.pk }}">
-                        <span>🛒</span> Ajouter au panier
+                        <span></span> Ajouter au panier
                     </button>
                     <a href="{% url 'passer_commande' produit.pk %}" class="btn-secondary btn-large">
-                        <span>💰</span> Commander maintenant
+                        <span></span> Commander maintenant
                     </a>
                     {% if not produit.promo_active %}
                         <a href="{% url 'proposer_prix' produit.pk %}" class="btn-outline btn-large">
-                            <span>💬</span> Négocier le prix
+                            <span></span> Négocier le prix
                         </a>
                     {% endif %}
                 {% else %}
@@ -167,14 +171,18 @@
             <!-- Avis Tab -->
             <div class="tab-panel" id="avis">
                 <h3>⭐ Avis clients</h3>
-                {% if produit.evaluations.all %}
-                    <div class="reviews-list">
-                        {% for eval in produit.evaluations.all %}
+                {% if evaluations %}
+                    <p class="reviews-summary">
+                        <span class="review-average">{{ note_moyenne }} / 5</span>
+                        <span class="review-count">({{ total_evaluations }} avis)</span>
+                    </p>
+                    <div class="reviews-list" id="reviews-list">
+                        {% for eval in evaluations %}
                         <div class="review-card">
                             <div class="review-header">
                                 <span class="review-author">{{ eval.client_nom }}</span>
                                 <span class="review-rating">
-                                    {% for i in "12345" %}{% if forloop.counter <= eval.note %}⭐{% endif %}{% endfor %}
+                                    {{ eval.note|afficher_etoiles }}
                                 </span>
                             </div>
                             {% if eval.commentaire %}
@@ -184,6 +192,34 @@
                         </div>
                         {% endfor %}
                     </div>
+
+                    {% if total_evaluations > evaluations|length %}
+                    <!-- Autres avis (cachés, révélés au clic sur "Voir plus") -->
+                    <div class="reviews-list" id="reviews-all" style="display:none;">
+                        {% for eval in autres_evaluations %}
+                        <div class="review-card">
+                            <div class="review-header">
+                                <span class="review-author">{{ eval.client_nom }}</span>
+                                <span class="review-rating">
+                                    {{ eval.note|afficher_etoiles }}
+                                </span>
+                            </div>
+                            {% if eval.commentaire %}
+                                <p class="review-text">{{ eval.commentaire }}</p>
+                            {% endif %}
+                            <span class="review-date">{{ eval.date|date:"d/m/Y" }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="btn-outline" id="btn-voir-plus-avis"
+                            onclick="afficherTousAvis()">
+                        Voir plus d'avis ({{ total_evaluations|add:"-3" }})
+                    </button>
+                    <button type="button" class="btn-outline" id="btn-reduire-avis"
+                            style="display:none;" onclick="reduireAvis()">
+                        ▲ Voir moins d'avis
+                    </button>
+                    {% endif %}
                 {% else %}
                     <p class="no-reviews">Aucun avis pour ce produit. {% if user.is_authenticated %}Soyez le premier à donner votre avis !{% endif %}</p>
                 {% endif %}
@@ -291,6 +327,28 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         document.getElementById(btn.dataset.tab).classList.add('active');
     });
 });
+
+// Afficher tous les avis clients
+function afficherTousAvis() {
+    var tous = document.getElementById('reviews-all');
+    var liste = document.getElementById('reviews-list');
+    if (tous) tous.style.display = 'block';
+    var btnPlus = document.getElementById('btn-voir-plus-avis');
+    var btnMoins = document.getElementById('btn-reduire-avis');
+    if (btnPlus) btnPlus.style.display = 'none';
+    if (btnMoins) btnMoins.style.display = 'inline-block';
+}
+
+function reduireAvis() {
+    var tous = document.getElementById('reviews-all');
+    if (tous) tous.style.display = 'none';
+    var btnPlus = document.getElementById('btn-voir-plus-avis');
+    var btnMoins = document.getElementById('btn-reduire-avis');
+    if (btnPlus) btnPlus.style.display = 'inline-block';
+    if (btnMoins) btnMoins.style.display = 'none';
+    var liste = document.getElementById('reviews-list');
+    if (liste) liste.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
 // Add to cart
 function ajouterAuPanier(produitPk) {
