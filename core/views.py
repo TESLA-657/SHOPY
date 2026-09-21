@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from .models import Client, Vendeur, Produit, Commande, Abonnement, Notification, PlanAbonnement, Categorie, Favori, Evaluation, MessageNegociation, ChatMessage, Panier, PanierItem, PaiementPanier, FideliteClientVendeur, PubliciteProduit
+from .models import Client, Vendeur, Produit, Commande, Abonnement, Notification, PlanAbonnement, Categorie, Favori, Evaluation, MessageNegociation, ChatMessage, Panier, PanierItem, PaiementPanier, FideliteClientVendeur, PubliciteProduit, PasswordResetCode
 from .models import GarantieAcheteur, FlashSale, AlertePrix, EvaluationVendeur
 from .serializers import ClientSerializer, VendeurSerializer, ProduitSerializer, CommandeSerializer, AbonnementSerializer, NotificationSerializer
 from .audit import log_action, AuditLog
@@ -451,7 +451,11 @@ def redirection_apres_connexion(request):
 @login_required
 def upload_photo_client(request):
     if request.method == 'POST' and request.FILES.get('photo'):
-        client = get_object_or_404(Client, user=request.user)
+        try:
+            client = Client.objects.get(user=request.user)
+        except Client.DoesNotExist:
+            messages.error(request, "Votre compte client n'existe pas.")
+            return redirect('Welcome')
         client.photo = request.FILES['photo']
         client.save()
     return redirect('espace_client')
@@ -624,6 +628,22 @@ def activer_fidelite_vendeur(request):
         vendeur.fidelite_active = True
         vendeur.save(update_fields=['fidelite_active'])
         messages.success(request, 'Le système de fidélité est maintenant activé pour votre boutique.')
+    return redirect('dashboard_vendeur')
+
+
+@login_required
+def desactiver_fidelite_vendeur(request):
+    """Permet au vendeur de désactiver son programme de fidélité à tout moment.
+
+    Les réductions déjà acquises par les clients cessent simplement d'être
+    appliquées (get_loyalty_discount renvoie 0 quand fidelite_active est False),
+    mais l'historique de fidélité est conservé pour une éventuelle réactivation.
+    """
+    vendeur = get_object_or_404(Vendeur, user=request.user)
+    if request.method == 'POST':
+        vendeur.fidelite_active = False
+        vendeur.save(update_fields=['fidelite_active'])
+        messages.success(request, 'Le programme de fidélité a été désactivé. Vous pouvez le réactiver quand vous le souhaitez.')
     return redirect('dashboard_vendeur')
 
 
@@ -919,9 +939,11 @@ def changer_statut_commande(request, pk):
             produit.quantite += commande.quantite
             produit.save()
 
-        if nouveau_statut == 'acceptee' and ancien_statut != 'acceptee':
-            # ✅ Le chiffre d'affaires est enregistré à la confirmation du paiement.
-            # ❌ NE PAS ajouter à nouveau aux ventes_du_mois ici - double comptage!
+        if nouveau_statut in ('acceptee', 'livree') and ancien_statut not in ('acceptee', 'livree'):
+            # ✅ La vente n'est comptabilisée qu'à l'acceptation par le vendeur.
+            if commande.vendeur:
+                commande.vendeur.ventes_du_mois += commande.prix_total
+                commande.vendeur.save(update_fields=['ventes_du_mois'])
             creer_notification(
                 user=commande.vendeur.user,
                 type='commande',
@@ -929,6 +951,14 @@ def changer_statut_commande(request, pk):
                 message=f'La commande #{commande.pk} de {commande.nom_client} a été acceptée.',
                 lien='/mes-commandes/'
             )
+
+        # ↩️ Si la commande était déjà comptée puis est refusée/annulée, on retire le montant
+        elif ancien_statut in ('acceptee', 'livree') and nouveau_statut in ('refusee', 'annulee'):
+            if commande.vendeur:
+                commande.vendeur.ventes_du_mois = max(
+                    0, commande.vendeur.ventes_du_mois - commande.prix_total
+                )
+                commande.vendeur.save(update_fields=['ventes_du_mois'])
 
     return redirect('commandes_vendeur')
 
@@ -1130,11 +1160,7 @@ def admin_valider_paiement_commande(request, pk):
             was_pending = paiement.statut != 'valide'
             paiement.statut = 'valide'
             paiement.save()
-            # Ajouter aux ventes du mois
-            vendeur = paiement.commande.vendeur
-            if was_pending:
-                vendeur.ventes_du_mois += paiement.montant
-                vendeur.save(update_fields=['ventes_du_mois'])
+            # ℹ️ La vente sera comptabilisée uniquement quand le vendeur acceptera la commande.
         elif action == 'refuser':
             paiement.statut = 'refuse'
             paiement.save()
@@ -1285,8 +1311,7 @@ def payer_commande(request, pk):
         log_action(request, 'payment', f'Commande {commande.pk} mode {mode_paiement} montant {montant}')
 
         if commande.vendeur and paiement.statut == 'valide':
-            commande.vendeur.ventes_du_mois += montant
-            commande.vendeur.save(update_fields=['ventes_du_mois'])
+            # ℹ️ La vente sera comptabilisée uniquement quand le vendeur acceptera la commande.
             creer_notification(
                 user=commande.vendeur.user,
                 type='commande',
@@ -1438,9 +1463,7 @@ def payer_commande_orange(request, pk):
         # ✅ Réduire le stock après confirmation du paiement
         reducer_stock(commande)
         
-        if commande.vendeur:
-            commande.vendeur.ventes_du_mois += commande.prix_total
-            commande.vendeur.save()
+        # ℹ️ La vente sera comptabilisée uniquement quand le vendeur acceptera la commande.
         if client and client.numero == commande.numero_client:
             update_loyalty_record(client, commande.vendeur, commande.prix_total)
         
@@ -1521,9 +1544,7 @@ def payer_commande_mobile(request, pk):
         # ✅ Réduire le stock après confirmation du paiement
         reducer_stock(commande)
         
-        if commande.vendeur:
-            commande.vendeur.ventes_du_mois += commande.prix_total
-            commande.vendeur.save()
+        # ℹ️ La vente sera comptabilisée uniquement quand le vendeur acceptera la commande.
         if client and client.numero == commande.numero_client:
             update_loyalty_record(client, commande.vendeur, commande.prix_total)
         
@@ -1604,9 +1625,7 @@ def payer_commande_livraison(request, pk):
         # ✅ Réduire le stock après confirmation du paiement
         reducer_stock(commande)
         
-        if commande.vendeur:
-            commande.vendeur.ventes_du_mois += commande.prix_total
-            commande.vendeur.save()
+        # ℹ️ La vente sera comptabilisée uniquement quand le vendeur acceptera la commande.
         if client and client.numero == commande.numero_client:
             update_loyalty_record(client, commande.vendeur, commande.prix_total)
         
@@ -1743,11 +1762,19 @@ def creer_notification(user, type, titre, message, lien='', envoyer_email=False)
 
 def calculer_ventes_vendeur(vendeur, annees_mois=None):
     """
-    Calcule le chiffre d'affaires d'un vendeur (commandes payées, directes ET panier).
+    Calcule le chiffre d'affaires d'un vendeur.
+
+    IMPORTANT : une commande n'entre dans le chiffre d'affaires QU'APRÈS
+    acceptation explicite du vendeur (statut='acceptee' ou 'livree').
+    Une commande simplement passée/payée par le client ne compte pas.
     - annees_mois : tuple (annee, mois) optionnel pour filtrer un mois précis.
     Retourne un entier (GNF).
     """
-    commandes_payees = Commande.objects.filter(vendeur=vendeur).filter(
+    commandes_payees = Commande.objects.filter(
+        vendeur=vendeur,
+        archivee=False,
+        statut__in=['acceptee', 'livree'],
+    ).filter(
         Q(paiement__statut='valide') | Q(paiement_panier__statut='valide')
     )
     if annees_mois:
@@ -2067,8 +2094,7 @@ def payer_panier(request, paiement_pk):
             
             vendeur = commande.vendeur
             montant = commande.prix_total
-            vendeur.ventes_du_mois += montant
-            vendeur.save()
+            # ℹ️ La vente sera comptabilisée uniquement quand le vendeur acceptera la commande.
             vendeur.dernier_reset_ventes = vendeur.dernier_reset_ventes or timezone.now().date()
             if client:
                 update_loyalty_record(client, vendeur, montant)
@@ -2196,7 +2222,23 @@ def connexion_client(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         mot_de_passe = request.POST.get('mot_de_passe')
-        user = authenticate(request, username=email, password=mot_de_passe)
+        
+        # Chercher l'utilisateur par email (PRIORISER LE PROFIL CLIENT ici)
+        User = get_user_model()
+        users = User.objects.filter(email__iexact=email)
+
+        # On est sur la page de connexion CLIENT : prendre le compte avec profil Client
+        user = None
+        if users.filter(client__isnull=False).exists():
+            user = users.filter(client__isnull=False).first()
+        elif users.exists():
+            user = users.first()
+
+        if user:
+            # Faire authenticate avec le username de l'utilisateur trouvé
+            user = authenticate(request, username=user.username, password=mot_de_passe)
+        else:
+            user = None
         if user is not None:
             try:
                 client = Client.objects.get(user=user)
@@ -2215,94 +2257,218 @@ def connexion_client(request):
 # ============================================
 # MOT DE PASSE OUBLIÉ (envoi par email)
 # ============================================
-def mot_de_passe_oublie(request):
-    """Formulaire : saisir son email pour recevoir un lien de réinitialisation."""
-    from django.contrib.auth.tokens import default_token_generator
-    from django.utils.http import urlsafe_base64_encode
-    from django.utils.encoding import force_bytes
-    from django.urls import reverse
+from django.core.mail import send_mail
+from django.utils import timezone
+from datetime import timedelta
+import random
+from django.http import JsonResponse
+from django.contrib.auth import get_user_model
 
+# ============================================================
+# NOUVEAU SYSTEME DE MOT DE PASSE OUBLIE (CODE DE VERIFICATION)
+# ============================================================
+
+def mot_de_passe_oublie(request):
+    """Formulaire : saisir son email pour recevoir un code de verification."""
     envoye = False
     erreur = None
-
+    email_saisi = ''
+    
     if request.method == 'POST':
-        email = (request.POST.get('email') or '').strip().lower()
-        try:
-            user = User.objects.get(email__iexact=email)
-            # Générer le token et le lien de réinitialisation
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            token = default_token_generator.make_token(user)
-            lien_reset = request.build_absolute_uri(
-                reverse('reinitialiser_mot_de_passe', args=[uid, token])
+        email_saisi = (request.POST.get('email') or '').strip().lower()
+        
+        # Trouver l'utilisateur pour lier le code au bon compte
+        User = get_user_model()
+        users = User.objects.filter(email__iexact=email_saisi)
+        
+        # Si plusieurs utilisateurs ont le même email, privilégier selon les profils
+        user = None
+        # Privilégier d'abord l'utilisateur avec un profil Vendeur (pour les vendeurs)
+        if users.filter(vendeur__isnull=False).exists():
+            user = users.filter(vendeur__isnull=False).first()
+        # Sinon, privilégier l'utilisateur avec un profil Client
+        elif users.filter(client__isnull=False).exists():
+            user = users.filter(client__isnull=False).first()
+        # Sinon, prendre le premier
+        elif users.exists():
+            user = users.first()
+        
+        # Vérifier si un code récent est déjà en attente pour cet email
+        existing = PasswordResetCode.objects.filter(
+            email=email_saisi,
+            used=False,
+            expires_at__gt=timezone.now()
+        ).first()
+        
+        if existing:
+            code = existing.code
+        else:
+            code = str(random.randint(100000, 999999))
+            PasswordResetCode.objects.create(
+                user=user,  # Lier le code à l'utilisateur spécifique
+                email=email_saisi,
+                code=code,
+                expires_at=timezone.now() + timedelta(minutes=10)
             )
-            try:
-                send_mail(
-                    subject='🔑 SHOPY — Réinitialisation de votre mot de passe',
-                    message=f'''Bonjour {user.username},
-
-Vous avez demandé la réinitialisation de votre mot de passe SHOPY.
-
-Cliquez sur le lien ci-dessous (valable 24 heures) :
-{lien_reset}
-
-Si vous n'êtes pas à l'origine de cette demande, ignorez simplement cet email.
-
-— L'équipe SHOPY
-                    ''',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    fail_silently=True,
-                )
-                envoye = True
-            except Exception:
-                erreur = "Un problème est survenu lors de l'envoi de l'email. Réessayez plus tard."
-        except User.DoesNotExist:
-            # On affiche le même message pour ne pas indiquer si l'email existe
+        
+        try:
+            send_mail(
+                subject='SHOPY - Votre code de verification',
+                message='Bonjour,\n\nVotre code : ' + code + '\n\nValide 10 minutes.\n\n- L equipe SHOPY',
+                from_email='noreply@shopy-guinee.com',
+                recipient_list=[email_saisi],
+                fail_silently=False,
+            )
             envoye = True
-
+        except Exception as e:
+            print('Erreur envoi email:', e)
+            erreur = "Impossible d'envoyer l'email."
+    
     return render(request, 'core/mot_de_passe_oublie.html', {
-        'envoye': envoye,
         'erreur': erreur,
+        'envoye': envoye,
+        'email': email_saisi,
     })
 
-
-def reinitialiser_mot_de_passe(request, uidb64, token):
-    """Page de création d'un nouveau mot de passe après clic sur le lien reçu."""
-    from django.contrib.auth.tokens import default_token_generator
-    from django.utils.http import urlsafe_base64_decode
-    from django.utils.encoding import force_str
-
-    user = None
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    token_valide = user is not None and default_token_generator.check_token(user, token)
-
-    if not token_valide:
-        return render(request, 'core/reinitialiser_mot_de_passe.html', {'invalide': True})
-
+def resend_verification_code(request):
+    """Renvoie un nouveau code de verification"""
     if request.method == 'POST':
-        nouveau = request.POST.get('nouveau_mot_de_passe', '')
-        confirmer = request.POST.get('confirmer_mot_de_passe', '')
-        if len(nouveau) < 8:
-            erreur = 'Le mot de passe doit contenir au moins 8 caractères.'
-        elif nouveau != confirmer:
-            erreur = 'Les mots de passe ne correspondent pas.'
-        else:
-            user.set_password(nouveau)
-            user.save()
-            log_action(request, 'password_reset', f'Mot de passe réinitialisé pour {user.username}')
-            return render(request, 'core/reinitialiser_mot_de_passe.html', {'succes': True})
-    else:
-        erreur = None
+        email = (request.POST.get('email') or '').strip().lower()
+        
+        # Trouver l'utilisateur pour lier le code (privilégier selon les profils)
+        User = get_user_model()
+        users = User.objects.filter(email__iexact=email)
+        
+        # Si plusieurs utilisateurs ont le même email, privilégier selon les profils
+        user = None
+        # Privilégier d'abord l'utilisateur avec un profil Vendeur (pour les vendeurs)
+        if users.filter(vendeur__isnull=False).exists():
+            user = users.filter(vendeur__isnull=False).first()
+        # Sinon, privilégier l'utilisateur avec un profil Client
+        elif users.filter(client__isnull=False).exists():
+            user = users.filter(client__isnull=False).first()
+        # Sinon, prendre le premier
+        elif users.exists():
+            user = users.first()
+        
+        code = str(random.randint(100000, 999999))
+        PasswordResetCode.objects.create(
+            user=user,
+            email=email,
+            code=code,
+            expires_at=timezone.now() + timedelta(minutes=10)
+        )
+        
+        try:
+            send_mail(
+                subject='SHOPY - Votre nouveau code',
+                message='Bonjour,\n\nVotre nouveau code : ' + code + '\n\nValide 10 minutes.\n\n- L equipe SHOPY',
+                from_email='noreply@shopy-guinee.com',
+                recipient_list=[email],
+                fail_silently=False,
+            )
+            return JsonResponse({'success': True, 'message': 'Nouveau code envoye.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': "Erreur d'envoi."})
+    
+    return JsonResponse({'success': False, 'message': 'Requete invalide.'})
 
+def reinitialiser_mot_de_passe(request):
+    """Réinitialiser le mot de passe avec code de vérification (via modèle DB)"""
+    erreur = None
+    succes = False
+    
+    # Récupérer l'email depuis l'URL si présent (depuis le lien "Valider mon code")
+    email_get = request.GET.get('email', '').strip().lower()
+    
+    # Vérifier si le code a déjà été validé dans une requête précédente
+    code_valide = bool(request.session.get('reset_email_verified'))
+    
+    # Email à afficher dans le formulaire
+    email_a_afficher = request.session.get('reset_email_verified') or email_get
+    
+    if request.method == 'POST':
+        email = (request.POST.get('email') or '').strip().lower()
+        code_saisi = (request.POST.get('code') or '').strip()
+        nouveau = (request.POST.get('nouveau_mot_de_passe') or '').strip()
+        confirmer = (request.POST.get('confirmer_mot_de_passe') or '').strip()
+        
+        # Si le code a déjà été vérifié, on passe direct à la saisie du nouveau MDP
+        if code_valide:
+            if len(nouveau) < 8:
+                erreur = "Le mot de passe doit contenir au moins 8 caractères."
+            elif nouveau != confirmer:
+                erreur = "Les mots de passe ne correspondent pas."
+            else:
+                User = get_user_model()
+                code_id = request.session.get('reset_code_id')
+                
+                # Utiliser le user_id stocké dans le code si disponible (pour gérer les emails en double)
+                user = None
+                if code_id:
+                    reset_code = PasswordResetCode.objects.filter(id=code_id).first()
+                    if reset_code and reset_code.user_id:
+                        user = User.objects.filter(id=reset_code.user_id).first()
+                
+                # Fallback sur l'email si pas de user_id
+                if not user:
+                    user = User.objects.filter(email__iexact=email).first()
+                
+                if user:
+                    user.set_password(nouveau)
+                    user.save()
+                    succes = True
+                    # Marquer le code spécifique comme utilisé (via ID stocké en session)
+                    if code_id:
+                        PasswordResetCode.objects.filter(id=code_id).update(used=True)
+                        request.session.pop('reset_code_id', None)
+                        request.session.pop('reset_email_verified', None)
+                    # 🔐 Connecter l'utilisateur et rediriger selon son type
+                    login(request, user)
+                    try:
+                        vendeur = Vendeur.objects.get(user=user)
+                        return redirect('connexion_vendeur')
+                    except Vendeur.DoesNotExist:
+                        return redirect('espace_client')
+                else:
+                    erreur = "Utilisateur non trouvé."
+        else:
+            # Vérifier le code
+            email_formate = email.strip().lower()
+            
+            if not email_formate:
+                erreur = "Email requis."
+            elif not code_saisi:
+                erreur = "Code requis."
+            elif len(code_saisi) != 6:
+                erreur = f"Le code doit faire exactement 6 chiffres (vous avez saisi {len(code_saisi)} caractères)."
+            else:
+                try:
+                    reset_code = PasswordResetCode.objects.get(
+                        email=email_formate, 
+                        code=code_saisi, 
+                        used=False
+                    )
+                    if not reset_code.is_valid():
+                        if timezone.now() > reset_code.expires_at:
+                            erreur = "Ce code a expiré. Veuillez demander un nouveau code."
+                        else:
+                            erreur = "Code déjà utilisé."
+                    else:
+                        code_valide = True
+                        request.session['reset_email_verified'] = email_formate
+                        request.session['reset_code_id'] = reset_code.id
+                except PasswordResetCode.DoesNotExist:
+                    erreur = "Code incorrect pour cet email."
+    
+    # Récupérer l'email à afficher
+    email_a_afficher = request.session.get('reset_email_verified') or request.GET.get('email', '').strip().lower()
+    
     return render(request, 'core/reinitialiser_mot_de_passe.html', {
-        'invalide': False,
-        'succes': False,
         'erreur': erreur,
+        'succes': succes,
+        'code_valide': code_valide,
+        'email_verifie': email_a_afficher,
     })
 
 @login_required
@@ -2931,7 +3097,11 @@ def messages_vendeur(request):
 
 @login_required
 def mes_messages_client(request):
-    client = get_object_or_404(Client, user=request.user)
+    try:
+        client = Client.objects.get(user=request.user)
+    except Client.DoesNotExist:
+        messages.error(request, "Votre compte client n'existe pas. Veuillez contacter le support.")
+        return redirect('Welcome')
     negotiations = (
         MessageNegociation.objects.select_related('produit', 'vendeur')
         .filter(client_numero=client.numero)
