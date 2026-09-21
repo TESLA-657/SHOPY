@@ -1,15 +1,15 @@
 /* ===== CONFIRMATION INSCRIPTION CLIENT - Success Page Style ===== */
 
 :root {
-  --primary-color: #e60012;
-  --secondary-color: #ff7a1d;
+  --primary-color: #059669;
+  --secondary-color: #d97706;
   --accent-blue: #1a237e;
   --accent-purple: #5b2d8e;
-  --success-color: #28a745;
-  --text-primary: #222;
-  --text-secondary: #999;
-  --bg-card: #ffffff;
-  --shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+  --success-color: #059669;
+  --text-primary: #111827827;
+  --text-secondary: #6b7280;
+  --bg-card: #f8fafc;
+  --shadow: 0 8px 40px rgba(17, 24, 41, 0.2);
   --transition-fast: 0.3s ease;
 }
 
@@ -82,7 +82,7 @@ body::after {
 
 /* ===== CARD ===== */
 .success-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(248, 250, 252, 0.95);
   border-radius: 24px;
   padding: 48px 36px;
   box-shadow: var(--shadow);
@@ -107,7 +107,7 @@ body::after {
 .success-icon {
   width: 100px;
   height: 100px;
-  background: linear-gradient(135deg, var(--success-color), #20c997);
+  background: linear-gradient(135deg, var(--success-color), #34d399);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -165,7 +165,7 @@ body::after {
 
 /* ===== USER INFO ===== */
 .user-info {
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  background: linear-gradient(135deg, #f1f5f9, #cbd5e1);
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 32px;
@@ -230,7 +230,7 @@ body::after {
 .btn-success {
   width: 100%;
   padding: 18px 24px;
-  background: linear-gradient(135deg, var(--success-color), #20c997);
+  background: linear-gradient(135deg, var(--success-color), #34d399);
   color: white;
   border: none;
   border-radius: 14px;
@@ -281,19 +281,19 @@ body::after {
 
 .confetti:nth-child(1) {
   left: 10%;
-  background: #e60012;
+  background: #059669;
   animation-delay: 0s;
 }
 
 .confetti:nth-child(2) {
   left: 30%;
-  background: #28a745;
+  background: #059669;
   animation-delay: 0.5s;
 }
 
 .confetti:nth-child(3) {
   left: 50%;
-  background: #ffc107;
+  background: #d97706;
   animation-delay: 1s;
 }
 

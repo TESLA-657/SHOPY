@@ -14,7 +14,7 @@
 
   <div class="client-loyalty-panel">
     <div class="client-loyalty-heading">
-      <span class="client-loyalty-icon">★</span>
+      <span class="client-loyalty-icon"><i class="bi bi-star-fill" aria-hidden="true"></i></span>
       <div>
         <p class="client-eyebrow">Avantages client</p>
         <h2>Programmes de fidélité disponibles</h2>
@@ -30,7 +30,7 @@
     {% if vendeurs_fidelite %}
       <div class="client-loyalty-shops">
         {% for vendeur in vendeurs_fidelite %}
-          <span>✓ {{ vendeur.nom_boutique }}</span>
+          <span><i class="bi bi-shop" aria-hidden="true"></i> {{ vendeur.nom_boutique }}</span>
         {% endfor %}
       </div>
     {% else %}
@@ -60,22 +60,21 @@
 
     .client-header-premium {
       position: relative;
-      overflow: hidden;
       padding: 24px 18px 72px;
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #7c3aed 100%);
-      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+      background: #1b1f26;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
     }
 
-    .client-orb {
+    .client-orb-unused {
       position: absolute;
       border-radius: 999px;
       filter: blur(2px);
       opacity: 0.85;
       pointer-events: none;
-      animation: floatOrb 8s ease-in-out infinite;
+      animation: none; /* floatOrb supprime */ animation: floatOrb-unused 8s ease-in-out infinite;
     }
 
-    .orb-one {
+    .orb-one-unused {
       width: 220px;
       height: 220px;
       top: -70px;
@@ -83,7 +82,7 @@
       background: radial-gradient(circle, rgba(255,255,255,0.35), rgba(255,255,255,0));
     }
 
-    .orb-two {
+    .orb-two-unused {
       width: 140px;
       height: 140px;
       bottom: -30px;
@@ -92,7 +91,7 @@
       animation-delay: 2s;
     }
 
-    .orb-three {
+    .orb-three-unused {
       width: 100px;
       height: 100px;
       top: 40%;
@@ -101,7 +100,7 @@
       animation-delay: 4s;
     }
 
-    @keyframes floatOrb {
+    @keyframes floatOrb-unused {
       0%, 100% { transform: translateY(0px) scale(1); }
       50% { transform: translateY(-12px) scale(1.04); }
     }
@@ -194,7 +193,7 @@
       padding: 3px;
       background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.25));
       box-shadow: 0 10px 24px rgba(0,0,0,0.22);
-      transition: all 0.3s ease;
+      transition: all 0.18s ease-out;
     }
 
     .client-avatar-wrapper:hover {
@@ -235,7 +234,7 @@
       justify-content: center;
       font-size: 24px;
       opacity: 0;
-      transition: all 0.3s ease;
+      transition: all 0.18s ease-out;
     }
 
     .client-online-dot {
@@ -312,7 +311,7 @@
       border-bottom: 1px solid rgba(15, 23, 42, 0.06);
       text-decoration: none;
       color: #0f172a;
-      transition: all 0.25s ease;
+      transition: background-color .15s ease-out, color .15s ease-out, border-color .15s ease-out, transform .15s cubic-bezier(.2,.8,.3,1), box-shadow .15s ease-out, opacity .15s ease-out;
     }
 
     .account-menu-item:hover {
@@ -433,7 +432,7 @@
       border: 1px solid rgba(148, 163, 184, 0.18);
       border-radius: 18px;
       padding: 16px 14px;
-      transition: all 0.25s ease;
+      transition: background-color .15s ease-out, color .15s ease-out, border-color .15s ease-out, transform .15s cubic-bezier(.2,.8,.3,1), box-shadow .15s ease-out, opacity .15s ease-out;
       color: #0f172a;
     }
 
@@ -540,7 +539,7 @@
       border-radius: 16px;
       text-decoration: none;
       font-weight: 800;
-      transition: all 0.25s ease;
+      transition: background-color .15s ease-out, color .15s ease-out, border-color .15s ease-out, transform .15s cubic-bezier(.2,.8,.3,1), box-shadow .15s ease-out, opacity .15s ease-out;
       padding: 0 18px;
     }
 
@@ -606,7 +605,7 @@
 
     <div class="client-profile-grid">
       <a href="{% url 'mes_factures' %}" class="client-mini-card">
-        <span class="client-mini-icon blue">📋</span>
+        <span class="client-mini-icon blue"><i class="bi bi-card-list" aria-hidden="true"></i></span>
         <div class="client-mini-content">
           <h3>Mes Factures</h3>
           <p>Historique</p>
@@ -614,7 +613,7 @@
       </a>
 
       <a href="{% url 'mes_notifications' %}" class="client-mini-card">
-        <span class="client-mini-icon yellow">🔔</span>
+        <span class="client-mini-icon yellow"><i class="bi bi-bell" aria-hidden="true"></i></span>
         <div class="client-mini-content">
           <h3>Notifications</h3>
           <p>
@@ -624,7 +623,7 @@
       </a>
 
       <a href="{% url 'parametres_client' %}" class="client-mini-card">
-        <span class="client-mini-icon gray">⚙️</span>
+        <span class="client-mini-icon gray"><i class="bi bi-gear" aria-hidden="true"></i></span>
         <div class="client-mini-content">
           <h3>Paramètres</h3>
           <p>Mon profil</p>
@@ -632,7 +631,7 @@
       </a>
 
       <a href="{% url 'mes_messages_client' %}" class="client-mini-card">
-        <span class="client-mini-icon green">💬</span>
+        <span class="client-mini-icon green"><i class="bi bi-chat-dots" aria-hidden="true"></i></span>
         <div class="client-mini-content">
           <h3>Messages</h3>
           <p>Échanger avec les vendeurs</p>
@@ -657,13 +656,13 @@
 
     <div class="client-action-row">
       <a href="{% url 'catalogue' %}" class="client-main-btn primary">
-        🛒 Parcourir le catalogue
+        <i class="bi bi-cart3" aria-hidden="true"></i> Parcourir le catalogue
       </a>
     </div>
 
     <div class="client-logout-row">
       <a href="{% url 'deconnexion_vendeur' %}" class="client-logout-btn">
-        🚪 Se déconnecter
+        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Se déconnecter
       </a>
     </div>
   </div>
@@ -673,7 +672,7 @@
     <div class="client-orders-header">
       <div>
         <p class="client-eyebrow">Historique</p>
-        <h2>📦 Mes commandes</h2>
+        <h2><i class="bi bi-bag" aria-hidden="true"></i> Mes commandes</h2>
       </div>
       <a href="{% url 'mes_factures' %}" class="client-orders-all-btn">Voir tout →</a>
     </div>
@@ -684,28 +683,28 @@
         {% if cmd.produit.photo %}
           <img src="{{ cmd.produit.photo.url }}" alt="{{ cmd.produit.nom }}" class="client-order-img">
         {% else %}
-          <div class="client-order-img place">📦</div>
+          <div class="client-order-img place"><i class="bi bi-bag" aria-hidden="true"></i></div>
         {% endif %}
         <div class="client-order-info">
           <div class="client-order-name">{{ cmd.produit.nom }}</div>
           <div class="client-order-meta">
-            <span>🏪 {{ cmd.vendeur.nom_boutique }}</span>
-            <span>🧾 {{ cmd.prix_total|default:"0"|format_prix }} GNF</span>
-            <span>📅 {{ cmd.date_commande|date:"d/m/Y H:i" }}</span>
+            <span><i class="bi bi-shop" aria-hidden="true"></i> {{ cmd.vendeur.nom_boutique }}</span>
+            <span><i class="bi bi-receipt" aria-hidden="true"></i> {{ cmd.prix_total|default:"0"|format_prix }} GNF</span>
+            <span><i class="bi bi-calendar3" aria-hidden="true"></i> {{ cmd.date_commande|date:"d/m/Y H:i" }}</span>
           </div>
         </div>
         <span class="client-order-status st-{{ cmd.statut }}">
           {% if cmd.statut == 'en_attente' %}⏳ En attente
-          {% elif cmd.statut == 'acceptee' %}✅ Acceptée
-          {% elif cmd.statut == 'refusee' %}❌ Refusée
-          {% elif cmd.statut == 'annulee' %}🚫 Annulée
+          {% elif cmd.statut == 'acceptee' %}<i class="bi bi-check-circle" aria-hidden="true"></i> Acceptée
+          {% elif cmd.statut == 'refusee' %}<i class="bi bi-x-circle" aria-hidden="true"></i> Refusée
+          {% elif cmd.statut == 'annulee' %}<i class="bi bi-slash-circle" aria-hidden="true"></i> Annulée
           {% else %}{{ cmd.statut }}{% endif %}
         </span>
       </div>
       {% endfor %}
     {% else %}
       <div class="client-orders-empty">
-        🛒 Vous n'avez pas encore de commande.
+        <i class="bi bi-cart3" aria-hidden="true"></i> Vous n'avez pas encore de commande.
         <a href="{% url 'catalogue' %}">Parcourir le catalogue →</a>
       </div>
     {% endif %}

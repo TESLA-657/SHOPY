@@ -4,6 +4,96 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/commandes-vendeur.css' %}">
+<style>
+  .archive-popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.18s ease-out;
+  }
+  .archive-popup-overlay.active {
+    display: flex;
+  }
+  .archive-popup-box {
+    background: white;
+    border-radius: 20px;
+    padding: 36px 32px 28px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.18s ease-out;
+  }
+  .archive-popup-icon {
+    font-size: 56px;
+    margin-bottom: 12px;
+  }
+  .archive-popup-box h3 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    color: #1a1a2e;
+    font-weight: 700;
+  }
+  .archive-popup-text {
+    color: #555;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .archive-popup-badge {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .archive-popup-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+  .archive-popup-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .12s ease-out, color .12s ease-out, border-color .12s ease-out, transform .12s cubic-bezier(.2,.8,.3,1), box-shadow .12s ease-out, opacity .12s ease-out;
+    min-width: 130px;
+  }
+  .archive-popup-cancel {
+    background: #f1f5f9;
+    color: #475569;
+  }
+  .archive-popup-cancel:hover {
+    background: #e2e8f0;
+  }
+  .archive-popup-confirm {
+    background: linear-gradient(135deg, #dc3545, #b02a37);
+    color: white;
+    box-shadow: 0 4px 14px rgba(220,53,69,0.4);
+  }
+  .archive-popup-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220,53,69,0.5);
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -203,20 +293,52 @@
       </div>
     </div>
 
-<!-- Archive Button -->
+<!-- Archive Button with Stylish Popup Confirmation -->
     <div class="cv-archive-section">
-      <form method="post" action="{% url 'supprimer_historique' %}">
+      <form method="post" action="{% url 'supprimer_historique' %}" id="archive-form">
         {% csrf_token %}
-        <button type="submit" class="cv-archive-btn" onclick="return confirm('Archiver les commandes de plus d\'un mois ?')">
+        <button type="button" class="cv-archive-btn" onclick="openArchivePopup()">
           🗑️ Archiver l'historique
         </button>
       </form>
+    </div>
+
+    <!-- Stylish Archive Confirmation Popup -->
+    <div id="archive-popup-overlay" class="archive-popup-overlay" onclick="closeArchivePopup()">
+      <div class="archive-popup-box" onclick="event.stopPropagation()">
+        <div class="archive-popup-icon">🗄️</div>
+        <h3>Confirmer l'archivage</h3>
+        <p class="archive-popup-text">
+          Vous êtes sur le point d'<strong>archiver l'historique</strong> de vos commandes de plus d'un mois.
+          <br><br>
+          <span class="archive-popup-badge">⚠️ Cette action est irréversible</span>
+        </p>
+        <div class="archive-popup-actions">
+          <button type="button" class="archive-popup-btn archive-popup-cancel" onclick="closeArchivePopup()">
+            ❌ Annuler
+          </button>
+          <button type="submit" form="archive-form" class="archive-popup-btn archive-popup-confirm">
+            ✅ Confirmer l'archivage
+          </button>
+        </div>
+      </div>
     </div>
 
   </div>
 </div>
 
 <script>
+  // Popup archivage
+  function openArchivePopup() {
+    document.getElementById('archive-popup-overlay').classList.add('active');
+  }
+  function closeArchivePopup() {
+    document.getElementById('archive-popup-overlay').classList.remove('active');
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeArchivePopup();
+  });
+
   let currentPromoTab = 'all';
   let currentStatutTab = 'all';
 

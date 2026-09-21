@@ -10,14 +10,14 @@
   --cp-bg-3: #1a1a24;
   --cp-card: #16161f;
   --cp-card-hover: #1c1c28;
-  --cp-border: rgba(255, 255, 255, 0.08);
-  --cp-border-2: rgba(255, 255, 255, 0.15);
+  --cp-border: rgba(248, 250, 252, 0.08);
+  --cp-border-2: rgba(248, 250, 252, 0.15);
   
   /* Texte */
-  --cp-text: #ffffff;
-  --cp-text-2: rgba(255, 255, 255, 0.85);
-  --cp-text-3: rgba(255, 255, 255, 0.6);
-  --cp-text-muted: rgba(255, 255, 255, 0.45);
+  --cp-text: #f8fafc;
+  --cp-text-2: rgba(248, 250, 252, 0.85);
+  --cp-text-3: rgba(248, 250, 252, 0.6);
+  --cp-text-muted: rgba(248, 250, 252, 0.45);
   
   /* Accents principaux */
   --cp-primary: #22c55e;
@@ -28,14 +28,14 @@
   /* Couleurs par mode de paiement */
   --cp-orange: #FF6600;
   --cp-orange-light: #FF8533;
-  --cp-mobile: #3b82f6;
+  --cp-mobile: #059669;
   --cp-mobile-light: #60a5fa;
   --cp-livraison: #22c55e;
   --cp-livraison-light: #4ade80;
   
   /* Effets */
-  --cp-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --cp-shadow-2: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --cp-shadow: 0 8px 32px rgba(17, 24, 41, 0.5);
+  --cp-shadow-2: 0 4px 20px rgba(17, 24, 41, 0.4);
   --cp-shadow-glow: 0 0 40px var(--cp-primary-glow);
   
   /* Border radius */
@@ -184,7 +184,7 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(248, 250, 252, 0.1), transparent);
   opacity: 0;
   transition: var(--cp-transition);
 }

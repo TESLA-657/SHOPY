@@ -6,11 +6,11 @@
   --sa-bg: #0d1117;
   --sa-bg-2: #161b22;
   --sa-bg-3: #21262d;
-  --sa-card: rgba(255, 255, 255, 0.06);
-  --sa-border: rgba(255, 255, 255, 0.12);
-  --sa-text: rgba(255, 255, 255, 0.92);
-  --sa-text-2: rgba(255, 255, 255, 0.72);
-  --sa-text-muted: rgba(255, 255, 255, 0.50);
+  --sa-card: rgba(248, 250, 252, 0.06);
+  --sa-border: rgba(248, 250, 252, 0.12);
+  --sa-text: rgba(248, 250, 252, 0.92);
+  --sa-text-2: rgba(248, 250, 252, 0.72);
+  --sa-text-muted: rgba(248, 250, 252, 0.50);
   
   --sa-primary: #238636;
   --sa-green: #3fb950;
@@ -21,7 +21,7 @@
   --sa-pink: #db61a2;
   --sa-orange: #f0883e;
   
-  --sa-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --sa-shadow: 0 8px 32px rgba(17, 24, 41, 0.4);
   --sa-radius: 16px;
   --sa-radius-sm: 12px;
 }
@@ -128,7 +128,7 @@
 .sa-stat-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--sa-shadow);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(248, 250, 252, 0.25);
 }
 
 .sa-stat-card::before {

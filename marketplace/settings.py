@@ -67,6 +67,9 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')  # Votre email
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')  # Votre mot de passe app
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@shopy-guinee.com')
 
+# Email de contact pour les pages légales
+SUPPORT_EMAIL = os.environ.get('SUPPORT_EMAIL', 'support@shopy-guinee.com')
+
 # Pour recevoir les notifications admin
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@shopy-guinee.com')
 
@@ -105,14 +108,19 @@ ROOT_URLCONF = 'marketplace.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'core/templates'],
+        'DIRS': [BASE_DIR / 'templates', BASE_DIR / 'core/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # IMPORTANT : indispensable pour la barre de navigation
+                # (is_vendeur / is_client / active_url / nb_notifications)
                 'core.context_processors.notifications_count',
+                'core.context_processors.firebase_config',   # Variables Firebase
+                'core.context_processors.support_email',     # Email de support
             ],
         },
     },
@@ -278,38 +286,15 @@ ALLOWED_DOCUMENT_EXTENSIONS = ['.pdf', '.doc', '.docx']
 FILE_MAX_SIZE = 5 * 1024 * 1024
 
 # ============================================
-# RATE LIMITING CONFIGURATION  
+# FIREBASE CONFIGURATION (pour notifications push)
+# Ces valeurs doivent être définies dans les variables d'environnement
 # ============================================
-# Configuration du cache pour rate limiting
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
-    }
-}
+FIREBASE_API_KEY = os.environ.get('FIREBASE_API_KEY', '')
+FIREBASE_AUTH_DOMAIN = os.environ.get('FIREBASE_AUTH_DOMAIN', '')
+FIREBASE_PROJECT_ID = os.environ.get('FIREBASE_PROJECT_ID', '')
+FIREBASE_STORAGE_BUCKET = os.environ.get('FIREBASE_STORAGE_BUCKET', '')
+FIREBASE_SENDER_ID = os.environ.get('FIREBASE_SENDER_ID', '')
+FIREBASE_APP_ID = os.environ.get('FIREBASE_APP_ID', '')
 
-# Rate limits par défaut (optionnel, utilisé par DRF throttle)
-REST_FRAMEWORK_THROTTLE_RATES = {
-    'anon': '60/min',
-    'user': '100/min',
-    'login_attempts': '5/min',
-}
-
-
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-else:
-    SECURE_SSL_REDIRECT = False
-    SESSION_COOKIE_SECURE = False
-    CSRF_COOKIE_SECURE = False
-    SECURE_HSTS_SECONDS = 0
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
-    SECURE_HSTS_PRELOAD = False
-
-LOGOUT_REDIRECT_URL='login'
+# NOTE : la configuration TEMPLATES (y compris les context processors Firebase)
+# se trouve une seule fois plus haut dans ce fichier.

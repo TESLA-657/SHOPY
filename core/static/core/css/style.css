@@ -1,11 +1,11 @@
-/* Style général de la grille (ancienne vue product-grid) */
+/* Style general de la grille */
 .product-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 25px;
     justify-content: center;
     padding: 30px;
-    background-color: #f5f5f7;
+    background-color: #e2e8f0;
 }
 
 /* ===== Dashboard products snippet (dashboard-*) ===== */
@@ -15,11 +15,12 @@
     gap: 25px;
     justify-content: center;
     padding: 30px;
-    background-color: #f5f5f7;
+    background-color: #e2e8f0;
 }
 
 .dashboard-product-card {
-    background: white;
+    background: #f8fafc;
+    border-radius: 18px;
     border-radius: 18px;
     width: 280px;
     overflow: hidden;
@@ -39,7 +40,7 @@
     position: relative;
     width: 100%;
     height: 220px;
-    background: #f7f8fa;
+    background: #e2e8f0;
 }
 
 .dashboard-product-media img {
@@ -56,7 +57,7 @@
     align-items: center;
     justify-content: center;
     font-size: 48px;
-    color: #b0b0b0;
+    color: #94a3b8;
 }
 
 .dashboard-product-badges {
@@ -77,8 +78,8 @@
     font-weight: 700;
 }
 
-.dashboard-product-badge.on { background: #28a745; }
-.dashboard-product-badge.off { background: #6c757d; }
+.dashboard-product-badge.on { background: #059669; }
+.dashboard-product-badge.off { background: #6b7280; }
 
 .dashboard-product-actions-block {
     position: absolute;
@@ -101,24 +102,24 @@
 }
 
 .btn-modifier-db {
-    background: #ffffff;
-    border: 1px solid rgba(13, 110, 253, 0.25);
-    color: #0d6efd;
+    background: #f8fafc;
+    border: 1px solid rgba(5, 150, 103, 0.25);
+    color: #059669;
 }
 
 .btn-modifier-db:hover {
-    background: rgba(13, 110, 253, 0.08);
+    background: rgba(5, 150, 103, 0.08);
 }
 
 .btn-supprimer-db {
-    background: #dc3545;
-    border: 1px solid #dc3545;
-    color: #fff;
+    background: #dc2626;
+    border: 1px solid #dc2626;
+    color: #f8fafc;
 }
 
 .btn-supprimer-db:hover {
-    background: #bb2d3b;
-    border-color: #bb2d3b;
+    background: #b91c1c;
+    border-color: #b91c1c;
 }
 
 .dashboard-product-info {
@@ -137,7 +138,7 @@
 
 .dashboard-product-meta {
     margin: 0;
-    color: #6c757d;
+    color: #6b7280;
     font-size: 13px;
     min-height: 34px;
 }
@@ -163,9 +164,9 @@
     white-space: nowrap;
 }
 
-.dashboard-stock.zero { background: #dc3545; color: #fff; }
-.dashboard-stock.low { background: #ffc107; color: #111; }
-.dashboard-stock.ok { background: #28a745; color: #fff; }
+.dashboard-stock.zero { background: #dc2626; color: #f8fafc; }
+.dashboard-stock.low { background: #d97706; color: #111827; }
+.dashboard-stock.ok { background: #059669; color: #f8fafc; }
 
 
 /* La carte produit */
@@ -232,9 +233,9 @@
 /* ===== GLOBAL (merged from global.css) ===== */
 :root {
     --bg: #f5f7fb;
-    --surface: #ffffff;
+    --surface: #f8fafc;
     --surface-strong: #eef2f7;
-    --text: #111827;
+    --text: #111827827;
     --text-muted: #475569;
     --border: #d1d5db;
     --primary: #2563eb;
@@ -249,7 +250,7 @@
 
 [data-theme="dark"] {
     --bg: #0d111f;
-    --surface: #111827;
+    --surface: #111827827;
     --surface-strong: #1f2937;
     --text: #f8fafc;
     --text-muted: #cbd5e1;
@@ -302,7 +303,7 @@ button { cursor:pointer }
 
 .btn, button, [type="submit"], [type="button"] { display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; border-radius:999px; border:none; padding:0.95rem 1.4rem; font-weight:700 }
 
-.btn-primary { background: var(--primary); color:#fff }
+.btn-primary { background: var(--primary); color:#f8fafc }
 
 .badge { display:inline-flex; align-items:center; justify-content:center; padding:0.45rem 0.8rem; border-radius:999px; font-weight:700 }
 
@@ -312,29 +313,29 @@ button { cursor:pointer }
 
 /* ===== ACCOUNT STYLE (merged from account-style.css) ===== */
 /* keep account-specific classes used in templates */
-.account-container { background-color: #f5f5f5; min-height:100vh; padding-bottom:40px }
+.account-container { background-color: #e2e8f0; min-height:100vh; padding-bottom:40px }
 .account-header-purple { background: linear-gradient(135deg, #5b2d8e, #7c3fd4); padding:24px 20px 50px }
 .account-stats { text-align:center; margin-bottom:20px; color:white }
 .account-profile { display:flex; justify-content:space-between; align-items:center; gap:12px }
 .account-menu { margin-top:-24px; padding:0 12px 16px }
-.account-menu-card { background:#ffffff; border-radius:20px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.12) }
-.account-menu-item { display:flex; justify-content:space-between; align-items:center; padding:18px 20px; border-bottom:1px solid #e8e8e8; text-decoration:none; color:#222; }
+.account-menu-card { background:#f8fafc; border-radius:20px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.12) }
+.account-menu-item { display:flex; justify-content:space-between; align-items:center; padding:18px 20px; border-bottom:1px solid #cbd5e1; text-decoration:none; color:#111827827; }
 .account-menu-item:hover { background: rgba(230,0,18,0.05) }
 .account-menu-item-icon { background:#e8eaf6; border-radius:10px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-right:12px }
 .account-menu-item-text { flex:1; font-weight:600; font-size:15px }
 .account-menu-item-badge { background:#e74c3c; color:white; border-radius:50%; min-width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:11px }
-.account-card { background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.08) }
-.account-item { padding:16px 20px; border-bottom:1px solid #e8e8e8; display:flex; gap:12px; align-items:flex-start }
+.account-card { background:#f8fafc; border-radius:16px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.08) }
+.account-item { padding:16px 20px; border-bottom:1px solid #cbd5e1; display:flex; gap:12px; align-items:flex-start }
 .account-item-image { width:52px; height:52px; object-fit:cover; border-radius:10px }
 .account-item-title { font-weight:bold; font-size:14px; margin:0 0 2px 0 }
-.account-item-meta { color:#999; font-size:12px }
-.account-item-price { color:#28a745; font-weight:bold; font-size:13px }
-.account-item-status.pending { background:#fff3cd; color:#856404; padding:3px 8px; border-radius:20px }
+.account-item-meta { color:#6b7280; font-size:12px }
+.account-item-price { color:#059669; font-weight:bold; font-size:13px }
+.account-item-status.pending { background:#f8fafc3cd; color:#856404; padding:3px 8px; border-radius:20px }
 .account-item-status.accepted { background:#d4edda; color:#155724; padding:3px 8px; border-radius:20px }
 .account-buttons { padding:0 12px 12px; display:flex; gap:12px }
 .account-btn { flex:1; text-align:center; padding:14px; border-radius:50px; text-decoration:none; font-weight:bold }
 .account-btn-primary { background: linear-gradient(135deg, #5b2d8e, #7c3fd4); color:white }
-.account-btn-secondary { background:#ffffff; color:#5b2d8e; border:2px solid #5b2d8e }
+.account-btn-secondary { background:#f8fafc; color:#5b2d8e; border:2px solid #5b2d8e }
 .account-logout { padding:0 12px 32px }
 
 /* ===== SMALL HELPERS USED BELOW ===== */

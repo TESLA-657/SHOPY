@@ -78,17 +78,8 @@
               <span class="mp-label-icon">📸</span> Photo du produit
             </label>
             <div class="mp-photo-section">
-              <div class="d-flex align-items-center gap-3 flex-wrap">
-                <a href="{% url 'choisir_photo_produit' %}?next={{ request.path|urlencode }}" class="mp-photo-btn">
-                  🖼️ Choisir une photo
-                </a>
-                <input type="hidden" name="photo_name" id="id_photo_name" value="">
-                <div id="photo_preview_wrap" class="mp-photo-preview" style="display:none;">
-                  <img id="photo_preview" src="" alt="Prévisualisation">
-                </div>
-              </div>
               <label for="id_photo" class="mp-photo-label">
-                ou uploader une photo depuis votre appareil
+                📁 Choisir une photo depuis votre appareil
               </label>
               {{ form.photo }}
             </div>
@@ -170,25 +161,6 @@
         content.classList.remove('active');
       }
     }
-
-    // Pré-remplissage photo + prévisualisation
-    (function(){
-      try {
-        var params = new URLSearchParams(window.location.search);
-        var photo = params.get('photo');
-        if (!photo) return;
-
-        var input = document.getElementById('id_photo_name');
-        var previewWrap = document.getElementById('photo_preview_wrap');
-        var previewImg = document.getElementById('photo_preview');
-
-        if (input) input.value = photo;
-        if (previewImg) {
-          previewImg.src = '/media/' + photo;
-        }
-        if (previewWrap) previewWrap.style.display = 'inline-block';
-      } catch(e) {}
-    })();
   </script>
 
 </div>

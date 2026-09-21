@@ -17,21 +17,43 @@
     <div class="account-stats">
       <p class="account-stats-label">Paramètres</p>
       <div class="account-stats-value">{{ client.nom }}</div>
-    </div>
+    
+     <style>
+       .client-avatar-wrapper-settings:hover div[style*="background:rgba(0,0,0,0.55)"] {
+         display:flex !important; opacity:1;
+       }
+       .client-avatar-wrapper-settings:hover div[style*="bottom:-24px"] {
+         display:block !important;
+       }
+       .client-avatar-wrapper-settings:hover img,
+       .client-avatar-wrapper-settings:hover div[style*="border-radius:50%"] {
+         transform: scale(1.05); box-shadow: 0 0 0 4px rgba(17,153,142,0.4);
+       }
+     </style>
+</div>
     <!-- Photo stylée -->
     <div style="display: flex; align-items: center; gap: 16px; justify-content: center; margin-top: -20px;">
       <form method="post" action="{% url 'upload_photo_client' %}" enctype="multipart/form-data" id="photo-form-client-settings">
         {% csrf_token %}
-        <label for="photo-input-client-settings" class="client-avatar-wrapper-settings">
+        <div style="position:relative; cursor:pointer; width:80px; height:80px; border-radius:50%; overflow:hidden;" onclick="document.getElementById('photo-input-client-settings').click()">
           {% if client.photo %}
             <img src="{{ client.photo.url }}" alt="{{ client.nom }}" class="client-avatar-img-settings">
           {% else %}
-            <div class="client-avatar-placeholder-settings">{{ client.nom|first|upper }}</div>
+            <div class="client-avatar-placeholder-settings">{{ client.nom|first|upper }}
+           <div style="position:absolute; top:0; left:0; width:100%; height:100%; border-radius:50%; background:rgba(0,0,0,0.55);
+                       display:none; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s;"
+                onmouseover="this.style.display='flex'; this.style.opacity='1';"
+                onmouseout="this.style.opacity='0'; setTimeout(()=>{this.style.display='none';}, 300);">
+             <span style="color:white; font-size:30px;">📷</span>
+           </div></div>
           {% endif %}
           <div class="client-avatar-edit-settings">📷</div>
-        </label>
-        <input type="file" id="photo-input-client-settings" name="photo" accept="image/*" onchange="document.getElementById('photo-form-client-settings').submit()">
-      </form>
+        </div>
+        <input type="file" id="photo-input-client-settings" name="photo" accept="image/*" style="display:none;" onchange="document.getElementById('photo-form-client-settings').submit()">
+      
+           <div style="position:absolute; bottom:-24px; left:50%; transform:translateX(-50%); color:white; font-size:10px;
+                       text-shadow:0 1px 4px rgba(0,0,0,0.6); display:none; background:rgba(0,0,0,0.6);
+                       padding:2px 10px; border-radius:20px;">Modifier la photo</div></form>
     </div>
   </div>
 
@@ -110,7 +132,7 @@
   border: 2px solid #e8e8e8;
   border-radius: 12px;
   font-size: 14px;
-  transition: all 0.3s ease;
+  transition: all 0.18s ease-out;
   background: #fafafa;
 }
 
@@ -160,7 +182,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.3s ease;
+  transition: all 0.18s ease-out;
   box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
 }
 
@@ -291,7 +313,7 @@
   padding: 3px;
   background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.4));
   box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-  transition: transform 0.3s ease;
+  transition: transform 0.18s ease-out;
   display: block;
   margin: 0 auto;
 }
@@ -332,7 +354,7 @@
   justify-content: center;
   font-size: 24px;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.18s ease-out;
 }
 .client-avatar-wrapper-settings:hover .client-avatar-edit-settings {
   opacity: 1;

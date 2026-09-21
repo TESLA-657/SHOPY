@@ -8,20 +8,20 @@
   --pa-bg-2: #12121a;
   --pa-card: #16161f;
   --pa-card-hover: #1c1c28;
-  --pa-border: rgba(255, 255, 255, 0.08);
-  --pa-border-2: rgba(255, 255, 255, 0.15);
+  --pa-border: rgba(248, 250, 252, 0.08);
+  --pa-border-2: rgba(248, 250, 252, 0.15);
   
-  --pa-text: #ffffff;
-  --pa-text-2: rgba(255, 255, 255, 0.85);
-  --pa-text-3: rgba(255, 255, 255, 0.6);
-  --pa-text-muted: rgba(255, 255, 255, 0.45);
+  --pa-text: #f8fafc;
+  --pa-text-2: rgba(248, 250, 252, 0.85);
+  --pa-text-3: rgba(248, 250, 252, 0.6);
+  --pa-text-muted: rgba(248, 250, 252, 0.45);
   
   --pa-orange: #FF6600;
   --pa-orange-light: #ff8533;
   --pa-mobile: #8b5cf6;
   --pa-livraison: #22c55e;
   
-  --pa-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --pa-shadow: 0 8px 32px rgba(17, 24, 41, 0.5);
   --pa-radius: 14px;
   --pa-radius-2: 10px;
 }

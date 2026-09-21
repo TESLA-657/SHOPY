@@ -7,27 +7,43 @@
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
 
-// Configuration Firebase - À remplacer par votre config Firebase Console
+// Fiabiliser FCM (clés injectées via template Django depuis settings)
 firebase.initializeApp({
-  apiKey: "VOTRE_API_KEY",
-  authDomain: "shopy-guinee.firebaseapp.com",
-  projectId: "shopy-guinee",
-  storageBucket: "shopy-guinee.appspot.com",
-  messagingSenderId: "VOTRE_SENDER_ID",
-  appId: "VOTRE_APP_ID"
+  apiKey: FIREBASE_API_KEY,
+  authDomain: FIREBASE_AUTH_DOMAIN,
+  projectId: FIREBASE_PROJECT_ID,
+  storageBucket: FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: FIREBASE_SENDER_ID,
+  appId: FIREBASE_APP_ID
 });
 
 const messaging = firebase.messaging();
 
+// Callback pour autorisation
+messaging.requestPermission().then(() => {
+  console.log('Notification permission granted.');
+  return messaging.getToken();
+}).then((token) => {
+  console.log('FCM Token:', token);
+  // Envoyer le token au serveur via API
+  if (window.sendFcmToken) {
+    window.sendFcmToken(token);
+  }
+}).catch((error) => {
+  console.error('Notification permission denied:', error);
+});
+
 // Gérer les messages en arrière-plan
 messaging.onBackgroundMessage(function(payload) {
-  console.log('[firebase-messaging-sw.js] Message reçu en arrière-plan:', payload);
+  console.log('[firebase-messaging-sw.js] Message reçu:', payload);
   
-  const notificationTitle = payload.notification.title || 'SHOPY';
+  const notificationTitle = payload.notification?.title || 'SHOPY';
+  const notificationBody = payload.notification?.body || 'Nouvelle notification';
+  
   const notificationOptions = {
-    body: payload.notification.body || 'Nouvelle notification',
-    icon: '/static/core/images/shopy-logo.svg',
-    badge: '/static/core/images/shopy-logo.svg',
+    body: notificationBody,
+    icon: '/static/core/images/log.png',
+    badge: '/static/core/images/log.png',
     tag: 'shopy-notification',
     renotify: true,
     data: payload.data || {}
@@ -38,23 +54,20 @@ messaging.onBackgroundMessage(function(payload) {
 
 // Gérer le clic sur la notification
 self.addEventListener('notificationclick', function(event) {
-  console.log('[firebase-messaging-sw.js] Notification cliquée:', event.notification);
+  console.log('[firebase-messaging-sw.js] Notification cliquée');
   event.notification.close();
   
   const data = event.notification.data || {};
   const url = data.url || '/';
   
-  // Ouvrir l'URL si disponible
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then(function(clientList) {
-        // Si une fenêtre est déjà ouverte,.focus celle-ci
         for (const client of clientList) {
           if (client.url === url && 'focus' in client) {
             return client.focus();
           }
         }
-        // Sinon, ouvrir une nouvelle fenêtre
         return clients.openWindow(url);
       })
   );

@@ -1,17 +1,17 @@
 /* ===== WELCOME PREMIUM - Ultra Modern Welcome Page ===== */
 
 :root {
-  --primary: #28a745;
+  --primary: #059669;
   --primary-dark: #1a7f37;
   --secondary: #3498db;
   --accent: #e74c3c;
   --dark: #0a0a0a;
-  --light: #ffffff;
-  --text: rgba(255, 255, 255, 0.95);
-  --text-muted: rgba(255, 255, 255, 0.7);
-  --glass: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  --light: #f8fafc;
+  --text: rgba(248, 250, 252, 0.95);
+  --text-muted: rgba(248, 250, 252, 0.7);
+  --glass: rgba(248, 250, 252, 0.08);
+  --glass-border: rgba(248, 250, 252, 0.15);
+  --shadow: 0 25px 50px rgba(17, 24, 41, 0.4);
   --glow-green: 0 0 40px rgba(40, 167, 69, 0.5);
   --glow-blue: 0 0 40px rgba(52, 152, 219, 0.5);
 }
@@ -47,7 +47,7 @@ body::before {
     radial-gradient(ellipse at 20% 20%, rgba(40, 167, 69, 0.3) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 80%, rgba(52, 152, 219, 0.25) 0%, transparent 50%),
     radial-gradient(ellipse at 50% 50%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
-    linear-gradient(135deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.7) 100%);
+    linear-gradient(135deg, rgba(17, 24, 41, 0.75) 0%, rgba(17, 24, 41, 0.5) 50%, rgba(17, 24, 41, 0.7) 100%);
   z-index: -2;
   pointer-events: none;
 }
@@ -76,7 +76,7 @@ body::after {
   position: absolute;
   width: 6px;
   height: 6px;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(248, 250, 252, 0.6);
   border-radius: 50%;
   animation: float-particle 15s infinite ease-in-out;
 }
@@ -119,7 +119,7 @@ body::after {
   z-index: 1000;
   padding: 16px 24px;
   backdrop-filter: blur(20px);
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(17, 24, 41, 0.3);
   border-bottom: 1px solid var(--glass-border);
 }
 
@@ -215,7 +215,7 @@ body::after {
   padding: 0;
   border: 1px solid var(--glass-border);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(248, 250, 252, 0.06);
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -224,7 +224,7 @@ body::after {
   width: 22px;
   height: 3px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(248, 250, 252, 0.95);
   display: block;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
@@ -291,7 +291,7 @@ body::after {
   background: linear-gradient(
     45deg,
     transparent 30%,
-    rgba(255, 255, 255, 0.1) 50%,
+    rgba(248, 250, 252, 0.1) 50%,
     transparent 70%
   );
   transform: rotate(45deg);
@@ -320,7 +320,7 @@ body::after {
   color: var(--text);
   letter-spacing: -0.02em;
   margin-bottom: 16px;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 4px 20px rgba(17, 24, 41, 0.3);
 }
 
 .hero-title span {
@@ -368,15 +368,15 @@ body::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.05) 100%);
+  background: linear-gradient(135deg, transparent 0%, rgba(248, 250, 252, 0.05) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .choice-card:hover {
   transform: translateY(-8px);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  border-color: rgba(248, 250, 252, 0.3);
+  box-shadow: 0 20px 60px rgba(17, 24, 41, 0.4);
 }
 
 .choice-card:hover::before {
@@ -454,7 +454,7 @@ body::after {
   padding: 32px 20px;
   text-align: center;
   border-top: 1px solid var(--glass-border);
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(17, 24, 41, 0.3);
 }
 
 .footer-brand {
@@ -552,12 +552,12 @@ body::after {
     align-items: stretch;
     gap: 4px;
     padding: 10px 14px;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(17, 24, 41, 0.85);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 18px 40px rgba(17, 24, 41, 0.45);
     max-height: calc(100vh - 120px);
     overflow-y: auto;
   }

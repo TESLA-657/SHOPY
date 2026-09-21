@@ -1,18 +1,20 @@
-/* ===== ACCOUNT STYLE - AliExpress Inspired ===== */
+/* ===== ACCOUNT STYLE - SHOPY ===== */
 
 :root {
-  --primary-color: #e60012;
-  --secondary-color: #ff7a1d;
-  --accent-blue: #1a237e;
-  --accent-purple: #5b2d8e;
-  --text-primary: #222;
-  --text-secondary: #999;
-  --bg-primary: #f5f5f5;
-  --bg-secondary: #ffffff;
-  --border-light: #e8e8e8;
-  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.12);
-  --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.15);
+  --primary-color: #059669;
+  --primary-light: #34d399;
+  --secondary-color: #d97706;
+  --accent-green: #16a34a;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-light: #94a3b8;
+  --bg-primary: #e2e8f0;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --border-light: #cbd5e1;
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 12px 30px rgba(5, 150, 103, 0.18);
 }
 
 /* ===== CONTAINER ===== */
@@ -24,12 +26,12 @@
 
 /* ===== HEADER GRADIENT ===== */
 .account-header {
-  background: linear-gradient(135deg, var(--accent-blue), #3949ab);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
   padding: 24px 20px 50px;
 }
 
 .account-header-purple {
-  background: linear-gradient(135deg, var(--accent-purple), #7c3fd4);
+  background: linear-gradient(135deg, var(--secondary-color), #ea580c);
   padding: 24px 20px 50px;
 }
 
@@ -40,6 +42,7 @@
   color: white;
 }
 
+/* ===== STATS COLORS ===== */
 .account-stats-label {
   color: rgba(255, 255, 255, 0.6);
   font-size: 12px;
@@ -94,14 +97,14 @@
     transform: translateY(-4px);
     box-shadow: 0 10px 30px rgba(2,6,23,0.08);
     background: linear-gradient(90deg, rgba(98, 92, 255, 0.03), rgba(124, 58, 237, 0.02));
-  background: linear-gradient(135deg, #3498db, #2980b9);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
 }
 
     transform: translateY(-1px) scale(0.998);
 .account-profile-avatar-placeholder.vendor {
-  background: linear-gradient(135deg, #f39c12, #e67e22);
+  background: linear-gradient(135deg, var(--secondary-color), #ea580c);
 }
-    outline: 3px solid rgba(37,99,235,0.12);
+    outline: 3px solid rgba(5, 150, 103, 0.08);
     outline-offset: 2px;
 
 .account-profile-avatar-icon {
@@ -121,7 +124,7 @@
 }
 
 .account-profile-avatar-icon.vendor {
-  background: #7c3fd4;
+  background: var(--secondary-color);
 }
 
 /* ===== Vendor Online Dot (Messenger-like) ===== */
@@ -214,7 +217,7 @@
 }
 
 .account-profile-verified {
-  background: rgba(40, 167, 69, 0.3);
+  background: rgba(5, 150, 103, 0.3);
   color: #7defa1;
   font-size: 10px;
   padding: 2px 8px;
@@ -355,7 +358,7 @@
 
 .account-menu-item-sub {
   font-size: 12px;
-  color: #28a745;
+  color: var(--primary-color);
   font-weight: 600;
   margin: 4px 0 0 0;
 }
@@ -380,7 +383,7 @@
 }
 
 .account-menu-item-badge.warning {
-  background: #ffc107;
+  background: var(--secondary-color);
   color: black;
 }
 
@@ -459,7 +462,7 @@
 }
 
 .account-item-price {
-  color: #28a745;
+  color: var(--primary-color);
   font-weight: bold;
   font-size: 13px;
   margin: 0 0 4px 0;
@@ -476,17 +479,17 @@
 
 .account-item-status.pending {
   background: #fff3cd;
-  color: #856404;
+  color: #92400e;
 }
 
 .account-item-status.accepted {
   background: #d4edda;
-  color: #155724;
+  color: #166534;
 }
 
 .account-item-status.rejected {
   background: #f8d7da;
-  color: #721c24;
+  color: #991b1b;
 }
 
 /* ===== FAVORITES GRID ===== */
@@ -532,7 +535,7 @@
 }
 
 .account-favorite-price {
-  color: #28a745;
+  color: var(--primary-color);
   font-size: 13px;
   font-weight: bold;
   margin: 0;
@@ -661,7 +664,7 @@
 }
 
 .account-btn-success {
-  background: #28a745;
+  background: var(--primary-color);
   color: white;
 }
 
@@ -836,15 +839,15 @@ label[for*="photo-input"] {
 }
 
 .facture-card-header-icon.waiting {
-  background: linear-gradient(135deg, #fff3cd, #ffeeba);
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
 }
 
 .facture-card-header-icon.accepted {
-  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
 }
 
 .facture-card-header-icon.rejected {
-  background: linear-gradient(135deg, #f8d7da, #f5c6c5);
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
 }
 
 .facture-card-header-title {
@@ -924,7 +927,7 @@ label[for*="photo-input"] {
 .facture-item-price {
   font-weight: 700;
   font-size: 16px;
-  color: #28a745;
+  color: var(--primary-color);
   margin: 8px 0 0 0;
 }
 
@@ -947,20 +950,20 @@ label[for*="photo-input"] {
 }
 
 .facture-status-badge.waiting {
-  background: linear-gradient(135deg, #fff3cd, #ffeeba);
-  color: #856404;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
   border: 1px solid #ffeeba;
 }
 
 .facture-status-badge.accepted {
-  background: linear-gradient(135deg, #d4edda, #c3e6cb);
-  color: #155724;
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  color: #166534;
   border: 1px solid #c3e6cb;
 }
 
 .facture-status-badge.rejected {
-  background: linear-gradient(135deg, #f8d7da, #f5c6c5);
-  color: #721c24;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
   border: 1px solid #f5c6c5;
 }
 
@@ -971,18 +974,18 @@ label[for*="photo-input"] {
   gap: 8px;
   padding: 10px 18px;
   border-radius: 25px;
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-green));
   color: white;
   text-decoration: none;
   font-weight: 700;
   font-size: 13px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 4px 12px rgba(5, 150, 103, 0.3);
 }
 
 .facture-download-btn:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+  box-shadow: 0 6px 20px rgba(5, 150, 103, 0.5);
   color: white;
 }
 
@@ -1000,7 +1003,7 @@ label[for*="photo-input"] {
   width: 80px;
   height: 80px;
   margin: 0 auto 16px;
-  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
   border-radius: 50%;
   display: flex;
   align-items: center;

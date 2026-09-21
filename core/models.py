@@ -68,6 +68,25 @@ class Client(models.Model):
 
     def __str__(self):
         return self.nom
+
+
+# ===== MODÈLE POUR LES CODES DE RÉINITIALISATION DE MOT DE PASSE =====
+class PasswordResetCode(models.Model):
+    """Code de vérification pour réinitialisation de mot de passe (lié à un utilisateur spécifique)"""
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='reset_codes', null=True, blank=True)
+    email = models.EmailField()
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    used = models.BooleanField(default=False)
+    
+    def is_valid(self):
+        """Vérifier si le code est valide (non expiré et non utilisé)"""
+        from django.utils import timezone
+        return not self.used and timezone.now() < self.expires_at
+    
+    def __str__(self):
+        return f"Code pour {self.email} ({'valide' if self.is_valid() else 'invalide'})"
     
 # Catégories
 class Categorie(models.Model):

@@ -1,27 +1,27 @@
-/* ===== CATALOGUE STYLE - Premium Ultra-Modern ===== */
+/* ===== CATALOGUE STYLE - Premium SHOPY ===== */
 
 :root {
-  --primary-color: #e84150;
-  --primary-light: #ff6b81;
-  --primary-dark: #c2364a;
-  --secondary-color: #ffa502;
-  --accent-color: #00d2d3;
-  --accent-green: #2ed573;
-  --text-primary: #1a1a2e;
-  --text-secondary: #636e72;
-  --text-light: #a4b0be;
-  --bg-primary: #f0f2f5;
-  --bg-secondary: #ffffff;
-  --bg-card: #ffffff;
-  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --border-light: #e9ecef;
+  --primary-color: #059669;
+  --primary-light: #34d399;
+  --primary-dark: #047857;
+  --secondary-color: #d97706;
+  --accent-color: #dc2626;
+  --accent-green: #16a34a;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-light: #9ca3af;
+  --bg-primary: #f1f5f9;
+  --bg-secondary: #f8fafc;
+  --bg-card: #f8fafc;
+  --bg-gradient: linear-gradient(135deg, #059669 0%, #047857 100%);
+  --border-light: #e2e8f0;
   --border-radius: 16px;
-  --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.08);
-  --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.15);
-  --shadow-hover: 0 15px 40px rgba(232, 65, 80, 0.25);
-  --shadow-glow: 0 0 20px rgba(232, 65, 80, 0.3);
-  --gradient-promo: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
-  --gradient-cta: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.06);
+  --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 12px 30px rgba(5, 150, 103, 0.18);
+  --shadow-glow: 0 0 20px rgba(5, 150, 103, 0.25);
+  --gradient-promo: linear-gradient(135deg, #059669 0%, #16a34a 100%);
+  --gradient-cta: linear-gradient(135deg, #d97706 0%, #dc2626 100%);
 }
 
 body {
@@ -89,14 +89,14 @@ body {
   gap: 8px;
   padding: 10px 14px;
   border-radius: 999px;
-  background: #f7f7f7;
+  background: #f1f5f9;
   color: var(--text-primary);
   border: 1px solid var(--border-light);
   font-size: 14px;
 }
 
 .info-panel {
-  background: #fbfbfb;
+  background: #f8fafc;
   border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 18px;
@@ -130,7 +130,7 @@ body {
 }
 
 .page-action-btn.secondary {
-  background: #fff;
+  background: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--border-light);
 }

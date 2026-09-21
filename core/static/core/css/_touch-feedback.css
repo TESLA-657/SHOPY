@@ -1,0 +1,11 @@
+/* Retour haptique visuel au toucher : le seul micro-effet global autorisé.
+   120 ms, courbe de sortie, transform uniquement (pas de layout). */
+.SHOPY-nav-item:active,
+.login-button:active,
+.loyalty-activate-btn:active,
+.loyalty-deactivate-btn:active,
+.vendor-main-btn:active,
+.client-logout-btn:active {
+  transform: scale(0.97);
+  transition: transform 120ms cubic-bezier(.2, .8, .3, 1);
+}

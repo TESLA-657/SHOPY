@@ -7,15 +7,15 @@
   --mp-bg: #0d1117;
   --mp-bg-2: #161b22;
   --mp-bg-3: #21262d;
-  --mp-card: rgba(255, 255, 255, 0.06);
-  --mp-card-2: rgba(255, 255, 255, 0.10);
-  --mp-border: rgba(255, 255, 255, 0.12);
-  --mp-border-2: rgba(255, 255, 255, 0.20);
+  --mp-card: rgba(248, 250, 252, 0.06);
+  --mp-card-2: rgba(248, 250, 252, 0.10);
+  --mp-border: rgba(248, 250, 252, 0.12);
+  --mp-border-2: rgba(248, 250, 252, 0.20);
   
   /* Texte */
-  --mp-text: rgba(255, 255, 255, 0.92);
-  --mp-text-2: rgba(255, 255, 255, 0.72);
-  --mp-text-muted: rgba(255, 255, 255, 0.50);
+  --mp-text: rgba(248, 250, 252, 0.92);
+  --mp-text-2: rgba(248, 250, 252, 0.72);
+  --mp-text-muted: rgba(248, 250, 252, 0.50);
   
   /* Accents */
   --mp-primary: #238636;
@@ -28,8 +28,8 @@
   --mp-purple: #a371f7;
   
   /* Ombres */
-  --mp-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --mp-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --mp-shadow: 0 8px 32px rgba(17, 24, 41, 0.4);
+  --mp-shadow-2: 0 4px 16px rgba(17, 24, 41, 0.3);
   --mp-shadow-glow: 0 0 30px var(--mp-primary-glow);
   
   /* Border radius */

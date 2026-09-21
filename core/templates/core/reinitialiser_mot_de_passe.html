@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Réinitialiser le mot de passe — SHOPY</title>
+  <title>Vérifier le code — SHOPY</title>
   <link href="{% static 'core/css/connexion_client.css' %}" rel="stylesheet">
 </head>
 <body>
@@ -12,29 +12,13 @@
 <div class="login-container">
   <div class="login-card">
 
-    {% if invalide %}
-    <div class="login-header">
-      <div class="login-icon">
-        <span>⚠️</span>
-      </div>
-      <h4 class="login-title">Lien invalide</h4>
-      <p class="login-subtitle">Ce lien de réinitialisation est invalide ou a expiré.</p>
-    </div>
-    <div style="text-align:center;">
-      <a href="{% url 'mot_de_passe_oublie' %}" class="login-button" style="display:inline-block; text-align:center; text-decoration:none; margin-bottom:12px;">
-        Demander un nouveau lien
-      </a>
-      <br>
-      <a href="{% url 'connexion_client' %}" class="login-return">← Retour à la connexion</a>
-    </div>
-
-    {% elif succes %}
+    {% if succes %}
     <div class="login-header">
       <div class="login-icon">
         <span>✅</span>
       </div>
       <h4 class="login-title">Mot de passe modifié !</h4>
-      <p class="login-subtitle">Votre mot de passe a bien été réinitialisé. Vous pouvez maintenant vous connecter.</p>
+      <p class="login-subtitle">Votre mot de passe a bien été réinitialisé.</p>
     </div>
     <div style="text-align:center;">
       <a href="{% url 'connexion_client' %}" class="login-button" style="display:inline-block; text-align:center; text-decoration:none;">
@@ -42,13 +26,13 @@
       </a>
     </div>
 
-    {% else %}
+    {% elif code_valide %}
     <div class="login-header">
       <div class="login-icon">
         <span>🔑</span>
       </div>
       <h4 class="login-title">Nouveau mot de passe</h4>
-      <p class="login-subtitle">Choisissez un nouveau mot de passe pour votre compte</p>
+      <p class="login-subtitle">Code vérifié ! Choisissez votre nouveau mot de passe</p>
     </div>
 
     {% if erreur %}
@@ -59,6 +43,7 @@
 
     <form class="login-form" method="post" autocomplete="off">
       {% csrf_token %}
+      <input type="hidden" name="email" value="{{ email_verifie }}">
 
       <div class="form-group">
         <label class="form-label" for="id_nouveau">Nouveau mot de passe</label>
@@ -88,19 +73,93 @@
       </div>
 
       <button type="submit" class="login-button">
-        Réinitialiser mon mot de passe
+        ✅ Valider le nouveau mot de passe
       </button>
     </form>
 
-    <div style="margin-top: 12px;">
-      <a href="{% url 'connexion_client' %}" class="login-return">
-        ← Retour à la connexion
+    <div style="margin-top: 12px; text-align:center;">
+      <a href="{% url 'mot_de_passe_oublie' %}" class="login-return" style="font-size:13px; color:#888;">
+        ← Retour au début
       </a>
+    </div>
+
+    {% else %}
+    <div class="login-header">
+      <div class="login-icon">
+        <span>📩</span>
+      </div>
+      <h4 class="login-title">Vérifier votre code</h4>
+      <p class="login-subtitle">Entrez le code de vérification reçu par email</p>
+    </div>
+
+    {% if erreur %}
+    <div style="background:#fee2e2; color:#b91c1c; padding:12px 14px; border-radius:12px; font-size:14px; margin-bottom:18px;">
+      {{ erreur }}
     </div>
     {% endif %}
 
+    <form class="login-form" method="post" autocomplete="off">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="id_email">Email du compte</label>
+        <input
+          type="email"
+          name="email"
+          id="id_email"
+          class="form-input"
+          placeholder="exemple@gmail.com"
+          required
+          autofocus
+        >
+      </div>
+
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label" for="id_code">Code de vérification (6 chiffres)</label>
+        <input
+          type="text"
+          name="code"
+          id="id_code"
+          class="form-input code-input"
+          placeholder="123456"
+          required
+          maxlength="6"
+          minlength="6"
+          pattern="[0-9]*"
+        >
+      </div>
+
+      <button type="submit" class="login-button" style="margin-top:12px;">
+        ✅ Vérifier le code
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top:12px;">
+      <a href="{% url 'mot_de_passe_oublie' %}" class="login-return" style="font-size:13px; color:#888;">
+        ← Retour au début
+      </a>
+    </div>
+
+    {% endif %}
+
+    <div style="margin-top: 12px;">
+      <a href="{% url 'Welcome' %}" class="login-return">
+        ← Retour à l'accueil
+      </a>
+    </div>
+
   </div>
 </div>
+
+<style>
+  .code-input {
+    letter-spacing: 8px;
+    font-size: 28px;
+    text-align: center;
+    font-weight: bold;
+    padding: 16px;
+  }
+</style>
 
 </body>
 </html>

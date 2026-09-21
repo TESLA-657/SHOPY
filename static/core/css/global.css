@@ -1,8 +1,8 @@
 :root {
   --bg: #f5f7fb;
-  --surface: #ffffff;
+  --surface: #f8fafc;
   --surface-strong: #eef2f7;
-  --text: #111827;
+  --text: #111827827;
   --text-muted: #475569;
   --border: #d1d5db;
   --primary: #2563eb;
@@ -17,7 +17,7 @@
 
 [data-theme="dark"] {
   --bg: #0d111f;
-  --surface: #111827;
+  --surface: #111827827;
   --surface-strong: #1f2937;
   --text: #f8fafc;
   --text-muted: #cbd5e1;
@@ -175,7 +175,7 @@ button:hover {
 
 .btn-primary {
   background: var(--primary);
-  color: #fff;
+  color: #f8fafc;
   box-shadow: 0 16px 40px rgba(37, 99, 235, 0.18);
 }
 
@@ -188,7 +188,7 @@ button:hover {
 
 .btn-danger {
   background: var(--danger);
-  color: #fff;
+  color: #f8fafc;
 }
 
 .grid-list {
@@ -301,17 +301,17 @@ button:hover {
 
 .toast.success .icon {
   background: var(--success);
-  color: #fff;
+  color: #f8fafc;
 }
 
 .toast.info .icon {
   background: var(--primary);
-  color: #fff;
+  color: #f8fafc;
 }
 
 .toast.error .icon {
   background: var(--danger);
-  color: #fff;
+  color: #f8fafc;
 }
 
 .toast .close {

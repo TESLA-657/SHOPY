@@ -71,7 +71,7 @@
   letter-spacing: .2px;
   padding: 6px 10px;
   border-radius: 999px;
-  color: #fff;
+  color: #f8fafc;
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
@@ -81,7 +81,7 @@
   letter-spacing: .2px;
   padding: 6px 10px;
   border-radius: 999px;
-  color: #fff;
+  color: #f8fafc;
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
@@ -93,7 +93,7 @@
   margin: 0;
   font-weight: 900;
   font-size: 14px;
-  color: #111827;
+  color: #111827827;
   line-height: 1.2;
   min-height: 36px;
 }
@@ -104,7 +104,7 @@
 
 .price-current {
   font-weight: 1000;
-  color: #28a745;
+  color: #059669;
 }
 
 .product-seller {

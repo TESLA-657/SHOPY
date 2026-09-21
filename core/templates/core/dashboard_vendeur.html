@@ -16,7 +16,7 @@
      align-items:center; justify-content:center;">
   <div style="background:white; border-radius:16px; padding:40px;
        max-width:420px; width:90%; text-align:center;">
-    <div style="font-size:50px;">🔒</div>
+    <div style="font-size:50px;"><i class="bi bi-lock-fill" aria-hidden="true"></i></div>
     <h3 style="color:#e74c3c; font-weight:bold; margin:16px 0 8px;">
       {% if 'Essai gratuit' in vendeur.raison_suspension %}
         Essai gratuit expiré
@@ -39,13 +39,13 @@
     <a href="{% url 'choisir_abonnement' %}"
        style="display:block; background:#28a745; color:white; padding:14px;
               border-radius:8px; font-weight:bold; text-decoration:none;">
-      💳 Choisir un abonnement
+      <i class="bi bi-credit-card" aria-hidden="true"></i> Choisir un abonnement
     </a>
     {% else %}
     <a href="mailto:admin@SHOPY-guinee.com"
        style="display:block; background:#e74c3c; color:white; padding:14px;
               border-radius:8px; font-weight:bold; text-decoration:none;">
-      📧 Contacter l'administrateur
+      <i class="bi bi-envelope" aria-hidden="true"></i> Contacter l'administrateur
     </a>
     {% endif %}
   </div>
@@ -54,7 +54,7 @@
 
   {% if abonnement and abonnement.jours_restants <= 5 and not suspendu %}
   <div style="background:#fff3cd; padding:10px 16px; text-align:center; font-size:13px;">
-    ⚠️ Abonnement expire dans <strong>{{ abonnement.jours_restants }} jour(s)</strong>.
+    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Abonnement expire dans <strong>{{ abonnement.jours_restants }} jour(s)</strong>.
     <a href="{% url 'choisir_abonnement' %}" style="color:#28a745; font-weight:bold;">Renouveler →</a>
   </div>
   {% endif %}
@@ -77,7 +77,12 @@
     </div>
     <div class="loyalty-consent-action">
       {% if vendeur.fidelite_active %}
-        <span class="loyalty-active-badge">✓ Programme activé</span>
+        <span class="loyalty-active-badge"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Programme activé</span>
+        <form method="post" action="{% url 'desactiver_fidelite_vendeur' %}"
+              onsubmit="return confirm('Désactiver le programme de fidélité ? Vos clients ne bénéficieront plus des réductions tant qu\'il est désactivé.');">
+          {% csrf_token %}
+          <button type="submit" class="loyalty-deactivate-btn">Désactiver le programme</button>
+        </form>
       {% else %}
         <form method="post" action="{% url 'activer_fidelite_vendeur' %}">
           {% csrf_token %}
@@ -98,7 +103,7 @@
 
     <div class="vendor-boutique-grid">
       <a href="{% url 'abonnement_vendeur' %}" class="vendor-mini-card">
-        <span class="vendor-mini-icon blue">📋</span>
+        <span class="vendor-mini-icon blue"><i class="bi bi-card-list" aria-hidden="true"></i></span>
         <div class="vendor-mini-content">
           <h3>Abonnement</h3>
           <p>{% if abonnement %}{{ abonnement.jours_restants }}J restants{% else %}Gratuit{% endif %}</p>
@@ -106,7 +111,7 @@
       </a>
 
       <a href="{% url 'assistant_ia_vendeur' %}" class="vendor-mini-card">
-        <span class="vendor-mini-icon purple">🤖</span>
+        <span class="vendor-mini-icon purple"><i class="bi bi-robot" aria-hidden="true"></i></span>
         <div class="vendor-mini-content">
           <h3>Assistant IA</h3>
           <p>Recommandations</p>
@@ -114,7 +119,7 @@
       </a>
 
       <a href="{% url 'statistiques_vendeur' %}" class="vendor-mini-card">
-        <span class="vendor-mini-icon green">📊</span>
+        <span class="vendor-mini-icon green"><i class="bi bi-bar-chart" aria-hidden="true"></i></span>
         <div class="vendor-mini-content">
           <h3>Statistiques</h3>
           <p>Analyses</p>
@@ -122,7 +127,7 @@
       </a>
 
       <a href="{% url 'creer_publicite' %}" class="vendor-mini-card">
-        <span class="vendor-mini-icon orange">📣</span>
+        <span class="vendor-mini-icon orange"><i class="bi bi-megaphone" aria-hidden="true"></i></span>
         <div class="vendor-mini-content">
           <h3>Publicité</h3>
           <p>Mettre en avant</p>
@@ -130,7 +135,7 @@
       </a>
 
       <a href="{% url 'parametres_vendeur' %}" class="vendor-mini-card">
-        <span class="vendor-mini-icon orange">⚙️</span>
+        <span class="vendor-mini-icon orange"><i class="bi bi-gear" aria-hidden="true"></i></span>
         <div class="vendor-mini-content">
           <h3>Paramètres</h3>
           <p>Configuration</p>
@@ -154,7 +159,7 @@
         + Nouveau Produit
       </a>
       <a href="{% url 'catalogue' %}" class="vendor-main-btn secondary">
-        🛒 Catalogue
+        <i class="bi bi-cart3" aria-hidden="true"></i> Catalogue
       </a>
     </div>
 
@@ -172,10 +177,10 @@
         {% for fidelite in clients_fideles %}
         <div class="vendor-loyal-client-card">
           <div class="client-badge {{ fidelite.niveau|lower }}">
-            {% if fidelite.niveau == 'Or' %}⭐
-            {% elif fidelite.niveau == 'Argent' %}✨
-            {% elif fidelite.niveau == 'Bronze' %}🥉
-            {% else %}👤{% endif %}
+            {% if fidelite.niveau == 'Or' %}<i class="bi bi-star-fill" aria-hidden="true"></i>
+            {% elif fidelite.niveau == 'Argent' %}<i class="bi bi-stars" aria-hidden="true"></i>
+            {% elif fidelite.niveau == 'Bronze' %}<i class="bi bi-award" aria-hidden="true"></i>
+            {% else %}<i class="bi bi-person" aria-hidden="true"></i>{% endif %}
           </div>
           <div class="client-info">
             <div class="client-name">{{ fidelite.client.nom }}</div>
@@ -193,7 +198,7 @@
 
     <div class="vendor-logout-row">
       <a href="{% url 'deconnexion_vendeur' %}" class="vendor-logout-btn">
-        🔴 Déconnexion
+        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Déconnexion
       </a>
     </div>
   </div>
@@ -206,7 +211,10 @@
     .loyalty-rules { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
     .loyalty-rules span, .loyalty-active-badge { padding:7px 10px; color:#ecfeff; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:999px; font-size:12px; font-weight:700; white-space:nowrap; }
     .loyalty-activate-btn { border:0; border-radius:10px; padding:12px 16px; color:#0f172a; background:#facc15; font-weight:800; cursor:pointer; white-space:nowrap; }
-    @media (max-width: 640px) { .loyalty-consent-panel { align-items:flex-start; flex-direction:column; } }
+    .loyalty-consent-action { display:flex; flex-direction:column; align-items:flex-end; gap:10px; flex-shrink:0; }
+    .loyalty-deactivate-btn { border:1px solid rgba(255,255,255,.35); border-radius:10px; padding:10px 16px; color:#ffe4e6; background:rgba(220,38,38,.22); font-weight:700; font-size:13px; cursor:pointer; white-space:nowrap; transition:background .2s ease; }
+    .loyalty-deactivate-btn:hover { background:rgba(220,38,38,.4); }
+    @media (max-width: 640px) { .loyalty-consent-panel { align-items:flex-start; flex-direction:column; } .loyalty-consent-action { align-items:flex-start; } }
 
     .vendor-boutique-panel {
       margin: 18px 14px 0;
@@ -255,7 +263,7 @@
       border: 1px solid rgba(148, 163, 184, 0.18);
       border-radius: 18px;
       padding: 16px 14px;
-      transition: all 0.25s ease;
+      transition: background-color .15s ease-out, color .15s ease-out, border-color .15s ease-out, transform .15s cubic-bezier(.2,.8,.3,1), box-shadow .15s ease-out, opacity .15s ease-out;
       color: #0f172a;
     }
 
@@ -360,7 +368,7 @@
       border-radius: 16px;
       text-decoration: none;
       font-weight: 800;
-      transition: all 0.25s ease;
+      transition: background-color .15s ease-out, color .15s ease-out, border-color .15s ease-out, transform .15s cubic-bezier(.2,.8,.3,1), box-shadow .15s ease-out, opacity .15s ease-out;
       border: none;
       cursor: pointer;
       padding: 0 18px;
@@ -453,7 +461,7 @@
       border: 1px solid rgba(148, 163, 184, 0.12);
       border-radius: 16px;
       padding: 14px;
-      transition: all 0.25s ease;
+      transition: background-color .15s ease-out, color .15s ease-out, border-color .15s ease-out, transform .15s cubic-bezier(.2,.8,.3,1), box-shadow .15s ease-out, opacity .15s ease-out;
     }
 
     .vendor-loyal-client-card:hover {

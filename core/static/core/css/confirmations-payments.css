@@ -1,9 +1,9 @@
 /* Styles dédiés aux pages de confirmations / paiements / notifications / inscription vendeur */
 
 :root{
-  --shopy-primary:#28a745;
+  --shopy-primary:#059669;
   --shopy-danger:#e74c3c;
-  --shopy-warning:#ffc107;
+  --shopy-warning:#d97706;
   --shopy-bg-dark:#1e1e2e;
 }
 
@@ -35,7 +35,7 @@
 
 .admin-paiements-page .table thead{
   background:var(--shopy-primary) !important;
-  color:#fff !important;
+  color:#f8fafc !important;
 }
 
 .admin-paiements-page .table{
@@ -64,7 +64,7 @@
 .abonnement-plan-card.plan-business{
   border-color:#1a1a2e;
   background:#1a1a2e;
-  color:#fff;
+  color:#f8fafc;
 }
 
 .abonnement-popular-ribbon{
@@ -73,7 +73,7 @@
   left:50%;
   transform:translateX(-50%);
   background:var(--shopy-primary);
-  color:#fff;
+  color:#f8fafc;
   padding:4px 20px;
   border-radius:20px;
   font-size:12px;
@@ -115,7 +115,7 @@
   object-fit:cover;
   border-radius:10px;
   border:1px solid rgba(0,0,0,0.06);
-  background:#fff;
+  background:#f8fafc;
 }
 
 .dashboard-product-media .placeholder{
@@ -143,11 +143,11 @@
   padding:6px 10px;
   border-radius:999px;
   font-weight:700;
-  color:#fff;
+  color:#f8fafc;
 }
 
 .dashboard-product-badge.on{ background:var(--shopy-primary); }
-.dashboard-product-badge.off{ background:#6c757d; }
+.dashboard-product-badge.off{ background:#6b7280; }
 
 .dashboard-product-actions-block{
   margin-top:10px;
@@ -158,7 +158,7 @@
 .btn-modifier-db{
   flex:1;
   background:var(--shopy-primary);
-  color:#fff;
+  color:#f8fafc;
   text-decoration:none;
   text-align:center;
   border-radius:10px;
@@ -169,7 +169,7 @@
 .btn-supprimer-db{
   flex:1;
   background:var(--shopy-danger);
-  color:#fff;
+  color:#f8fafc;
   text-decoration:none;
   text-align:center;
   border-radius:10px;

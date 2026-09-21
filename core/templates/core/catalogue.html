@@ -8,17 +8,23 @@
 
 <div class="catalogue-container">
 
-<!-- Header recherche sticky -->
+<!-- Logo SHOPY -->
+  <div class="catalogue-logo-wrapper" style="text-align:left; margin: 6px 0 4px;">
+    <img src="{% static 'core/images/log.png' %}" alt="SHOPY" class="catalogue-logo-img"
+         style="height: 150px; width: auto; display: block;">
+  </div>
+
+  <!-- Header recherche sticky -->
   <div class="catalogue-header">
     <div class="catalogue-header-content">
       <div class="search-wrapper">
-        <span class="search-icon">🔍</span>
+        <i class="bi bi-search search-icon" aria-hidden="true"></i>
         <input type="text" id="recherche-input" value="{{ recherche }}"
                class="search-input"
                placeholder="Chercher produits, marques...">
       </div>
       <select id="ville-select" class="location-select">
-        <option value="">🌍 Toutes villes</option>
+        <option value="">Toutes villes</option>
         {% for v in villes %}
           <option value="{{ v }}" {% if v == ville_selectionnee %}selected{% endif %}>{{ v }}</option>
         {% endfor %}
@@ -31,7 +37,7 @@
       </select>
       {% if user.is_authenticated %}
       <a href="{% url 'voir_panier' %}" class="cart-icon-btn" title="Mon panier">
-        🛒 <span id="panier-count-catalog">Panier</span>
+        <i class="bi bi-cart3" aria-hidden="true"></i> <span id="panier-count-catalog">Panier</span>
       </a>
       {% endif %}
     </div>
@@ -43,7 +49,7 @@
       <a href="{% url 'catalogue' %}"
          class="category-tag {% if not categorie_selectionnee %}category-tag-active{% endif %}"
          data-category="">
-        <span class="category-icon">📦</span>
+        <i class="bi bi-grid category-icon" aria-hidden="true"></i>
         <span>Tous</span>
       </a>
       {% for cat in categories %}
@@ -62,7 +68,7 @@
   <div class="promos-section">
     <div class="promos-header">
       <div>
-        <span class="promos-title">🔥 Flash Deals</span>
+        <span class="promos-title"><i class="bi bi-lightning-charge-fill" aria-hidden="true"></i> Flash Deals</span>
         <span class="promos-subtitle">Offres limitées</span>
       </div>
     </div>
@@ -73,7 +79,7 @@
           {% if produit.photo %}
             <img src="{{ produit.photo.url }}" alt="{{ produit.nom }}">
           {% else %}
-            <div class="promo-placeholder">📦</div>
+            <div class="promo-placeholder"><i class="bi bi-image" aria-hidden="true"></i></div>
           {% endif %}
           {% if produit.promo_active %}
           <div class="promo-badge">PROMO</div>
@@ -89,7 +95,7 @@
           {% else %}
             <p class="promo-price-single">{{ produit.prix|format_prix }} GNF</p>
           {% endif %}
-          <p class="promo-seller">📍 {{ produit.vendeur.ville }}</p>
+          <p class="promo-seller"><i class="bi bi-geo-alt" aria-hidden="true"></i> {{ produit.vendeur.ville }}</p>
         </div>
       </a>
       {% endfor %}
@@ -101,7 +107,7 @@
   <div class="promos-section sponsored-section">
     <div class="promos-header">
       <div>
-        <span class="promos-title">📣 Produits sponsorisés</span>
+        <span class="promos-title"><i class="bi bi-megaphone" aria-hidden="true"></i> Produits sponsorisés</span>
         <span class="promos-subtitle">Mise en avant payée par les vendeurs</span>
       </div>
     </div>
@@ -109,13 +115,13 @@
       {% for publicite in publicites_catalogue %}
       <a href="{% url 'detail_produit' publicite.produit.pk %}" class="promo-card">
         <div class="promo-card-image">
-          {% if publicite.produit.photo %}<img src="{{ publicite.produit.photo.url }}" alt="{{ publicite.produit.nom }}">{% else %}<div class="promo-placeholder">📦</div>{% endif %}
+          {% if publicite.produit.photo %}<img src="{{ publicite.produit.photo.url }}" alt="{{ publicite.produit.nom }}">{% else %}<div class="promo-placeholder"><i class="bi bi-image" aria-hidden="true"></i></div>{% endif %}
           <div class="promo-badge">SPONSORISÉ</div>
         </div>
         <div class="promo-card-content">
           <p class="promo-name">{{ publicite.produit.nom }}</p>
           <p class="promo-price-single">{{ publicite.produit.prix|format_prix }} GNF</p>
-          <p class="promo-seller">🏪 {{ publicite.vendeur.nom_boutique }}</p>
+          <p class="promo-seller"><i class="bi bi-shop" aria-hidden="true"></i> {{ publicite.vendeur.nom_boutique }}</p>
         </div>
       </a>
       {% endfor %}
@@ -137,7 +143,7 @@
             {% if produit.photo %}
               <img src="{{ produit.photo.url }}" alt="{{ produit.nom }}" class="product-image">
             {% else %}
-              <div class="product-image-placeholder">📦</div>
+              <div class="product-image-placeholder"><i class="bi bi-image" aria-hidden="true"></i></div>
             {% endif %}
 
             {% if produit.vendeur.statut == 'actif' %}
@@ -150,7 +156,7 @@
                 <span class="badge-promo">PROMO</span>
               {% endif %}
               {% if produit.vendeur.est_certifie %}
-                <span class="badge-verified badge-tiktok">✓ Certifié</span>
+                <span class="badge-verified badge-tiktok"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Certifié</span>
               {% endif %}
             </div>
           </div>
@@ -184,9 +190,9 @@
 
 <!-- Location & Seller -->
             <div class="product-seller">
-              <span class="seller-location">📍 {{ produit.vendeur.ville }}</span>
+              <span class="seller-location"><i class="bi bi-geo-alt" aria-hidden="true"></i> {{ produit.vendeur.ville }}</span>
               {% if produit.vendeur.est_certifie %}
-                <span class="seller-badge badge-tiktok">✓ Certifié</span>
+                <span class="seller-badge badge-tiktok"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Certifié</span>
               {% endif %}
             </div>
           </div>
@@ -197,7 +203,7 @@
 
     <!-- Aucun produit -->
     <div id="msg-aucun-produit" class="empty-state" style="display:none;">
-      <div class="empty-state-icon">🔍</div>
+      <div class="empty-state-icon"><i class="bi bi-search" aria-hidden="true"></i></div>
       <p class="empty-state-title">Aucun produit trouvé</p>
       <p class="empty-state-subtitle">Essayez avec d'autres mots-clés ou une autre ville</p>
     </div>

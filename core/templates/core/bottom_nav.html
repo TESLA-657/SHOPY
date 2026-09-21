@@ -38,6 +38,16 @@
         <span class="SHOPY-nav-label">Commandes</span>
       </a>
 
+      <a href="{% url 'messages_vendeur' %}" class="SHOPY-nav-item {% if active_url == 'messages_vendeur' %}active{% endif %}">
+        <div class="SHOPY-nav-icon-box">
+          <i class="bi bi-chat-dots-fill"></i>
+          {% if nb_messages_vendeur_non_lus|default:0 %}
+            <span class="SHOPY-nav-badge">{{ nb_messages_vendeur_non_lus|default:0 }}</span>
+          {% endif %}
+        </div>
+        <span class="SHOPY-nav-label">Messages</span>
+      </a>
+
       <a href="{% url 'dashboard_vendeur' %}" class="SHOPY-nav-item {% if active_url == 'dashboard_vendeur' %}active{% endif %}">
         <div class="SHOPY-nav-icon-box">
           <i class="bi bi-person-workspace"></i>
@@ -89,4 +99,114 @@
     {% endif %}
   </nav>
 </div>
+<!-- ===== Navigation gestuelle (mobile) =====
+     • Glisser vers la GAUCHE  -> retour à la page précédente
+     • TIRER vers le BAS       -> rafraîchir la page
+================================================================ -->
+<script>
+(function () {
+  if (window.__SHOPY_GESTURES_READY__) return;
+  window.__SHOPY_GESTURES_READY__ = true;
+
+  var SWIPE_X = 80;        // distance horizontale mini pour valider un swipe
+  var SWIPE_Y_MAX = 55;    // tolérance verticale pendant le swipe
+  var PULL_TRIGGER = 85;   // distance de tirage pour rafraîchir
+  var PULL_MAX = 120;      // butée visuelle
+
+  var startX = 0, startY = 0;
+  var armed = false, pulling = false, busy = false;
+
+  // Petite pastille visuelle pendant le tirage
+  var hint = document.createElement('div');
+  hint.id = 'shopy-gesture-hint';
+  hint.style.cssText = 'position:fixed;top:0;left:50%;transform:translate(-50%,-60px);' +
+    'z-index:99999;padding:8px 16px;border-radius:0 0 14px 14px;font:600 13px system-ui,sans-serif;' +
+    'color:#e6edf3;background:rgba(20,22,26,.92);border:1px solid rgba(255,255,255,.14);' +
+    'border-top:0;transition:transform .18s ease;pointer-events:none;';
+  hint.textContent = '↓ Tirer pour rafraîchir';
+
+  function mount() { if (document.body && !hint.parentNode) document.body.appendChild(hint); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
+  else mount();
+
+  function isInteractive(el) {
+    while (el && el !== document.body) {
+      var tag = (el.tagName || '').toLowerCase();
+      if (['input', 'textarea', 'select', 'button', 'a', 'form'].indexOf(tag) !== -1) return true;
+      if (el.isContentEditable) return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+
+  // Ignore les zones qui défilent déjà horizontalement
+  function inHScroll(el) {
+    while (el && el !== document.body) {
+      var s = window.getComputedStyle(el);
+      var ox = s.overflowX;
+      if ((ox === 'auto' || ox === 'scroll') && el.scrollWidth > el.clientWidth + 8) return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+
+  document.addEventListener('touchstart', function (e) {
+    if (busy || e.touches.length !== 1) { armed = false; return; }
+    var t = e.touches[0];
+    startX = t.clientX; startY = t.clientY;
+    armed = !isInteractive(e.target) && !inHScroll(e.target);
+    pulling = false;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function (e) {
+    if (!armed || e.touches.length !== 1) return;
+    var t = e.touches[0];
+    var dx = t.clientX - startX;
+    var dy = t.clientY - startY;
+
+    // TIRER VERS LE BAS (uniquement en haut de page)
+    if (dy > 12 && Math.abs(dx) < 60 && window.scrollY <= 0) {
+      pulling = true;
+      var dist = Math.min(dy, PULL_MAX);
+      hint.style.transform = 'translate(-50%,' + (dist - 46) + 'px)';
+      hint.textContent = dy >= PULL_TRIGGER ? '↻ Relâchez pour rafraîchir' : '↓ Tirer pour rafraîchir';
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', function (e) {
+    if (!armed) { pulling = false; return; }
+    var t = (e.changedTouches && e.changedTouches[0]) || null;
+    var dx = t ? t.clientX - startX : 0;
+    var dy = t ? t.clientY - startY : 0;
+    armed = false;
+
+    // Relâchement après un tirage
+    if (pulling) {
+      pulling = false;
+      hint.style.transform = 'translate(-50%,-60px)';
+      if (dy >= PULL_TRIGGER) {
+        busy = true;
+        hint.textContent = '↻ Actualisation…';
+        hint.style.transform = 'translate(-50%,6px)';
+        window.location.reload();
+      }
+      return;
+    }
+
+    // SWIPE VERS LA GAUCHE = RETOUR
+    if (dx < -SWIPE_X && Math.abs(dy) < SWIPE_Y_MAX) {
+      busy = true;
+      if (window.history.length > 1) window.history.back();
+      else window.location.href = '/';
+      setTimeout(function () { busy = false; }, 700);
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchcancel', function () {
+    armed = false; pulling = false;
+    hint.style.transform = 'translate(-50%,-60px)';
+  }, { passive: true });
+})();
+</script>
+
 {% endif %}

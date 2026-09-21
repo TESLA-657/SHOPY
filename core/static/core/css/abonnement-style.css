@@ -7,15 +7,15 @@
   --ab-bg: #0d1117;
   --ab-bg-2: #161b22;
   --ab-bg-3: #21262d;
-  --ab-card: rgba(255, 255, 255, 0.06);
-  --ab-card-2: rgba(255, 255, 255, 0.10);
-  --ab-border: rgba(255, 255, 255, 0.12);
-  --ab-border-2: rgba(255, 255, 255, 0.20);
+  --ab-card: rgba(248, 250, 252, 0.06);
+  --ab-card-2: rgba(248, 250, 252, 0.10);
+  --ab-border: rgba(248, 250, 252, 0.12);
+  --ab-border-2: rgba(248, 250, 252, 0.20);
   
   /* Texte */
-  --ab-text: rgba(255, 255, 255, 0.92);
-  --ab-text-2: rgba(255, 255, 255, 0.72);
-  --ab-text-muted: rgba(255, 255, 255, 0.50);
+  --ab-text: rgba(248, 250, 252, 0.92);
+  --ab-text-2: rgba(248, 250, 252, 0.72);
+  --ab-text-muted: rgba(248, 250, 252, 0.50);
   
   /* Accents */
   --ab-primary: #238636;
@@ -28,8 +28,8 @@
   --ab-pink: #db61a2;
   
   /* Ombres */
-  --ab-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --ab-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --ab-shadow: 0 8px 32px rgba(17, 24, 41, 0.4);
+  --ab-shadow-2: 0 4px 16px rgba(17, 24, 41, 0.3);
   --ab-shadow-glow: 0 0 30px var(--ab-primary-glow);
   
   /* Border radius */
@@ -188,7 +188,7 @@
 
 .ab-badge-warning {
   background: var(--ab-yellow);
-  color: #111;
+  color: #111827;
 }
 
 .ab-badge-danger {

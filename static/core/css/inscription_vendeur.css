@@ -11,7 +11,7 @@
   border: none;
   border-radius: 24px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(248, 250, 252, 0.96);
   box-shadow: 0 28px 70px rgba(15, 23, 42, 0.12);
 }
 .inscription-vendeur-card .card-body {
@@ -24,13 +24,13 @@
   padding: 0.45rem 1rem;
   border-radius: 999px;
   background: #16a34a;
-  color: #ffffff;
+  color: #f8fafc;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
 .inscription-vendeur-title {
-  color: #111827;
+  color: #111827827;
   margin-top: 1rem;
   margin-bottom: 0.65rem;
   font-size: 1.95rem;
@@ -43,7 +43,7 @@
 }
 .inscription-vendeur-card .form-label {
   font-weight: 700;
-  color: #111827;
+  color: #111827827;
 }
 .inscription-vendeur-card .form-control {
   border-radius: 14px;

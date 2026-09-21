@@ -1,17 +1,17 @@
 /* ===== INSCRIPTION VENDEUR - Premium Vendor Registration ===== */
 
 :root {
-  --primary: #28a745;
-  --primary-light: #20c997;
+  --primary: #059669;
+  --primary-light: #34d399;
   --primary-dark: #1a7f37;
-  --secondary: #3498db;
+  --secondary: #d97706;
   --accent: #e74c3c;
-  --text: #222;
+  --text: #111827827;
   --text-muted: #666;
-  --bg-card: #ffffff;
-  --glass: rgba(255, 255, 255, 0.95);
-  --shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  --shadow-hover: 0 30px 80px rgba(0, 0, 0, 0.25);
+  --bg-card: #f8fafc;
+  --glass: rgba(248, 250, 252, 0.95);
+  --shadow: 0 20px 60px rgba(17, 24, 41, 0.15);
+  --shadow-hover: 0 30px 80px rgba(17, 24, 41, 0.25);
   --transition: 0.3s ease;
 }
 
@@ -48,7 +48,7 @@ body::before {
   background: 
     radial-gradient(ellipse at 30% 20%, rgba(40, 167, 69, 0.2) 0%, transparent 50%),
     radial-gradient(ellipse at 70% 80%, rgba(52, 152, 219, 0.15) 0%, transparent 50%),
-    linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%);
+    linear-gradient(135deg, rgba(17, 24, 41, 0.6) 0%, rgba(17, 24, 41, 0.4) 100%);
   z-index: -1;
   pointer-events: none;
 }
@@ -176,11 +176,11 @@ body::after {
 .form-input {
   width: 100%;
   padding: 16px 20px;
-  border: 2px solid #e8e8e8;
+  border: 2px solid #cbd5e1;
   border-radius: 14px;
   font-size: 15px;
   color: var(--text);
-  background: #f8f9fa;
+  background: #f1f5f9;
   transition: all var(--transition);
 }
 
@@ -191,14 +191,14 @@ body::after {
 .form-input:focus {
   outline: none;
   border-color: var(--primary);
-  background: #fff;
+  background: #f8fafc;
   box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.15);
   transform: translateY(-2px);
 }
 
 .form-input:hover:not(:focus) {
   border-color: #d0d0d0;
-  background: #fff;
+  background: #f8fafc;
 }
 
 /* ===== BUTTON ===== */
@@ -281,7 +281,7 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(17, 24, 41, 0.7);
   z-index: 9999;
   align-items: center;
   justify-content: center;
@@ -375,6 +375,29 @@ body::after {
   }
 }
 
+/* ===== FORM INPUT FIX - Prevent background change on hover ===== */
+.form-input {
+  background: rgba(248, 250, 252, 0.85) !important;
+  transition: all 0.2s ease !important;
+}
+
+.form-input:hover {
+  background: rgba(248, 250, 252, 0.95) !important;
+}
+
+.form-input:focus {
+  background: rgba(248, 250, 252, 0.98) !important;
+}
+
+/* Dark mode for inputs */
+@media (prefers-color-scheme: dark) {
+  .form-input:hover,
+  .form-input:focus {
+    background: rgba(26, 26, 26, 0.95) !important;
+  }
+}
+/* ===== END FORM INPUT FIX ===== */
+
 /* ===== DARK MODE ===== */
 @media (prefers-color-scheme: dark) {
   :root {
@@ -414,8 +437,8 @@ body::after {
 
 /* ===== CONDITIONS SECTION ===== */
 .conditions-section {
-  background: linear-gradient(135deg, #fff9e6 0%, #fef3cd 100%);
-  border: 2px solid #ffc107;
+  background: linear-gradient(135deg, #f1f5f9 0%, #fef3c7 100%);
+  border: 2px solid #d97706;
   border-radius: 16px;
   padding: 20px;
   margin-top: 8px;
@@ -448,13 +471,13 @@ body::after {
   gap: 12px;
   cursor: pointer;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(248, 250, 252, 0.7);
   border-radius: 10px;
   transition: all 0.2s ease;
 }
 
 .condition-item:hover {
-  background: rgba(255, 255, 255, 1);
+  background: rgba(248, 250, 252, 1);
   transform: translateX(4px);
 }
 
@@ -469,7 +492,7 @@ body::after {
 
 .condition-text {
   font-size: 13px;
-  color: #495057;
+  color: #4b5563;
   line-height: 1.4;
 }
 
@@ -477,11 +500,11 @@ body::after {
 @media (prefers-color-scheme: dark) {
   .conditions-section {
     background: linear-gradient(135deg, #3d3800 0%, #4a4800 100%);
-    border-color: #ffc107;
+    border-color: #d97706;
   }
   
   .condition-item {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(17, 24, 41, 0.3);
   }
   
   .condition-text {

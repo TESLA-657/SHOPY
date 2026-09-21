@@ -9,14 +9,14 @@
   --sv-bg-2: #12121a;
   --sv-card: #16161f;
   --sv-card-hover: #1c1c28;
-  --sv-border: rgba(255, 255, 255, 0.08);
-  --sv-border-2: rgba(255, 255, 255, 0.15);
+  --sv-border: rgba(248, 250, 252, 0.08);
+  --sv-border-2: rgba(248, 250, 252, 0.15);
   
   /* Texte */
-  --sv-text: #ffffff;
-  --sv-text-2: rgba(255, 255, 255, 0.85);
-  --sv-text-3: rgba(255, 255, 255, 0.6);
-  --sv-text-muted: rgba(255, 255, 255, 0.45);
+  --sv-text: #f8fafc;
+  --sv-text-2: rgba(248, 250, 252, 0.85);
+  --sv-text-3: rgba(248, 250, 252, 0.6);
+  --sv-text-muted: rgba(248, 250, 252, 0.45);
   
   /* Rouge d'alerte */
   --sv-danger: #ef4444;
@@ -27,8 +27,8 @@
   --sv-success: #22c55e;
   
   /* Effets */
-  --sv-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --sv-shadow-2: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --sv-shadow: 0 8px 32px rgba(17, 24, 41, 0.5);
+  --sv-shadow-2: 0 4px 20px rgba(17, 24, 41, 0.4);
   
   /* Border radius */
   --sv-radius: 20px;

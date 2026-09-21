@@ -10,14 +10,14 @@
   --ca-bg-3: #1a1a24;
   --ca-card: #16161f;
   --ca-card-hover: #1c1c28;
-  --ca-border: rgba(255, 255, 255, 0.08);
-  --ca-border-2: rgba(255, 255, 255, 0.15);
+  --ca-border: rgba(248, 250, 252, 0.08);
+  --ca-border-2: rgba(248, 250, 252, 0.15);
   
   /* Texte */
-  --ca-text: #ffffff;
-  --ca-text-2: rgba(255, 255, 255, 0.85);
-  --ca-text-3: rgba(255, 255, 255, 0.6);
-  --ca-text-muted: rgba(255, 255, 255, 0.45);
+  --ca-text: #f8fafc;
+  --ca-text-2: rgba(248, 250, 252, 0.85);
+  --ca-text-3: rgba(248, 250, 252, 0.6);
+  --ca-text-muted: rgba(248, 250, 252, 0.45);
   
   /* Accents principaux */
   --ca-primary: #22c55e;
@@ -26,13 +26,13 @@
   --ca-primary-subtle: rgba(34, 197, 94, 0.12);
   
   /* Couleurs par plan */
-  --ca-essentiel: #3b82f6;
+  --ca-essentiel: #059669;
   --ca-pro: #8b5cf6;
   --ca-business: #f59e0b;
   
   /* Effets */
-  --ca-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --ca-shadow-2: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --ca-shadow: 0 8px 32px rgba(17, 24, 41, 0.5);
+  --ca-shadow-2: 0 4px 20px rgba(17, 24, 41, 0.4);
   --ca-shadow-glow: 0 0 40px var(--ca-primary-glow);
   
   /* Border radius */
@@ -102,7 +102,7 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(248, 250, 252, 0.1), transparent);
   opacity: 0;
   transition: var(--ca-transition);
 }
@@ -234,7 +234,7 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(248, 250, 252, 0.2), transparent);
   transition: all 0.5s ease;
 }
 
@@ -272,7 +272,7 @@ body {
 .abonnement-plans-wrap .col-md-4:last-child .btn {
   background: linear-gradient(135deg, var(--ca-business), #d97706) !important;
   border: none !important;
-  color: #111 !important;
+  color: #111827 !important;
 }
 
 .abonnement-plans-wrap .col-md-4:last-child .btn:hover {
@@ -707,7 +707,7 @@ body {
 .abonnement-plans-wrap .col-md-4:nth-child(3) .btn-business {
   background: linear-gradient(135deg, var(--ca-business), #d97706) !important;
   border: none !important;
-  color: #111 !important;
+  color: #111827 !important;
 }
 
 .abonnement-plans-wrap .col-md-4:nth-child(3) .btn-business:hover {

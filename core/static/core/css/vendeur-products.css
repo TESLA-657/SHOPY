@@ -5,9 +5,9 @@
   --vp-card: rgba(255,255,255,0.92);
   --vp-card2: rgba(255,255,255,0.72);
   --vp-border: rgba(0,0,0,0.06);
-  --vp-text: #111827;
+  --vp-text: #111827827;
   --vp-muted: rgba(17,24,39,0.62);
-  --vp-primary: #28a745;
+  --vp-primary: #059669;
   --vp-primary2: #5b2d8e;
   --vp-danger: #e74c3c;
   --vp-warning: #f59e0b;
@@ -82,14 +82,14 @@
   letter-spacing: .2px;
   padding: 6px 10px;
   border-radius: 999px;
-  color: #fff;
+  color: #f8fafc;
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
-.vp-badge.on{ background: #28a745; }
+.vp-badge.on{ background: #059669; }
 .vp-badge.off{ background: rgba(17,24,39,0.55); }
 .vp-badge.zero{ background: var(--vp-danger); }
-.vp-badge.low{ background: var(--vp-warning); color:#111; }
+.vp-badge.low{ background: var(--vp-warning); color:#111827; }
 .vp-badge.ok{ background: var(--vp-primary); }
 
 .vp-body{
@@ -122,7 +122,7 @@
 
 .vp-price{
   font-weight: 1000;
-  color: #28a745;
+  color: #059669;
 }
 
 .vp-actions{

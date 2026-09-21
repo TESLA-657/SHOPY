@@ -1,16 +1,21 @@
 from django.urls import path, include
 from django.shortcuts import render
+from django.http import HttpResponse
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from . import views
+from core import views
 from .views_shopy_features import (
     vendeurs_certifies, demander_certification, noter_vendeur, admin_certifier_vendeur,
     mes_garanties, demander_remboursement, admin_garanties, traiter_garantie,
     flash_sales, detail_flash_sale, creer_flash_sale, acheter_flash_sale, api_flash_sales,
     alertes_prix, creer_alerte, supprimer_alerte, assistant_ia_vendeur, assistant_ia_chat
 )
-from django.conf import settings
-from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
+from django.contrib.sitemaps import Sitemap
+from core.models import Produit, Vendeur, Commande
 
+# Router API REST
 router = DefaultRouter()
 router.register(r'clients', views.ClientViewSet)
 router.register(r'vendeurs', views.VendeurViewSet)
@@ -19,10 +24,48 @@ router.register(r'commandes', views.CommandeViewSet)
 router.register(r'abonnements', views.AbonnementViewSet)
 router.register(r'notifications', views.NotificationViewSet)
 
+# Sitemap
+class StaticSitemap(Sitemap):
+    changefreq = 'weekly'
+    priority = 0.8
+    
+    def items(self):
+        return ['Welcome', 'catalogue', 'cgu', 'confidentialite', 'cgv', 'contact']
+    
+    def location(self, item):
+        from django.urls import reverse
+        return reverse(item)
+
+class ProduitSitemap(Sitemap):
+    changefreq = 'weekly'
+    priority = 0.6
+    
+    def items(self):
+        return Produit.objects.filter(actif=True)[:100]
+    
+    def lastmod(self, obj):
+        return obj.date_creation
+
+class VendeurSitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.5
+    
+    def items(self):
+        return Vendeur.objects.filter(actif=True)[:50]
+    
+    def lastmod(self, obj):
+        return obj.date_inscription
+
+sitemaps = {
+    'static': StaticSitemap,
+    'produits': ProduitSitemap,
+    'vendeurs': VendeurSitemap,
+}
+
 urlpatterns = [
     path('api/', include(router.urls)),
     
-# Page d'accueil
+    # Page d'accueil
     path('', views.welcome, name='Welcome'),
     
     # Pages légales et contact
@@ -30,6 +73,15 @@ urlpatterns = [
     path('confidentialite/', lambda request: render(request, 'core/politique_confidentialite.html'), name='confidentialite'),
     path('cgv/', lambda request: render(request, 'core/cgv.html'), name='cgv'),
     path('contact/', lambda request: render(request, 'core/contact.html'), name='contact'),
+    
+    # Sitemap et robots.txt
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
+    path('robots.txt', lambda request: HttpResponse(
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Sitemap: https://shopy-guinee.com/sitemap.xml\n",
+        content_type="text/plain"
+    ), name='robots'),
     
     # Authentication Vendeur
     path('inscription-vendeur/', views.inscription_vendeur, name='inscription_vendeur'),
@@ -39,6 +91,7 @@ urlpatterns = [
     # Dashboard Vendeur
     path('mon_espace_vendeur/', views.dashboard_vendeur, name='dashboard_vendeur'),
     path('mon_espace_vendeur/fidelite/activer/', views.activer_fidelite_vendeur, name='activer_fidelite_vendeur'),
+    path('mon_espace_vendeur/fidelite/desactiver/', views.desactiver_fidelite_vendeur, name='desactiver_fidelite_vendeur'),
     path('mon_espace_vendeur/publicite/', views.creer_publicite, name='creer_publicite'),
     path('mes-produits/', views.liste_produits_vendeur, name='liste_produits_vendeur'),
     path('mes-commandes/', views.commandes_vendeur, name='commandes_vendeur'),
@@ -110,7 +163,8 @@ urlpatterns = [
     path('inscription-client/', views.inscription_client, name='inscription_client'),
     path('connexion-client/', views.connexion_client, name='connexion_client'),
     path('mot-de-passe-oublie/', views.mot_de_passe_oublie, name='mot_de_passe_oublie'),
-    path('reinitialiser-mot-de-passe/<str:uidb64>/<str:token>/', views.reinitialiser_mot_de_passe, name='reinitialiser_mot_de_passe'),
+    path('reinitialiser-mot-de-passe/', views.reinitialiser_mot_de_passe, name='reinitialiser_mot_de_passe'),
+    path('resend-verification-code/', views.resend_verification_code, name='resend_verification_code'),
     path('mon-compte/', views.espace_client, name='espace_client'),
     path('mon-compte/parametres/', views.parametres_client, name='parametres_client'),
     path('mon-compte/supprimer-historique/', views.supprimer_historique_commandes_client, name='supprimer_historique_commandes_client'),

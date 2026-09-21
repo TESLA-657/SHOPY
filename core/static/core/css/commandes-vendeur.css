@@ -6,11 +6,11 @@
   --cv-bg: #0d1117;
   --cv-bg-2: #161b22;
   --cv-bg-3: #21262d;
-  --cv-card: rgba(255, 255, 255, 0.06);
-  --cv-border: rgba(255, 255, 255, 0.12);
-  --cv-text: rgba(255, 255, 255, 0.92);
-  --cv-text-2: rgba(255, 255, 255, 0.72);
-  --cv-text-muted: rgba(255, 255, 255, 0.50);
+  --cv-card: rgba(248, 250, 252, 0.06);
+  --cv-border: rgba(248, 250, 252, 0.12);
+  --cv-text: rgba(248, 250, 252, 0.92);
+  --cv-text-2: rgba(248, 250, 252, 0.72);
+  --cv-text-muted: rgba(248, 250, 252, 0.50);
   
   --cv-primary: #238636;
   --cv-green: #3fb950;
@@ -22,7 +22,7 @@
   --cv-purple: #a371f7;
   --cv-orange: #f0883e;
   
-  --cv-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --cv-shadow: 0 8px 32px rgba(17, 24, 41, 0.4);
   --cv-radius: 16px;
   --cv-radius-sm: 12px;
 }
@@ -141,7 +141,7 @@
 .cv-stat-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--cv-shadow);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(248, 250, 252, 0.25);
 }
 
 .cv-stat-card::before {
@@ -223,7 +223,7 @@
 
 .cv-tab:hover {
   background: var(--cv-bg-3);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(248, 250, 252, 0.25);
   color: var(--cv-text);
 }
 
@@ -235,14 +235,14 @@
 
 .cv-tab-count {
   padding: 2px 8px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(248, 250, 252, 0.15);
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
 }
 
 .cv-tab.active .cv-tab-count {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(248, 250, 252, 0.25);
   color: white;
 }
 
@@ -336,7 +336,7 @@
 }
 
 .cv-commande-item:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(248, 250, 252, 0.03);
   border-color: var(--cv-border);
 }
 
@@ -450,7 +450,7 @@
 }
 
 .cv-select-form select:hover {
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(248, 250, 252, 0.25);
 }
 
 .cv-select-form select:focus {

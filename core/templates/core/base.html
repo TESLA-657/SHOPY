@@ -1,22 +1,58 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}SHOPY{% endblock %}</title>
+  
+  <!-- Meta tags SEO -->
+  <meta name="title" content="{% block meta_title %}SHOPY - La plateforme e-commerce en Guinée{% endblock %}">
+  <meta name="description" content="{% block meta_description %}SHOPY est la plateforme marketplace guinéenne.{% endblock %}">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="fr">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% block og_title %}SHOPY - Achetez et Vendez en Guinée{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}La plateforme e-commerce leader en Guinée.{% endblock %}">
+  <meta property="og:image" content="{% static 'core/images/log.png' %}">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}SHOPY - Achetez et Vendez en Guinée{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}La plateforme e-commerce leader en Guinée.{% endblock %}">
+  <meta name="twitter:image" content="{% static 'core/images/log.png' %}">
+
+  <title>{% block title %}SHOPY - La plateforme e-commerce en Guinée{% endblock %}</title>
   <!-- Favicon and Logo -->
-<link rel="icon" type="image/png" href="{% static 'core/images/shopify_icon.png' %}">
-  <link rel="apple-touch-icon" href="{% static 'core/images/shopify_icon.png' %}">
+<link rel="icon" type="image/png" href="{% static 'core/images/log.png' %}">
+  <link rel="apple-touch-icon" href="{% static 'core/images/log.png' %}">
   <!-- Bootstrap + icônes auto-hébergés (fiables, sans dépendance CDN) -->
   <link href="{% static 'core/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
   <link rel="stylesheet" href="{% static 'core/css/confirmations-payments.css' %}">
   <link rel="stylesheet" href="{% static 'core/css/base-inline.css' %}">
   <link rel="stylesheet" href="{% static 'core/css/bottom-nav-pro.css' %}">
+  <link rel="stylesheet" href="{% static 'core/css/_touch-feedback.css' %}">
   {% block extra_head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}has-bottom-nav{% endif %}" data-authenticated="{% if user.is_authenticated %}true{% else %}false{% endif %}">
+
+  <!-- Bandeau de consentement aux cookies -->
+  <div id="cookie-consent-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; color:#333; padding:15px 20px; box-shadow:0 -2px 10px rgba(0,0,0,0.1); z-index:10000; font-family:Arial,sans-serif;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div style="flex:1; min-width:300px;">
+        <strong style="color:#1a73e8;">🍪 Nous utilisons des cookies</strong>
+        <p style="margin:5px 0 0; font-size:14px; color:#666;">Nous utilisons des cookies essentiels pour le fonctionnement du site. En continuant à naviguer, vous acceptez notre utilisation des cookies.</p>
+        <a href="{% url 'confidentialite' %}" style="color:#1a73e8; font-size:12px; margin-top:5px; display:inline-block;">Lire la politique de confidentialité</a>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button id="cookie-accept-all" style="padding:8px 16px; background:#1a73e8; color:white; border:none; border-radius:4px; cursor:pointer; font-size:14px;">Tout accepter</button>
+        <button id="cookie-accept-essential" style="padding:8px 16px; background:transparent; color:#1a73e8; border:2px solid #1a73e8; border-radius:4px; cursor:pointer; font-size:14px;">Seulement essentiels</button>
+        <button id="cookie-close-banner" style="background:transparent; border:none; font-size:20px; cursor:pointer; padding:0 5px;" aria-label="Fermer">×</button>
+      </div>
+    </div>
+  </div>
 
   <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
@@ -99,20 +135,48 @@
   </script>
 
   <script>
-    // Appliquer le thème sauvegardé
+    // Gestion du bandeau de cookies
+    (function() {
+      const banner = document.getElementById('cookie-consent-banner');
+      const acceptAll = document.getElementById('cookie-accept-all');
+      const acceptEssential = document.getElementById('cookie-accept-essential');
+      const closeBanner = document.getElementById('cookie-close-banner');
+      const consentKey = 'SHOPY_cookie_consent';
+      
+      function showBanner() { banner.style.display = 'flex'; }
+      function hideBanner() { banner.style.display = 'none'; }
+      function saveConsent(type) { localStorage.setItem(consentKey, type); hideBanner(); }
+      
+      // Afficher si pas de consentement
+      if (!localStorage.getItem(consentKey)) {
+        showBanner();
+      }
+      
+      if (acceptAll) acceptAll.addEventListener('click', function() { saveConsent('all'); });
+      if (acceptEssential) acceptEssential.addEventListener('click', function() { saveConsent('essential'); });
+      if (closeBanner) closeBanner.addEventListener('click', function() { saveConsent('essential'); });
+    })();
+  </script>
+
+  <script>
+    // Thème sombre/clair
     const theme = localStorage.getItem('SHOPY-theme') || 'light';
     document.body.setAttribute('data-theme', theme);
-
     function toggleTheme() {
       const current = document.body.getAttribute('data-theme');
       const nouveau = current === 'light' ? 'dark' : 'light';
       document.body.setAttribute('data-theme', nouveau);
       localStorage.setItem('SHOPY-theme', nouveau);
-
       const btn = document.getElementById('theme-btn');
       if (btn) btn.textContent = nouveau === 'dark' ? '☀️ Mode clair' : '🌙 Mode sombre';
     }
   </script>
+  
+  <!-- Anti-spam : Champ honeypot caché -->
+  <div style="display:none;" aria-hidden="true">
+    <input type="text" name="_honey" tabindex="-1" autocomplete="off">
+  </div>
+  
   {% include 'core/bottom_nav.html' %}
 </body>
 </html>

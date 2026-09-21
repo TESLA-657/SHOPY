@@ -7,15 +7,15 @@
   --pv-bg: #0d1117;
   --pv-bg-2: #161b22;
   --pv-bg-3: #21262d;
-  --pv-card: rgba(255, 255, 255, 0.06);
-  --pv-card-2: rgba(255, 255, 255, 0.10);
-  --pv-border: rgba(255, 255, 255, 0.12);
-  --pv-border-2: rgba(255, 255, 255, 0.20);
+  --pv-card: rgba(248, 250, 252, 0.06);
+  --pv-card-2: rgba(248, 250, 252, 0.10);
+  --pv-border: rgba(248, 250, 252, 0.12);
+  --pv-border-2: rgba(248, 250, 252, 0.20);
   
   /* Texte */
-  --pv-text: rgba(255, 255, 255, 0.92);
-  --pv-text-2: rgba(255, 255, 255, 0.72);
-  --pv-text-muted: rgba(255, 255, 255, 0.50);
+  --pv-text: rgba(248, 250, 252, 0.92);
+  --pv-text-2: rgba(248, 250, 252, 0.72);
+  --pv-text-muted: rgba(248, 250, 252, 0.50);
   
   /* Accents */
   --pv-primary: #238636;
@@ -30,8 +30,8 @@
   --pv-blue: #388bfd;
   
   /* Ombres */
-  --pv-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --pv-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --pv-shadow: 0 8px 32px rgba(17, 24, 41, 0.4);
+  --pv-shadow-2: 0 4px 16px rgba(17, 24, 41, 0.3);
   --pv-shadow-glow: 0 0 30px var(--pv-primary-glow);
   --pv-shadow-purple: 0 0 25px rgba(124, 63, 212, 0.4);
   
@@ -86,7 +86,7 @@
 }
 
 .account-stats-label {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(248, 250, 252, 0.6);
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -387,7 +387,7 @@
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(17, 24, 41, 0.8);
   z-index: 9999;
   align-items: center;
   justify-content: center;

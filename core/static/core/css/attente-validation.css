@@ -1,16 +1,16 @@
 /* ===== ATTENTE VALIDATION - Premium Waiting Page ===== */
 
 :root {
-  --primary: #28a745;
-  --primary-light: #20c997;
+  --primary: #059669;
+  --primary-light: #34d399;
   --primary-dark: #1a7f37;
   --secondary: #3498db;
   --accent: #f39c12;
-  --text: #222;
+  --text: #111827827;
   --text-muted: #666;
-  --bg-card: #ffffff;
-  --glass: rgba(255, 255, 255, 0.95);
-  --shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  --bg-card: #f8fafc;
+  --glass: rgba(248, 250, 252, 0.95);
+  --shadow: 0 15px 40px rgba(17, 24, 41, 0.12);
   --transition: 0.3s ease;
 }
 
@@ -47,7 +47,7 @@ body::before {
   background: 
     radial-gradient(ellipse at 30% 30%, rgba(40, 167, 69, 0.15) 0%, transparent 50%),
     radial-gradient(ellipse at 70% 70%, rgba(52, 152, 219, 0.1) 0%, transparent 50%),
-    linear-gradient(135deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.35) 100%);
+    linear-gradient(135deg, rgba(17, 24, 41, 0.55) 0%, rgba(17, 24, 41, 0.35) 100%);
   z-index: -1;
   pointer-events: none;
 }
