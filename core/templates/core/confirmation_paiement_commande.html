@@ -3,7 +3,37 @@
 {% load static %}
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/confirmations-payments.css' %}">
+<!-- Structure des cartes + palette verte/or SHOPY : ce sont les memes feuilles que
+     le panier et les pages de paiement (payer_orange_money, payer_mobile_money,
+     payer_livraison). Sans elles, .catalogue-container / .page-shell / .page-content
+     / .section-card n'ont aucune definition et la carte s'affiche a nu. -->
+<link rel="stylesheet" href="{% static 'core/css/catalogue-style.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/panier-paiement-palette-shopy.css' %}">
+
+  <link rel="stylesheet" href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
 <style>
+
+/* Palette SHOPY : vert #2E8B62 / or #C5A059 sur fond sombre, identique au
+   panier et aux autres pages du tunnel de paiement. */
+:root{
+  --shopy-green:#2E8B62;
+  --shopy-green-light:#55A77E;
+  --shopy-gold:#C5A059;
+  --shopy-text:#F3EFE7;
+  --shopy-text-soft:#C2CBC5;
+  --shopy-border:#314138;
+  --shopy-border-strong:#47594F;
+  --shopy-surface:#1B2822;
+}
+
+/* Bootstrap declare text-muted / text-success / text-danger / text-warning en
+   !important : on redefinit ses variables au lieu de lutter avec !important. */
+body{
+  --bs-success-rgb:85, 167, 126;
+  --bs-danger-rgb:214, 91, 74;
+  --bs-warning-rgb:197, 160, 89;
+  --bs-secondary-color:#C2CBC5;
+}
 
 .confirmation-hero{
   position:relative;
@@ -17,7 +47,7 @@
   left:-50%;
   width:200%;
   height:200%;
-  background:radial-gradient(circle, rgba(40,167,69,0.15) 0%, transparent 70%);
+  background:radial-gradient(circle, rgba(46,139,98,0.18) 0%, transparent 70%);
   animation:pulse 3s ease-in-out infinite;
 }
 
@@ -30,44 +60,43 @@
   width:120px;
   height:120px;
   border-radius:50%;
-  background:linear-gradient(135deg, #28a745, #20c997);
+  background:linear-gradient(135deg, var(--shopy-green-light), var(--shopy-green));
+  border:1px solid rgba(197,160,89,0.35);
   display:flex;
   align-items:center;
   justify-content:center;
-  margin:0 auto 24px;
-  box-shadow:0 10px 40px rgba(40,167,69,0.4);
-  animation:scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin:0 auto 20px;
+  box-shadow:0 8px 26px rgba(8,12,10,0.45);
+  animation:scaleIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes scaleIn{
-  from{ transform:scale(0); }
+  from{ transform:scale(0.7); }
   to{ transform:scale(1); }
 }
 
+/* Le crochet reste visible meme si l'animation d'entree ne joue pas :
+   pas d'opacity:0 dans l'etat de base. */
 .success-checkmark span{
   font-size:56px;
-  color:#fff;
-  animation:checkDraw 0.4s 0.3s ease-out forwards;
-  opacity:0;
-}
-
-@keyframes checkDraw{
-  to{ opacity:1; }
+  color:var(--shopy-text);
+  line-height:1;
 }
 
 .confirmation-details-card{
-  background:rgba(255,255,255,0.95);
-  border-radius:16px;
-  padding:24px;
-  margin-top:24px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.08);
+  background:var(--shopy-surface);
+  border:1px solid var(--shopy-border);
+  border-radius:8px;
+  padding:20px;
+  margin-top:20px;
 }
 
 .detail-row{
   display:flex;
   justify-content:space-between;
+  gap:12px;
   padding:12px 0;
-  border-bottom:1px solid rgba(0,0,0,0.06);
+  border-bottom:1px solid var(--shopy-border);
 }
 
 .detail-row:last-child{
@@ -75,25 +104,26 @@
 }
 
 .detail-label{
-  color:#666;
+  color:var(--shopy-text-soft);
   font-weight:500;
 }
 
 .detail-value{
   font-weight:700;
-  color:#1a1a2e;
+  color:var(--shopy-text);
+  text-align:right;
 }
 
 .next-steps-card{
-  background:linear-gradient(135deg, rgba(40,167,69,0.08), rgba(32,201,151,0.05));
-  border-radius:16px;
-  padding:20px;
-  margin-top:20px;
-  border:1px solid rgba(40,167,69,0.2);
+  background:rgba(46,139,98,0.10);
+  border:1px solid rgba(46,139,98,0.30);
+  border-radius:8px;
+  padding:18px;
+  margin-top:18px;
 }
 
 .next-steps-card h5{
-  color:#28a745;
+  color:var(--shopy-green-light);
   font-weight:700;
   margin-bottom:12px;
 }
@@ -101,7 +131,7 @@
 .next-steps-card ul{
   margin:0;
   padding-left:20px;
-  color:#555;
+  color:var(--shopy-text-soft);
 }
 
 .next-steps-card li{
@@ -111,40 +141,64 @@
 .action-buttons{
   display:flex;
   gap:12px;
-  margin-top:24px;
+  margin-top:20px;
 }
 
 .btn-continue{
   flex:1;
-  background:linear-gradient(135deg, #28a745, #20c997);
+  background:var(--shopy-green);
+  border:1px solid var(--shopy-green-light);
   color:#fff;
   font-weight:700;
   padding:14px 24px;
-  border-radius:12px;
+  border-radius:8px;
   text-align:center;
-  transition:all 0.18s ease-out;
+  text-decoration:none;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
 }
 
+/* Pas de deplacement au survol : le retour haptique est reserve au tap. */
 .btn-continue:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 25px rgba(40,167,69,0.4);
+  background:var(--shopy-green-light);
+  border-color:#78C49D;
   color:#fff;
 }
 
 .btn-track{
-  background:#fff;
-  color:#28a745;
+  background:var(--shopy-surface);
+  color:var(--shopy-text-soft);
   font-weight:700;
   padding:14px 24px;
-  border-radius:12px;
+  border-radius:8px;
   text-align:center;
-  border:2px solid #28a745;
-  transition:all 0.18s ease-out;
+  border:1px solid var(--shopy-border-strong);
+  text-decoration:none;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
 }
 
 .btn-track:hover{
-  background:#28a745;
-  color:#fff;
+  background:var(--shopy-surface);
+  color:var(--shopy-text);
+  border-color:var(--shopy-gold);
+}
+
+/* Lien de retour : meme pastille que les autres pages du tunnel de paiement. */
+.ret{
+  display:inline-block;
+  padding:9px 14px;
+  color:var(--shopy-text-soft);
+  background:var(--shopy-surface);
+  border:1px solid var(--shopy-border);
+  border-radius:8px;
+  font-size:13px;
+  font-weight:600;
+  text-decoration:none;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.ret:hover{
+  color:var(--shopy-text);
+  border-color:var(--shopy-gold);
 }
 
 /* Responsive */
@@ -165,13 +219,17 @@
   <div class="page-content">
     <div class="section-card mx-auto" style="max-width:520px;">
       
+      <!-- Padding interne de la carte : meme structure que le panier
+           et les pages de paiement -->
+      <div class="section-card-inner">
+
       <!-- Hero Section -->
-      <div class="confirmation-hero text-center" style="position:relative; padding: 40px 20px;">
+      <div class="confirmation-hero text-center" style="position:relative;">
         <div class="success-checkmark">
           <span>✓</span>
         </div>
         
-        <h2 class="fw-bold" style="color:#28a745; font-size:28px;">
+        <h2 class="fw-bold" style="color:var(--shopy-green-light); font-size:28px;">
           Paiement envoyé !
         </h2>
         <p class="text-muted mt-2" style="font-size:16px;">
@@ -182,7 +240,7 @@
 <!-- Details Card -->
       <div class="confirmation-details-card">
         <div class="detail-row">
-          <span class="detail-label">📦 Statut</span>
+          <span class="detail-label"><i class="bi bi-box-seam" aria-hidden="true"></i> Statut</span>
           <span class="detail-value 
             {% if commande.statut == 'acceptee' %}text-success
             {% elif commande.statut == 'refusee' %}text-danger
@@ -193,29 +251,29 @@
           </span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">👤 Vendeur</span>
+          <span class="detail-label"><i class="bi bi-person-fill" aria-hidden="true"></i> Vendeur</span>
           <span class="detail-value">{{ commande.vendeur.nom_boutique|default:"Boutique" }}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">🛒 Produit</span>
+          <span class="detail-label"><i class="bi bi-cart3" aria-hidden="true"></i> Produit</span>
           <span class="detail-value">{{ commande.produit.nom|default:"Produit" }}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">📝 Quantité</span>
+          <span class="detail-label"><i class="bi bi-card-text" aria-hidden="true"></i> Quantité</span>
           <span class="detail-value">{{ commande.quantite|default:1 }}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">💳 Montant</span>
-          <span class="detail-value" style="color:#28a745;">{{ commande.prix_total|floatformat:0 }} GNF</span>
+          <span class="detail-label"><i class="bi bi-credit-card-2-front" aria-hidden="true"></i> Montant</span>
+          <span class="detail-value" style="color:var(--shopy-gold);">{{ commande.prix_total|floatformat:0 }} GNF</span>
         </div>
       </div>
 
       <!-- Next Steps -->
       <div class="next-steps-card">
-        <h5>📋 Prochaines étapes</h5>
+        <h5><i class="bi bi-list-check" aria-hidden="true"></i> Prochaines étapes</h5>
         <ul>
           <li>Le vendeur a été notifié par email</li>
-          <li>II va vérifier votre paiement et accepter votre commande</li>
+          <li>Il va vérifier votre paiement et accepter votre commande</li>
           <li>Vous recevrez une confirmation dès que votre commande sera acceptée</li>
         </ul>
       </div>
@@ -223,7 +281,7 @@
 <!-- Action Buttons -->
       <div class="action-buttons">
         <a href="{% url 'catalogue' %}" class="btn-continue">
-          🛍️ Commander d'autres produits
+          <i class="bi bi-bag-plus" aria-hidden="true"></i> Commander d'autres produits
         </a>
       </div>
 
@@ -231,17 +289,18 @@
       {% if commande %}
       <div class="text-center mt-4">
         <a href="{% url 'telecharger_facture' commande.pk %}" class="btn-track" style="display:inline-block; text-decoration:none;" target="_blank">
-          📄 Télécharger la facture
+          <i class="bi bi-file-earmark-text" aria-hidden="true"></i> Télécharger la facture
         </a>
       </div>
       {% endif %}
 
       <div class="text-center mt-3">
-        <a href="{% url 'espace_client' %}" class="ret" style="color:#666;">
+        <a href="{% url 'espace_client' %}" class="ret">
           ← Voir mes commandes
         </a>
       </div>
 
+      </div><!-- /.section-card-inner -->
     </div>
   </div>
 </div>

@@ -1,0 +1,237 @@
+/* ============================================
+   PANIER & PAIEMENT — PALETTE SHOPY (surcharge)
+   ============================================
+   Surcharge chargee par le parcours continu :
+       panier -> paiement Orange / Mobile Money / Livraison
+
+   Objectif : la meme palette verte/or que le catalogue et l'accueil,
+   afin qu'aucun ecart chromatique n'apparaisse entre le moment ou le
+   client choisit son mode de paiement et la confirmation.
+
+   Meme strategie que le catalogue : on surcharge sans toucher a
+   catalogue-style.css, partage avec d'autres pages.
+   ============================================ */
+
+:root {
+  --primary-color:  #2E8B62;
+  --primary-light:  #55A77E;
+  --primary-dark:   #1F6647;
+  --secondary-color:#C5A059;   /* or : accent unique */
+  --accent-color:   #C5A059;
+  --accent-green:   #2E8B62;
+
+  --text-primary:   #F3EFE7;
+  --text-secondary: #C2CBC5;
+  --text-light:     #8D9B93;
+
+  --bg-primary:     #0E1512;
+  --bg-secondary:   #151F1A;
+  --bg-card:        #151F1A;
+  --bg-elevated:    #1B2822;
+
+  --border-light:   #314138;
+  --border-strong:  #47594F;
+
+  --border-radius:  8px;
+  --shadow-light:   0 4px 14px rgba(8, 12, 10, 0.35);
+  --shadow-medium:  0 10px 26px rgba(8, 12, 10, 0.42);
+  --shadow-hover:   0 14px 32px rgba(8, 12, 10, 0.5);
+  --shadow-glow:    none;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: Calibri, "Segoe UI", sans-serif;
+}
+
+.cart-container,
+.page-shell,
+.catalogue-container { background: var(--bg-primary); }
+
+/* ---------- Cartes generiques ---------- */
+.section-card,
+.cart-items,
+.vendor-section,
+.info-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  color: var(--text-primary);
+}
+
+/* ---------- En-tetes ---------- */
+.cart-header,
+.promos-header { border-bottom: 1px solid var(--border-light); }
+.cart-header h1,
+.page-title { color: var(--text-primary); }
+
+/* ---------- Separateur vendeur ---------- */
+.vendor-header {
+  background: transparent;
+  border-bottom: 1px solid var(--border-light);
+}
+.vendor-info { color: var(--text-primary); }
+.vendor-location,
+.product-promo { color: var(--text-secondary); }
+
+.vendor-badge {
+  color: var(--primary-light);
+  background: rgba(46, 139, 98, 0.16);
+  border: 1px solid rgba(46, 139, 98, 0.4);
+  border-radius: 4px;
+}
+
+/* ---------- Ligne produit ---------- */
+.cart-product {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius);
+}
+.cart-product:hover { border-color: var(--border-strong); }
+
+.product-name { color: var(--text-primary); }
+
+/* Prix : l'or, couleur d'accent unique */
+.current-price,
+.product-price { color: var(--secondary-color); }
+.old-price { color: var(--text-light); }
+
+.promo-badge {
+  color: #1A1206;
+  background: var(--secondary-color);
+}
+
+.product-placeholder {
+  background: var(--bg-elevated);
+  color: var(--text-light);
+}
+.product-image { background: var(--bg-elevated); }
+
+/* ---------- Panier vide ---------- */
+.empty-cart {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius);
+  color: var(--text-secondary);
+}
+.empty-cart-icon { color: var(--primary-light); }
+
+.btn-continue-shopping {
+  color: var(--text-primary);
+  background: var(--primary-color);
+  border: 1px solid var(--primary-light);
+  border-radius: var(--border-radius);
+}
+.btn-continue-shopping:hover {
+  background: var(--primary-light);
+  color: #fff;
+}
+
+/* ---------- Alertes ---------- */
+.alert-custom {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+}
+.alert-error,
+.alert-danger {
+  border-left-color: #D65B4A;
+  color: #F0A092;
+}
+.alert-success {
+  border-left-color: var(--primary-light);
+  color: var(--primary-light);
+}
+
+/* ---------- Boutons ---------- */
+.page-action-btn.primary,
+.submit-btn,
+.checkout-btn {
+  color: #fff;
+  background: var(--primary-color);
+  border: 1px solid var(--primary-light);
+  border-radius: var(--border-radius);
+}
+.page-action-btn.primary:hover,
+.submit-btn:hover,
+.checkout-btn:hover {
+  background: var(--primary-light);
+  border-color: #78C49D;
+  /* Pas de zoom au survol : le retour haptique est reserve au tap. */
+  transform: none;
+}
+
+.page-action-btn.secondary {
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--border-radius);
+}
+.page-action-btn.secondary:hover {
+  color: var(--text-primary);
+  border-color: var(--secondary-color);
+}
+
+/* ---------- PAIEMENT : cartes d'information ----------
+   Ces cartes sont blanches avec du texte sombre (cf. styles inline
+   des templates). On les repasse en vert sans toucher aux templates. */
+.info-card {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-light) !important;
+  color: var(--text-primary) !important;
+}
+.info-card h3 {
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-light) !important;
+}
+.info-card p,
+.info-card p strong { color: var(--text-secondary) !important; }
+
+.form-label { color: var(--text-secondary) !important; }
+.form-control {
+  color: var(--text-primary) !important;
+  background: var(--bg-elevated) !important;
+  border-color: var(--border-light) !important;
+}
+.form-control::placeholder { color: var(--text-light) !important; }
+
+.vendor-number,
+.delivery-note {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-light) !important;
+  border-left: 3px solid var(--secondary-color) !important;
+  color: var(--text-secondary) !important;
+}
+.vendor-number p,
+.delivery-note p { color: var(--text-secondary) !important; }
+.vendor-number strong { color: var(--secondary-color) !important; }
+
+/* ---------- En-tete de paiement ---------- */
+.payment-header { border-radius: var(--border-radius) !important; }
+.payment-header h1 { color: #fff; }
+
+/* ---------- Champs de quantite / suppression ---------- */
+.quantity-control,
+.qty-btn {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  border-radius: 6px;
+}
+.qty-btn:hover { border-color: var(--primary-color); }
+
+.remove-item,
+.delete-btn {
+  color: #D65B4A;
+  background: transparent;
+  border: 1px solid transparent;
+}
+.remove-item:hover,
+.delete-btn:hover {
+  border-color: #D65B4A;
+  background: rgba(214, 91, 74, 0.12);
+}
