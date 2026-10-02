@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   {% load static %}
@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inscription Vendeur — SHOPY</title>
   <link href="{% static 'core/css/inscription_vendeur.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'core/css/auth-palette-shopy.css' %}">
+  <link href="{% static 'core/css/password-toggle.css' %}" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
 </head>
 <body>
 
@@ -14,7 +18,7 @@
     
     <!-- Header -->
     <div class="register-header">
-      <div class="register-icon">🏪</div>
+      <div class="register-icon"><i class="bi bi-shop" aria-hidden="true"></i></div>
       <h4 class="register-title">Ouvrir ma boutique</h4>
       <p class="register-subtitle">Remplissez les informations pour commencer à vendre</p>
     </div>
@@ -107,17 +111,39 @@
 <!-- CAPTCHA Section -->
       <div class="captcha-section">
         <label class="form-label">Vérification de sécurité</label>
-        <p class="captcha-question">{{ captcha_question }}</p>
+        <p class="captcha-question" id="captcha-question">{{ captcha_question }}</p>
         <input 
           type="text" 
           name="captcha_answer" 
           id="id_captcha_answer" 
           class="form-input" 
           placeholder="Entrez la réponse (ex: 7)" 
+          inputmode="numeric"
+          autocomplete="off"
           required
         >
-        <button type="button" class="captcha-refresh" onclick="refreshCaptcha()">🔄 Nouvelle question</button>
+        <button type="button" class="captcha-refresh" onclick="refreshCaptcha()"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Nouvelle question</button>
       </div>
+      <script>
+        // Demande une question neuve au serveur, sans recharger la page
+        // (un rechargement ferait perdre tout le formulaire deja rempli).
+        function refreshCaptcha() {
+          var zone = document.getElementById('captcha-question');
+          var champ = document.getElementById('id_captcha_answer');
+          var bouton = document.querySelector('.captcha-refresh');
+          if (bouton) { bouton.disabled = true; }
+          fetch("{% url 'renouveler_captcha' %}", {credentials: 'same-origin'})
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (d.question && zone) { zone.textContent = d.question; }
+              if (champ) { champ.value = ''; champ.focus(); }
+            })
+            .catch(function () {
+              // Reseau indisponible : la question affichee reste valable.
+            })
+            .then(function () { if (bouton) { bouton.disabled = false; } });
+        }
+      </script>
       
       <!-- Conditions Section -->
       <div class="conditions-section">
@@ -157,7 +183,59 @@
         </div>
       </div>
       
-      <button type="submit" class="register-button">
+      <!-- Formule de démarrage : essai gratuit ou abonnement payé -->
+      <div class="formule-section">
+        <h5 class="formule-title"><i class="bi bi-rocket-takeoff" aria-hidden="true"></i> Comment démarrer ?</h5>
+        <p class="formule-subtitle">Choisissez votre formule pour ouvrir votre boutique :</p>
+
+        <div class="formule-options">
+          <label class="formule-option active" id="formule-essai-label">
+            <input type="radio" name="formule" value="essai" checked onchange="toggleFormule('essai')">
+            <span class="formule-option-body">
+              <span class="formule-option-title">Démarrer mon essai gratuit</span>
+              <span class="formule-option-desc">30 jours pour tester SHOPY, sans paiement immédiat.</span>
+            </span>
+          </label>
+
+          <label class="formule-option" id="formule-paiement-label">
+            <input type="radio" name="formule" value="paiement" onchange="toggleFormule('paiement')">
+            <span class="formule-option-body">
+              <span class="formule-option-title">Payer un abonnement maintenant</span>
+              <span class="formule-option-desc">Activez directement un plan payant (vérification admin).</span>
+            </span>
+          </label>
+        </div>
+
+        <div id="formule-paiement-fields" class="formule-paiement">
+          <div class="form-group">
+            <label class="form-label" for="id_plan">Plan d'abonnement</label>
+            <select name="plan" id="id_plan" class="form-input">
+              <option value="">-- Choisir un plan --</option>
+              {% for p in plans %}
+              <option value="{{ p.nom }}">{{ p.nom|upper }} — {{ p.prix|floatformat:0 }} GNF / mois</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="id_numero_paiement">Numéro utilisé pour le paiement</label>
+            <input type="text" name="numero_paiement" id="id_numero_paiement" class="form-input" placeholder="+224 6XX XX XX XX">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="id_reference">Référence du paiement (optionnel)</label>
+            <input type="text" name="reference" id="id_reference" class="form-input" placeholder="Ex: OM2026041500123">
+          </div>
+
+          <p class="formule-hint">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            Envoyez le montant du plan au <strong>+224 612 97 16 10</strong> (Orange Money / Mobile Money),
+            puis indiquez le numéro utilisé. L'admin reçoit votre demande de boutique et le paiement en même temps.
+          </p>
+        </div>
+      </div>
+
+      <button type="submit" class="register-button" id="register-submit-btn">
         Démarrer mon essai gratuit
       </button>
     </form>
@@ -183,7 +261,7 @@
 <!-- Error Popup -->
 <div id="popup-overlay" class="popup-overlay">
   <div class="popup-content">
-    <div class="popup-icon">❌</div>
+    <div class="popup-icon"><i class="bi bi-x-circle-fill" aria-hidden="true"></i></div>
     <h5 class="popup-title">Erreur</h5>
     <p id="popup-message" class="popup-message"></p>
     <button 
@@ -204,6 +282,38 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+<!-- Choix de la formule : essai gratuit ou paiement immédiat -->
+<script>
+  function toggleFormule(mode) {
+    var estPaiement = (mode === 'paiement');
+    var fields = document.getElementById('formule-paiement-fields');
+    var essaiLabel = document.getElementById('formule-essai-label');
+    var paiementLabel = document.getElementById('formule-paiement-label');
+    var submitBtn = document.getElementById('register-submit-btn');
+    var plan = document.getElementById('id_plan');
+    var num = document.getElementById('id_numero_paiement');
+
+    if (fields) { fields.classList.toggle('active', estPaiement); }
+    if (essaiLabel) { essaiLabel.classList.toggle('active', !estPaiement); }
+    if (paiementLabel) { paiementLabel.classList.toggle('active', estPaiement); }
+    if (submitBtn) {
+      submitBtn.textContent = estPaiement
+        ? 'Payer et ouvrir ma boutique'
+        : 'Démarrer mon essai gratuit';
+    }
+    if (plan) { plan.required = estPaiement; }
+    if (num) { num.required = estPaiement; }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var checked = document.querySelector('input[name="formule"]:checked');
+    toggleFormule(checked && checked.value === 'paiement' ? 'paiement' : 'essai');
+  });
+</script>
+
+<!-- Afficher / masquer le mot de passe (icône œil) -->
+<script src="{% static 'core/js/password-toggle.js' %}"></script>
 
 </body>
 </html>

@@ -102,4 +102,43 @@ class ProduitForm(forms.ModelForm):
         self.fields['prix_promo'].required = False
         self.fields['jours_promo'].required = False
         self.fields['description'].required = False
-        
+
+    def clean(self):
+        """
+        Rend la promotion cohérente : une promotion ne peut être activée
+        qu'avec un prix promo valide (strictement inférieur au prix normal).
+        Si la case est décochée, les champs de promo sont remis à zéro afin
+        que « Mes produits » et le catalogue affichent la même chose.
+        """
+        cleaned = super().clean()
+        promo = cleaned.get('promo')
+        prix = cleaned.get('prix')
+        prix_promo = cleaned.get('prix_promo')
+        jours_promo = cleaned.get('jours_promo')
+
+        if promo:
+            if prix_promo in (None, ''):
+                self.add_error(
+                    'prix_promo',
+                    "Renseignez le prix promo pour activer la promotion.",
+                )
+            else:
+                try:
+                    if prix is not None and float(prix_promo) >= float(prix):
+                        self.add_error(
+                            'prix_promo',
+                            "Le prix promo doit être inférieur au prix normal.",
+                        )
+                except (TypeError, ValueError):
+                    self.add_error('prix_promo', "Prix promo invalide.")
+
+            if jours_promo not in (None, '') and jours_promo <= 0:
+                self.add_error(
+                    'jours_promo',
+                    "La durée de la promotion doit être supérieure à 0 jour.",
+                )
+        else:
+            cleaned['prix_promo'] = None
+            cleaned['jours_promo'] = None
+
+        return cleaned

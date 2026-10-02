@@ -4,9 +4,9 @@
 
 :root {
   /* Palette principale - Dark Theme Premium */
-  --mp-bg: #0d1117;
-  --mp-bg-2: #161b22;
-  --mp-bg-3: #21262d;
+  --mp-bg: #12100E;
+  --mp-bg-2: #1B1815;
+  --mp-bg-3: #2B2723;
   --mp-card: rgba(248, 250, 252, 0.06);
   --mp-card-2: rgba(248, 250, 252, 0.10);
   --mp-border: rgba(248, 250, 252, 0.12);
@@ -18,14 +18,14 @@
   --mp-text-muted: rgba(248, 250, 252, 0.50);
   
   /* Accents */
-  --mp-primary: #238636;
-  --mp-primary-hover: #2ea043;
+  --mp-primary: #1E7A54;
+  --mp-primary-hover: #1E7A54;
   --mp-primary-glow: rgba(35, 134, 54, 0.4);
-  --mp-blue: #388bfd;
-  --mp-yellow: #d29922;
-  --mp-red: #f85149;
-  --mp-orange: #f0883e;
-  --mp-purple: #a371f7;
+  --mp-blue: #d97706;
+  --mp-yellow: #E0A526;
+  --mp-red: #B4552D;
+  --mp-orange: #d97706;
+  --mp-purple: #d97706;
   
   /* Ombres */
   --mp-shadow: 0 8px 32px rgba(17, 24, 41, 0.4);
@@ -38,7 +38,7 @@
   --mp-radius-full: 9999px;
   
   /* Transitions */
-  --mp-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --mp-transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform .12s cubic-bezier(.2,.8,.3,1);
 }
 
 /* ============================================
@@ -73,13 +73,9 @@
 }
 
 .mpc-header::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--mp-purple), var(--mp-blue), var(--mp-primary));
+  /* Barre decorative orange-verte supprimee : purely decorative,
+     elle n'apportait aucune information utile au vendeur. */
+  content: none;
 }
 
 .mpc-header-content {
@@ -109,7 +105,7 @@
   align-items: center;
   gap: 8px;
   padding: 14px 24px;
-  background: linear-gradient(135deg, var(--mp-primary), #1a7f2e);
+  background: linear-gradient(135deg, var(--mp-primary), #1E7A54);
   border: none;
   border-radius: var(--mp-radius);
   color: white;
@@ -617,7 +613,7 @@
 
 /* Badge Promo spécifique */
 .mpc-badge-promo {
-  background: linear-gradient(135deg, #f0883e, #e74c3c);
+  background: linear-gradient(135deg, #d97706, #e74c3c);
   color: white;
   font-weight: 700;
 }

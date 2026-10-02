@@ -113,6 +113,7 @@
   <!-- ===== GUIDE VENDEUR ===== -->
   <div class="manuel-section active" id="guide-vendeurs">
 
+    {% if not a_deja_une_boutique %}
 <div class="manuel-card">
       <h3>1️⃣ Créer son compte vendeur</h3>
       <div class="manuel-step"><span class="manuel-step-num">1</span><div>Cliquez sur <strong>« Vendre »</strong> depuis la page d'accueil, puis sur <strong>« Créer mon compte »</strong>.</div></div>
@@ -120,6 +121,7 @@
       <div class="manuel-step"><span class="manuel-step-num">3</span><div>Votre compte passe en <strong>« En attente de validation »</strong> : l'administrateur doit l'approuver avant que vous puissiez vendre.</div></div>
       <div class="manuel-step"><span class="manuel-step-num">4</span><div>Une fois validé, connectez-vous avec le nom de votre boutique et votre mot de passe : vous arrivez sur votre <strong>espace vendeur</strong>.</div></div>
     </div>
+    {% endif %}
 
     <div class="manuel-card">
       <h3>2️⃣ Ajouter un produit</h3>
@@ -198,7 +200,9 @@
   <div class="manuel-card" style="text-align:center;">
     <h3>Besoin d'aide ?</h3>
     <p>Consultez la page <a href="{% url 'contact' %}">Contact</a> ou écrivez à l'équipe SHOPY.</p>
+    {% if not a_deja_une_boutique %}
     <a href="{% url 'inscription_vendeur' %}" class="manuel-cta">🚀 Créer ma boutique</a>
+    {% endif %}
   </div>
 
 </div>

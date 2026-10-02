@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Créer mon compte — SHOPY</title>
   <link href="{% static 'core/css/inscription_client.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'core/css/auth-palette-shopy.css' %}">
+  <link href="{% static 'core/css/password-toggle.css' %}" rel="stylesheet">
 </head>
 <body>
 
@@ -57,13 +59,19 @@
       <div class="form-group">
         <label class="form-label" for="id_numero">Numéro WhatsApp</label>
         <input 
-          type="text" 
+          type="tel" 
           name="numero" 
           id="id_numero" 
           class="form-input" 
           placeholder="+224 6XX XX XX XX" 
+          inputmode="tel"
+          autocomplete="tel"
+          pattern="[0-9+ ().\-]{8,15}"
+          title="Uniquement des chiffres (ex : +224 612 000 000)"
+          maxlength="20"
           required
         >
+        <small class="form-hint">Chiffres uniquement. Le + et les espaces sont acceptés.</small>
       </div>
       
       <div class="form-group">
@@ -107,22 +115,87 @@
       <!-- CAPTCHA Section -->
       <div class="captcha-section">
         <label class="form-label">Vérification de sécurité</label>
-        <p class="captcha-question">{{ captcha_question }}</p>
+        <p class="captcha-question" id="captcha-question">{{ captcha_question }}</p>
         <input 
           type="text" 
           name="captcha_answer" 
           id="id_captcha_answer" 
           class="form-input" 
           placeholder="Entrez la réponse (ex: 7)" 
+          inputmode="numeric"
+          autocomplete="off"
           required
         >
         <button type="button" class="captcha-refresh" onclick="refreshCaptcha()">🔄 Nouvelle question</button>
       </div>
+      <script>
+        // Demande une question neuve au serveur, sans recharger la page
+        // (un rechargement ferait perdre tout le formulaire deja rempli).
+        function refreshCaptcha() {
+          var zone = document.getElementById('captcha-question');
+          var champ = document.getElementById('id_captcha_answer');
+          var bouton = document.querySelector('.captcha-refresh');
+          if (bouton) { bouton.disabled = true; }
+          fetch("{% url 'renouveler_captcha' %}", {credentials: 'same-origin'})
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (d.question && zone) { zone.textContent = d.question; }
+              if (champ) { champ.value = ''; champ.focus(); }
+            })
+            .catch(function () {
+              // Reseau indisponible : la question affichee reste valable.
+            })
+            .then(function () { if (bouton) { bouton.disabled = false; } });
+        }
+      </script>
       
       <button type="submit" class="register-button">
         Créer mon compte
       </button>
     </form>
+
+    <!--
+      Saisie du numéro : on refuse les lettres et symboles dès le clavier.
+      Le contrôle serveur (core/validators.py) reste la vraie sécurité :
+      ce bloc n'est qu'un confort pour l'utilisateur.
+    -->
+    <script>
+    (function () {
+      var champ = document.getElementById('id_numero');
+      if (!champ) return;
+
+      // Caractères autorisés : chiffres, + et séparateurs de lecture usuels
+      var autorises = /[0-9+ ().\-]/;
+
+      champ.addEventListener('keydown', function (e) {
+        if (e.key === 'Tab' || e.ctrlKey || e.metaKey || e.altKey) return;
+        if (e.key.length === 1 && !autorises.test(e.key)) {
+          e.preventDefault();  // lettre ou symbole : refusé
+        }
+      });
+
+      // Coller un texte contenant des lettres : on nettoie.
+      champ.addEventListener('paste', function (e) {
+        var texte = (e.clipboardData || window.clipboardData).getData('text');
+        if (!texte) return;
+        var filtre = '';
+        for (var i = 0; i < texte.length; i++) {
+          if (autorises.test(texte[i])) filtre += texte[i];
+        }
+        e.preventDefault();
+        champ.value = filtre;
+      });
+
+      // Ultime filet : on retire tout caractère interdit déjà présent.
+      champ.addEventListener('input', function () {
+        var propre = '';
+        for (var i = 0; i < champ.value.length; i++) {
+          if (autorises.test(champ.value[i])) propre += champ.value[i];
+        }
+        if (propre !== champ.value) champ.value = propre;
+      });
+    })();
+    </script>
 
     <!-- Benefits -->
     <div class="benefits-section">
@@ -182,6 +255,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+<!-- Afficher / masquer le mot de passe (icône œil) -->
+ <!--script src="{% static 'core/js/password-toggle.js' %}"></script>
 
 </body>
 </html>

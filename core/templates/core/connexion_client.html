@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion Client — SHOPY</title>
   <link href="{% static 'core/css/connexion_client.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'core/css/auth-palette-shopy.css' %}">
+  <link href="{% static 'core/css/password-toggle.css' %}" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
 </head>
 <body>
 
@@ -15,7 +19,7 @@
     <!-- Header -->
     <div class="login-header">
       <div class="login-icon">
-        <span>👤</span>
+        <span><i class="bi bi-person-fill" aria-hidden="true"></i></span>
       </div>
       <h4 class="login-title">Mon compte client</h4>
       <p class="login-subtitle">Connectez-vous pour suivre vos commandes</p>
@@ -63,7 +67,7 @@
     <!-- Mot de passe oublié -->
     <div style="text-align:center; margin-top:14px;">
       <a href="{% url 'mot_de_passe_oublie' %}" class="login-link" style="font-size:13px;">
-        🔑 Mot de passe oublié ?
+        <i class="bi bi-key-fill" aria-hidden="true"></i> Mot de passe oublié ?
       </a>
     </div>
 
@@ -88,7 +92,7 @@
 <!-- Error Popup -->
 <div id="popup-overlay" class="popup-overlay">
   <div class="popup-content">
-    <div class="popup-icon">❌</div>
+    <div class="popup-icon"><i class="bi bi-x-circle-fill" aria-hidden="true"></i></div>
     <h5 class="popup-title">Erreur de connexion</h5>
     <p id="popup-message" class="popup-message"></p>
     <button 
@@ -109,6 +113,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+<!-- Afficher / masquer le mot de passe (icône œil) -->
+<!--script src="{% static 'core/js/password-toggle.js' %}"--><!--/script>
 
 </body>
 </html>

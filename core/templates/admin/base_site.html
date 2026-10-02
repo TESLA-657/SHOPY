@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{# ============================================================
+   SHOPY — Surcharge du template de base de l'admin Django
+   Ajoute le bouton « œil » (afficher / masquer le mot de passe)
+   sur toutes les pages de l'admin : connexion, utilisateurs,
+   changement de mot de passe, connexion admin, etc.
+   ============================================================ #}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></div>
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link href="{% static 'core/css/password-toggle.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <script src="{% static 'core/js/password-toggle.js' %}"></script>
+{% endblock %}

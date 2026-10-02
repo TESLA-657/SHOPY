@@ -1,19 +1,59 @@
-/* ===== WELCOME PREMIUM - Ultra Modern Welcome Page ===== */
+/* ===== WELCOME PREMIUM - Page d'accueil SHOPY =====
+   Palette : vert foret + or + creme (cf. shopy-palette.css).
+   Les variables ci-dessous sont volontairement alignees sur la
+   palette centrale pour que l'accueil soit le point de depart
+   de la coherence chromatique de l'application. */
 
 :root {
-  --primary: #059669;
-  --primary-dark: #1a7f37;
-  --secondary: #3498db;
-  --accent: #e74c3c;
-  --dark: #0a0a0a;
-  --light: #f8fafc;
-  --text: rgba(248, 250, 252, 0.95);
-  --text-muted: rgba(248, 250, 252, 0.7);
-  --glass: rgba(248, 250, 252, 0.08);
-  --glass-border: rgba(248, 250, 252, 0.15);
-  --shadow: 0 25px 50px rgba(17, 24, 41, 0.4);
-  --glow-green: 0 0 40px rgba(40, 167, 69, 0.5);
-  --glow-blue: 0 0 40px rgba(52, 152, 219, 0.5);
+  /* Fonds */
+  --wp-bg:        #0E1512;
+  --wp-bg-2:      #121B17;
+  --wp-card:      #151F1A;
+  --wp-card-2:    #1B2822;
+  --wp-border:    #314138;
+  --wp-border-2:  #47594F;
+
+  /* Texte creme chaud */
+  --wp-text:      #F3EFE7;
+  --wp-text-2:    #C2CBC5;
+  --wp-muted:     #8D9B93;
+
+  /* Accent unique : l'or */
+  --wp-gold:      #C5A059;
+
+  /* Vert d'action */
+  --wp-green:     #2E8B62;
+  --wp-green-hov: #55A77E;
+
+  /* Etats */
+  --wp-yellow:    #E0A526;
+  --wp-red:       #D65B4A;
+
+  --wp-radius:    6px;
+  --wp-radius-2:  8px;
+  --wp-ease:      cubic-bezier(.2, .8, .3, 1);
+}
+
+/* --- Alias de compatibilite -------------------------------------------
+   Les regles plus bas dans ce fichier utilisent encore les anciens
+   noms (--glass, --primary...). On les declare ici plutot que de
+   renommer des dizaines de regles : les noms restent valides, et
+   leur valeur pointe desormais vers la palette verte/or.
+   Supprimer ces alias marque la fin du chantier. */
+:root {
+  --glass:        var(--wp-card);
+  --glass-border: var(--wp-border);
+  --text:         var(--wp-text);
+  --text-muted:   var(--wp-muted);
+  --primary:      var(--wp-green);
+  --primary-dark: var(--wp-green);
+  --secondary:    var(--wp-gold);
+  --accent:       var(--wp-gold);
+  --light:        var(--wp-text);
+  --dark:         var(--wp-bg);
+  --shadow:       0 18px 40px rgba(8, 12, 10, 0.45);
+  --glow-green:   none;
+  --glow-blue:    none;
 }
 
 /* ===== BASE ===== */
@@ -29,85 +69,54 @@ html, body {
   overflow-x: hidden;
 }
 
-/* ===== BODY & BACKGROUND ===== */
+/* ===== BODY & BACKGROUND =====
+   Le fond photo est conserve, mais filtre pour s'accorder au vert.
+   Les trois orbes verte/bleu/rouge ont ete supprimees : elles
+   saturaient la page et cassaient l'harmonie (une seule couleur
+   d'accent, l'or). */
 body {
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: Calibri, "Segoe UI", -apple-system, sans-serif;
   background-image: url("../images/fond15.jpg");
   background-size: cover;
   background-position: center;
   position: relative;
 }
 
-/* Dynamic gradient overlay */
+/* Voile vert uniforme : harmonise la photo avec la palette */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: 
-    radial-gradient(ellipse at 20% 20%, rgba(40, 167, 69, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(52, 152, 219, 0.25) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
-    linear-gradient(135deg, rgba(17, 24, 41, 0.75) 0%, rgba(17, 24, 41, 0.5) 50%, rgba(17, 24, 41, 0.7) 100%);
+  background: linear-gradient(180deg,
+    rgba(14, 21, 18, 0.92) 0%,
+    rgba(14, 21, 18, 0.80) 50%,
+    rgba(14, 21, 18, 0.94) 100%);
   z-index: -2;
   pointer-events: none;
 }
 
-/* Animated noise texture */
+/* Texture de grain : conservee, quasi invisible */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: 0.03;
+  opacity: 0.025;
   z-index: -1;
   pointer-events: none;
 }
 
-/* ===== PARTICLES ANIMATION ===== */
-.particles {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  z-index: 0;
-  pointer-events: none;
-}
-
+/* ===== PARTICLES ANIMATION =====
+   Supprimees : les "flaocons" qui defilaient en boucle infinie sur
+   toute la page. 9 elements en position fixe, animes sans arret,
+   cela consomme du CPU/GPU en permanence (notamment sur mobile)
+   pour un effet purement decoratif, et correspondait a un marqueur
+   typique du design genere par IA.
+   Le calque .particles / .particle est conserve neutralise au cas
+   ou un autre template referencerait encore ces classes. */
+.particles,
 .particle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: rgba(248, 250, 252, 0.6);
-  border-radius: 50%;
-  animation: float-particle 15s infinite ease-in-out;
-}
-
-.particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 20s; }
-.particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 18s; }
-.particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 22s; }
-.particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 19s; }
-.particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 21s; }
-.particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 17s; }
-.particle:nth-child(7) { left: 70%; animation-delay: 2s; animation-duration: 23s; }
-.particle:nth-child(8) { left: 80%; animation-delay: 4s; animation-duration: 16s; }
-.particle:nth-child(9) { left: 90%; animation-delay: 1s; animation-duration: 24s; }
-
-@keyframes float-particle {
-  0%, 100% {
-    transform: translateY(100vh) scale(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-    transform: translateY(90vh) scale(1);
-  }
-  90% {
-    opacity: 0.5;
-    transform: translateY(10vh) scale(0.8);
-  }
-  100% {
-    transform: translateY(-10vh) scale(0);
-    opacity: 0;
-  }
+  display: none;
 }
 
 /* ===== NAVBAR ===== */
@@ -118,7 +127,6 @@ body::after {
   right: 0;
   z-index: 1000;
   padding: 16px 24px;
-  backdrop-filter: blur(20px);
   background: rgba(17, 24, 41, 0.3);
   border-bottom: 1px solid var(--glass-border);
 }
@@ -190,7 +198,7 @@ body::after {
   text-transform: uppercase;
   letter-spacing: 1px;
   border-radius: 10px;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform .12s cubic-bezier(.2,.8,.3,1);
 }
 
 .nav-link:hover {
@@ -217,7 +225,7 @@ body::after {
   border-radius: 12px;
   background: rgba(248, 250, 252, 0.06);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform .12s cubic-bezier(.2,.8,.3,1);
 }
 
 .nav-toggle span {
@@ -275,7 +283,6 @@ body::after {
   border-radius: 28px;
   padding: 48px 36px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
 }
@@ -360,7 +367,7 @@ body::after {
   border-radius: 20px;
   text-decoration: none;
   position: relative;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform .12s cubic-bezier(.2,.8,.3,1);
   overflow: hidden;
 }
 
@@ -495,7 +502,7 @@ body::after {
   text-decoration: none;
   font-size: 13px;
   margin-bottom: 8px;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
 }
 
 .footer-column a:hover {
@@ -555,8 +562,6 @@ body::after {
     background: rgba(17, 24, 41, 0.85);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
-    backdrop-filter: blur(22px);
-    -webkit-backdrop-filter: blur(22px);
     box-shadow: 0 18px 40px rgba(17, 24, 41, 0.45);
     max-height: calc(100vh - 120px);
     overflow-y: auto;

@@ -4,6 +4,8 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/mes-produits.css' %}">
+
+  <link rel="stylesheet" href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
 {% endblock %}
 
 {% block title %}Mes Favoris - SHOPY Guinée{% endblock %}
@@ -21,11 +23,11 @@
     <div class="mpc-header">
       <div class="mpc-header-content">
         <div class="mpc-title-section">
-          <h1>❤️ Mes favoris</h1>
+          <h1><i class="bi bi-heart-fill" aria-hidden="true"></i> Mes favoris</h1>
           <p>{{ favoris|length }} produit{{ favoris|length|pluralize }} enregistré{{ favoris|length|pluralize }}</p>
         </div>
         <a href="{% url 'catalogue' %}" class="mpc-add-btn">
-          🛒 Découvrir les produits
+          <i class="bi bi-cart3" aria-hidden="true"></i> Découvrir les produits
         </a>
       </div>
     </div>
@@ -38,13 +40,13 @@
           {% if fav.produit.photo %}
             <img src="{{ fav.produit.photo.url }}" alt="{{ fav.produit.nom }}">
           {% else %}
-            <div class="mpc-product-placeholder">📦</div>
+            <div class="mpc-product-placeholder"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
           {% endif %}
           <a href="{% url 'detail_produit' fav.produit.pk %}" class="mpc-image-link" title="Voir le produit"></a>
 
           <div class="mpc-badges">
             {% if fav.produit.promo and fav.produit.prix_promo %}
-              <span class="mpc-badge" style="background: rgba(242, 145, 0, 0.18); border: 1px solid rgba(242, 145, 0, 0.45); color: #f5c76b;">🔥 Promo</span>
+              <span class="mpc-badge" style="background: rgba(242, 145, 0, 0.18); border: 1px solid rgba(242, 145, 0, 0.45); color: #f5c76b;"><i class="bi bi-fire" aria-hidden="true"></i> Promo</span>
             {% else %}
               <span class="mpc-badge mpc-badge-status">Favori</span>
             {% endif %}
@@ -85,7 +87,7 @@
 
     {% else %}
     <div class="mpc-empty">
-      <div class="mpc-empty-icon">❤️</div>
+      <div class="mpc-empty-icon"><i class="bi bi-heart-fill" aria-hidden="true"></i></div>
       <p class="mpc-empty-text">Vous n'avez pas encore de produits dans vos favoris.</p>
       <a href="{% url 'catalogue' %}" class="mpc-empty-btn">
         Parcourir le catalogue

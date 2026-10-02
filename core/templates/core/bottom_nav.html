@@ -4,55 +4,36 @@
 <div class="SHOPY-bottom-nav-wrapper">
   <nav class="SHOPY-bottom-nav">
     {% if is_vendeur %}
-      <!-- Vendeur Navigation -->
-      <a href="{% url 'catalogue' %}" class="SHOPY-nav-item {% if active_url == 'catalogue' %}active{% endif %}">
-        <div class="SHOPY-nav-icon-box">
-          <i class="bi bi-shop"></i>
-        </div>
-        <span class="SHOPY-nav-label">Marketplace</span>
+      <!-- Boutique -->
+      <a href="{% url 'dashboard_vendeur' %}" class="SHOPY-nav-item {% if active_url == 'dashboard_vendeur' %}active{% endif %}">
+        <div class="SHOPY-nav-icon-box"><i class="bi bi-person-workspace" aria-hidden="true"></i></div>
+        <span class="SHOPY-nav-label">Boutique</span>
       </a>
 
-      <a href="{% url 'liste_produits_vendeur' %}" class="SHOPY-nav-item {% if active_url == 'liste_produits_vendeur' %}active{% endif %}">
-        <div class="SHOPY-nav-icon-box">
-          <i class="bi bi-box-seam"></i>
-        </div>
-        <span class="SHOPY-nav-label">Produits</span>
-      </a>
-
-      <!-- TikTok Center '+' Action Button -->
-      <a href="{% url 'ajouter_produit' %}" class="SHOPY-nav-item SHOPY-nav-center-item" title="Ajouter un produit">
-        <div class="SHOPY-tiktok-btn">
-          <div class="SHOPY-tiktok-btn-inner">
-            <i class="bi bi-plus-lg"></i>
-          </div>
-        </div>
-      </a>
-
+      <!-- Commandes -->
       <a href="{% url 'commandes_vendeur' %}" class="SHOPY-nav-item {% if active_url == 'commandes_vendeur' %}active{% endif %}">
         <div class="SHOPY-nav-icon-box">
-          <i class="bi bi-bag-check-fill"></i>
-          {% if commandes_en_attente|default:0 %}
-              <span class="SHOPY-nav-badge">{{ commandes_en_attente|default:0 }}</span>
-            {% endif %}
+          <i class="bi bi-bag-check-fill" aria-hidden="true"></i>
+          {% if commandes_en_attente|default:0 %}<span class="SHOPY-nav-badge">{{ commandes_en_attente|default:0 }}</span>{% endif %}
         </div>
         <span class="SHOPY-nav-label">Commandes</span>
       </a>
 
-      <a href="{% url 'messages_vendeur' %}" class="SHOPY-nav-item {% if active_url == 'messages_vendeur' %}active{% endif %}">
-        <div class="SHOPY-nav-icon-box">
-          <i class="bi bi-chat-dots-fill"></i>
-          {% if nb_messages_vendeur_non_lus|default:0 %}
-            <span class="SHOPY-nav-badge">{{ nb_messages_vendeur_non_lus|default:0 }}</span>
-          {% endif %}
-        </div>
-        <span class="SHOPY-nav-label">Messages</span>
+      <!-- Ajouter un produit -->
+      <a href="{% url 'ajouter_produit' %}" class="SHOPY-nav-item SHOPY-nav-center-item" title="Ajouter un produit" aria-label="Ajouter un produit">
+        <div class="SHOPY-tiktok-btn"><div class="SHOPY-tiktok-btn-inner"><i class="bi bi-plus-lg" aria-hidden="true"></i></div></div>
       </a>
 
-      <a href="{% url 'dashboard_vendeur' %}" class="SHOPY-nav-item {% if active_url == 'dashboard_vendeur' %}active{% endif %}">
-        <div class="SHOPY-nav-icon-box">
-          <i class="bi bi-person-workspace"></i>
-        </div>
-        <span class="SHOPY-nav-label">Boutique</span>
+      <!-- Produits -->
+      <a href="{% url 'liste_produits_vendeur' %}" class="SHOPY-nav-item {% if active_url == 'liste_produits_vendeur' %}active{% endif %}">
+        <div class="SHOPY-nav-icon-box"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
+        <span class="SHOPY-nav-label">Produits</span>
+      </a>
+
+      <!-- Marketplace -->
+      <a href="{% url 'catalogue' %}" class="SHOPY-nav-item {% if active_url == 'catalogue' %}active{% endif %}">
+        <div class="SHOPY-nav-icon-box"><i class="bi bi-shop" aria-hidden="true"></i></div>
+        <span class="SHOPY-nav-label">Marketplace</span>
       </a>
 
     {% else %}

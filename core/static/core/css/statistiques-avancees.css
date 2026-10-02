@@ -1,5 +1,5 @@
 /* ============================================
-   STATISTIQUES VENDEUR - Style Avancé Premium
+   STATISTIQUES VENDEUR
    ============================================ */
 
 :root {
@@ -172,9 +172,11 @@
 
 .sa-stat-value {
   color: var(--sa-text);
+  font-family: Calibri, "Segoe UI", sans-serif;
   font-size: 28px;
   font-weight: 900;
   line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
 
 .sa-stat-card.green .sa-stat-value { color: var(--sa-primary); }

@@ -1,0 +1,143 @@
+/* ============================================
+   STATISTIQUES VENDEUR — ANTI-IA SHOPY
+   Surcharge de statistiques-avancees.css : on retire la palette
+   GitHub generique et les degrades radiaux violets/bleus, pour la
+   direction metier SHOPY (vert sombre, or, rayons courts).
+   ============================================ */
+
+#sa-stats-container {
+  --sa-bg: #0E1512;
+  --sa-bg-2: #121B17;
+  --sa-bg-3: #18231E;
+  --sa-card: #151F1A;
+  --sa-border: #314138;
+  --sa-border-2: #47594F;
+  --sa-text: #F3EFE7;
+  --sa-text-2: #C2CBC5;
+  --sa-muted: #8D9B93;
+  --sa-gold: #C5A059;
+  --sa-green: #2E8B62;
+  --sa-green-hover: #55A77E;
+  --sa-yellow: #E0A526;
+  --sa-red: #D65B4A;
+  --sa-blue: #4A7C8C;
+  --sa-purple: #6B5B95;
+  --sa-pink: #9C5A72;
+  --sa-orange: #B87A3C;
+  --sa-radius: 8px;
+  --sa-radius-sm: 6px;
+
+  /* Plus d'orbes radiales violet/bleu : fond plat, lisible. */
+  background: var(--sa-bg);
+  min-height: calc(100vh - 150px);
+  padding: 24px;
+}
+
+/* ---------- Header ---------- */
+.sa-header {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--sa-border);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0 0 18px;
+  margin-bottom: 22px;
+}
+.sa-header h4 {
+  color: var(--sa-text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  font-weight: 600;
+}
+.sa-shop-name {
+  color: var(--sa-muted);
+  font-size: 13px;
+}
+.sa-back-btn {
+  color: var(--sa-text-2);
+  background: transparent;
+  border: 1px solid var(--sa-border-2);
+  border-radius: var(--sa-radius-sm);
+  font-size: 12px;
+  font-weight: 700;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.sa-back-btn:hover {
+  color: var(--sa-text);
+  background: var(--sa-bg-3);
+  border-color: var(--sa-green);
+  transform: none;
+}
+
+/* ---------- Cartes de statistiques ---------- */
+.sa-stat-card,
+.sa-card,
+.sa-panel {
+  background: var(--sa-card);
+  border: 1px solid var(--sa-border);
+  border-radius: var(--sa-radius);
+  box-shadow: none;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+.sa-stat-card:hover { border-color: var(--sa-border-2); }
+
+/* L'accent business : filet lateral, pas de degrade. */
+.sa-stat-card::before { content: none; }
+.sa-stat-card.green  { border-left: 3px solid var(--sa-green); }
+.sa-stat-card.blue   { border-left: 3px solid var(--sa-blue); }
+.sa-stat-card.yellow { border-left: 3px solid var(--sa-yellow); }
+.sa-stat-card.purple { border-left: 3px solid var(--sa-purple); }
+.sa-stat-card.red    { border-left: 3px solid var(--sa-red); }
+
+.sa-stat-icon {
+  background: transparent;
+  border: 0;
+  font-size: 18px;
+  opacity: 1;
+}
+.sa-stat-label {
+  color: var(--sa-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+.sa-stat-value {
+  color: var(--sa-text);
+  font-family: Calibri, "Segoe UI", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.sa-stat-card.green .sa-stat-value  { color: var(--sa-text); }
+.sa-stat-card.blue .sa-stat-value   { color: var(--sa-text); }
+.sa-stat-card.yellow .sa-stat-value { color: var(--sa-text); }
+.sa-stat-card.purple .sa-stat-value { color: var(--sa-text); }
+.sa-stat-unit { color: var(--sa-muted); }
+
+/* ---------- Tableaux / graphiques ---------- */
+.sa-table,
+.sa-panel table {
+  background: var(--sa-card);
+  border: 1px solid var(--sa-border);
+  border-radius: var(--sa-radius);
+  color: var(--sa-text-2);
+}
+.sa-table th {
+  color: var(--sa-muted);
+  background: var(--sa-bg-2);
+  border-bottom: 1px solid var(--sa-border);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.sa-table td { border-bottom: 1px solid var(--sa-bg-3); }
+
+.sa-chart-box,
+.sa-canvas-box {
+  background: var(--sa-card);
+  border: 1px solid var(--sa-border);
+  border-radius: var(--sa-radius);
+}
+
+@media (max-width: 768px) {
+  #sa-stats-container { padding: 18px 14px 36px; }
+  .sa-header h4 { font-size: 22px; }
+}

@@ -4,6 +4,24 @@ from .models import GarantieAcheteur, FlashSale, AlertePrix, EvaluationVendeur
 from .serializers import ClientSerializer, VendeurSerializer, ProduitSerializer, CommandeSerializer, AbonnementSerializer, NotificationSerializer
 from .audit import log_action, AuditLog
 
+# Validation des champs de formulaire (numero = chiffres uniquement, etc.)
+from .validators import (
+    nettoyer_telephone,
+    validate_email,
+    validate_texte_non_vide,
+)
+from django.core.exceptions import ValidationError
+
+# Verification anti-robot des formulaires d'inscription (CAPTCHA).
+from .security_utils import generate_captcha_question, validate_captcha
+
+# Service d'emails (Resend en priorite, repli SMTP automatique)
+from .email_service import (
+    email_bienvenue_client,
+    email_bienvenue_vendeur,
+    email_code_verification,
+)
+
 # Importer les nouvelles fonctionnalités SHOPY
 from .views_shopy_features import (
     vendeurs_certifies, demander_certification, noter_vendeur,
@@ -116,8 +134,51 @@ def update_loyalty_record(client, vendeur, montant):
     return record
 
 
+# ============================================
+# CAPTCHA DES FORMULAIRES D'INSCRIPTION
+# ============================================
+# La reponse attendue vit UNIQUEMENT en session, jamais dans le HTML :
+# un champ cache serait lisible par un robot, ce qui annulerait la
+# protection. Chaque verification consomme la reponse (usage unique),
+# donc rejouer la meme reponse ne fonctionne pas.
+
+CLE_CAPTCHA_SESSION = 'captcha_inscription_reponse'
+
+
+def preparer_captcha(request):
+    """
+    Tire une nouvelle question et memorise sa reponse en session.
+    Retourne la question a afficher (ex. « 7 + 4 = ? »).
+    """
+    captcha = generate_captcha_question()
+    request.session[CLE_CAPTCHA_SESSION] = captcha['answer']
+    return captcha['question']
+
+
+def verifier_captcha(request):
+    """
+    Compare la reponse saisie avec celle attendue, puis la consomme.
+    Retourne True si la reponse est correcte.
+    """
+    attendu = request.session.pop(CLE_CAPTCHA_SESSION, None)
+    return validate_captcha(request.POST.get('captcha_answer'), attendu)
+
+
+def renouveler_captcha(request):
+    """
+    Fournit une nouvelle question au bouton « Nouvelle question ».
+    Repond en JSON : {"question": "7 + 4 = ?"}
+    """
+    if request.method != 'GET':
+        return JsonResponse(
+            {'erreur': 'Methode non autorisee.'}, status=405)
+    return JsonResponse({'question': preparer_captcha(request)})
+
+
 def inscription_vendeur(request):
     erreur = None
+    plans = PlanAbonnement.objects.exclude(nom='gratuit').order_by('prix')
+
     if request.method == 'POST':
         nom_boutique = request.POST.get('nom_boutique')
         numero = request.POST.get('numero')
@@ -126,50 +187,132 @@ def inscription_vendeur(request):
         mot_de_passe = request.POST.get('mot_de_passe')
         confirmer = request.POST.get('confirmer_mot_de_passe')
 
-        if mot_de_passe != confirmer:
+        # Deux formules possibles : "essai" (gratuit) ou "paiement"
+        # (abonnement payé immédiatement). Par défaut on conserve l'essai
+        # gratuit pour rester compatible avec le parcours historique.
+        formule = (request.POST.get('formule') or 'essai').strip()
+        plan_nom = (request.POST.get('plan') or '').strip()
+        numero_paiement = (request.POST.get('numero_paiement') or '').strip()
+        reference_paiement = (request.POST.get('reference') or '').strip()
+
+        plan = None
+        paiement = None
+
+        # Barriere anti-robot, verifiee avant tout acces a la base :
+        # un programme ne doit pas meme atteindre les controles suivants.
+        if not verifier_captcha(request):
+            erreur = ("Reponse a la verification de securite incorrecte. "
+                      "Merci de reessayer.")
+        elif mot_de_passe != confirmer:
             erreur = "Les mots de passe ne correspondent pas."
-        elif User.objects.filter(username=nom_boutique).exists():
-            erreur = "Ce nom de boutique est déjà utilisé. Choisissez un autre nom."
-        elif Vendeur.objects.filter(numero=numero).exists():
-            erreur = "Ce numéro est déjà associé à une boutique."
-        elif Vendeur.objects.filter(ville=ville, numero=numero).exists():
-            erreur = "Une boutique avec ce numéro existe déjà."
         else:
-            user = User.objects.create_user(
-                username=nom_boutique,
-                password=mot_de_passe,
-                email=email
-            )
-            Vendeur.objects.create(
-                user=user,
-                nom_boutique=nom_boutique,
-                numero=numero,
-                ville=ville,
-                statut='en_attente'
-            )
-            log_action(request, 'signup_vendor', f'Vendeur {nom_boutique} email {email}')
-            # Notifier l'admin
-            try:
-                from django.contrib.auth.models import User as UserModel
-                admins = UserModel.objects.filter(is_staff=True)
-                for admin in admins:
-                    if admin.email:
-                        send_mail(
-                            subject=f'🆕 Nouvelle boutique en attente — {nom_boutique}',
-                            message=f'Boutique: {nom_boutique}\nVille: {ville}\nNuméro: {numero}\nEmail: {email}\n\nConnectez-vous au dashboard admin pour valider.',
-                            from_email=settings.DEFAULT_FROM_EMAIL,
-                            recipient_list=[admin.email],
-                            fail_silently=True,
+            if formule == 'paiement':
+                plan = plans.filter(nom=plan_nom).first()
+                if plan is None:
+                    erreur = "Choisissez un plan d'abonnement valide."
+                elif not numero_paiement:
+                    erreur = ("Indiquez le numero utilise pour payer "
+                              "l'abonnement.")
+
+            if erreur is None and User.objects.filter(username=nom_boutique).exists():
+                erreur = "Ce nom de boutique est déjà utilisé. Choisissez un autre nom."
+            elif erreur is None and Vendeur.objects.filter(numero=numero).exists():
+                erreur = "Ce numéro est déjà associé à une boutique."
+            elif erreur is None and Vendeur.objects.filter(ville=ville, numero=numero).exists():
+                erreur = "Une boutique avec ce numéro existe déjà."
+            elif erreur is None:
+                user = User.objects.create_user(
+                    username=nom_boutique,
+                    password=mot_de_passe,
+                    email=email
+                )
+                vendeur = Vendeur.objects.create(
+                    user=user,
+                    nom_boutique=nom_boutique,
+                    numero=numero,
+                    ville=ville,
+                    statut='en_attente'
+                )
+
+                # Option payante : on enregistre le paiement d'abonnement en
+                # attente. L'admin voit ainsi la demande vendeur ET le
+                # paiement en même temps.
+                if formule == 'paiement' and plan is not None:
+                    paiement = PaiementAbonnement.objects.create(
+                        vendeur=vendeur,
+                        plan=plan,
+                        numero_paiement=numero_paiement,
+                        montant=plan.prix,
+                        reference=reference_paiement,
+                        statut='en_attente'
+                    )
+
+                log_action(request, 'signup_vendor', f'Vendeur {nom_boutique} email {email}')
+
+                # Confirmation au vendeur : son propre email de suivi,
+                # distinct de la notification envoyee aux admins juste apres.
+                try:
+                    email_bienvenue_vendeur(
+                        nom_boutique=nom_boutique,
+                        email_destinataire=email,
+                        ville=ville,
+                    )
+                except Exception as e:
+                    print('Erreur email de bienvenue vendeur:', e)
+
+                # Notifier l'admin : demande vendeur + paiement éventuel.
+                try:
+                    from django.contrib.auth.models import User as UserModel
+                    admins = UserModel.objects.filter(is_staff=True)
+                    message_admin = (
+                        f'Boutique: {nom_boutique}\n'
+                        f'Ville: {ville}\n'
+                        f'Numéro: {numero}\n'
+                        f'Email: {email}\n'
+                    )
+                    sujet_admin = f'🆕 Nouvelle boutique en attente — {nom_boutique}'
+                    if paiement is not None:
+                        sujet_admin = (
+                            '🆕 Demande vendeur + paiement abonnement — '
+                            f'{nom_boutique}'
                         )
-            except:
-                pass
+                        message_admin += (
+                            '\n💳 Paiement abonnement en attente\n'
+                            f'Plan: {plan.nom}\n'
+                            f'Montant: {plan.prix} GNF\n'
+                            f'Numéro payeur: {numero_paiement}\n'
+                            f'Référence: {reference_paiement or "-"}\n'
+                        )
+                    message_admin += (
+                        '\nConnectez-vous au dashboard admin pour valider.'
+                    )
+                    for admin in admins:
+                        if admin.email:
+                            send_mail(
+                                subject=sujet_admin,
+                                message=message_admin,
+                                from_email=settings.DEFAULT_FROM_EMAIL,
+                                recipient_list=[admin.email],
+                                fail_silently=True,
+                            )
+                except:
+                    pass
 
-            return render(request, 'core/attente_validation.html', {
-                'nom_boutique': nom_boutique,
-                'email': email,
-            })
+                return render(request, 'core/attente_validation.html', {
+                    'nom_boutique': nom_boutique,
+                    'email': email,
+                    'formule': formule,
+                    'plan': plan,
+                    'paiement_en_attente': paiement is not None,
+                })
 
-    return render(request, 'core/inscription_vendeur.html', {'erreur': erreur})
+    # Arrive ici sur un GET, ou sur un POST refuse : on fournit une
+    # question neuve (la precedente a ete consommee par la verification).
+    return render(request, 'core/inscription_vendeur.html', {
+        'erreur': erreur,
+        'captcha_question': preparer_captcha(request),
+        'plans': plans,
+    })
 
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all()
@@ -248,6 +391,7 @@ def ajouter_produit_legacy(request):
             from .models import Vendeur
             vendeur_par_defaut = Vendeur.objects.first() 
             produit.vendeur = vendeur_par_defaut
+            appliquer_promotion(produit)
             produit.save() # Enregistre enfin le produit dans la base !
             vendeur.total_produits_crees += 1
             vendeur.save()
@@ -287,9 +431,11 @@ def liste_produits_vendeur(request):
             Q(description__icontains=recherche)
         )
 
-    # Séparer les produits en promo et non-promo
-    produits_promo = produits.filter(promo=True)
-    produits_non_promo = produits.filter(promo=False)
+    # Séparer les produits en promo et non-promo.
+    # Une promotion n'est comptée comme réelle que si un prix promo valide a
+    # été renseigné : cela évite un badge « Promo » sans effet dans le catalogue.
+    produits_promo = produits.filter(promo=True, prix_promo__isnull=False)
+    produits_non_promo = produits.exclude(pk__in=produits_promo.values('pk'))
 
     # Compute additional vendor context for header
     try:
@@ -376,11 +522,7 @@ def ajouter_produit(request):
             produit = form.save(commit=False)
             produit.vendeur = vendeur
 
-            if produit.promo and produit.jours_promo:
-                produit.date_debut_promo = timezone.now()
-                produit.date_fin_promo = timezone.now() + \
-                    timedelta(days=produit.jours_promo)
-
+            appliquer_promotion(produit)
             produit.save()
             vendeur.total_produits_crees += 1
             vendeur.save()
@@ -407,15 +549,45 @@ def parametres_vendeur(request):
         abonnement = None
 
     if request.method == 'POST':
-        vendeur.nom_boutique = request.POST.get('nom_boutique', vendeur.nom_boutique)
-        vendeur.numero = request.POST.get('numero', vendeur.numero)
-        vendeur.ville = request.POST.get('ville', vendeur.ville)
+        nouveau_nom = request.POST.get('nom_boutique', '').strip()
+        nouveau_numero = request.POST.get('numero', '').strip()
+        nouvelle_ville = request.POST.get('ville', '').strip()
+
+        # Verifier l'unicite du nouveau nom AVANT toute ecriture :
+        # sinon le Vendeur et le User seraient desynchronises.
+        if nouveau_nom and nouveau_nom != vendeur.nom_boutique:
+            conflit = User.objects.filter(
+                username=nouveau_nom
+            ).exclude(pk=request.user.pk).exists()
+            if conflit:
+                messages.error(
+                    request,
+                    f"Le nom '{nouveau_nom}' est deja utilise par un autre compte."
+                )
+                return redirect('parametres_vendeur')
+
+        if nouveau_nom:
+            vendeur.nom_boutique = nouveau_nom
+        if nouveau_numero:
+            vendeur.numero = nouveau_numero
+        if nouvelle_ville:
+            vendeur.ville = nouvelle_ville
         if request.FILES.get('photo'):
             vendeur.photo = request.FILES['photo']
         # Préférence de réception des notifications (in-app + email)
         if 'notifications_email' in request.POST:
             vendeur.notifications_email = request.POST.get('notifications_email') == 'on'
         vendeur.save()
+
+        # Synchronise le compte User lie au vendeur.
+        # Sans cela, renommer la boutique ne changeait QUE l'affichage :
+        # le username (identifiant de connexion) restait l'ancien, donc
+        # la page connexion-vendeur refusait le nouveau nom.
+        user = request.user
+        if nouveau_nom and user.username != nouveau_nom:
+            user.username = nouveau_nom
+            user.save(update_fields=['username'])
+
         messages.success(request, 'Paramètres mis à jour !')
         return redirect('parametres_vendeur')
 
@@ -426,10 +598,60 @@ def parametres_vendeur(request):
 
 
 def mode_emploi(request):
-    """Manuel d'utilisation SHOPY (pour vendeurs et clients)."""
-    return render(request, 'core/mode_emploi.html')
+    """
+    Manuel d'utilisation SHOPY (pour vendeurs et clients).
+
+    Le manuel n'affiche la section « creer une boutique » que si
+    l'utilisateur n'a pas deja de boutique : inutile de proposer
+    de s'inscrire a quelqu'un qui vend deja sur SHOPY.
+    """
+    a_deja_une_boutique = False
+    if request.user.is_authenticated:
+        try:
+            a_deja_une_boutique = Vendeur.objects.filter(
+                user=request.user
+            ).exists()
+        except Exception:
+            a_deja_une_boutique = False
+
+    return render(request, 'core/mode_emploi.html', {
+        'a_deja_une_boutique': a_deja_une_boutique,
+    })
+
 def welcome(request):
-    return render(request,'core/welcome.html')
+    """
+    Page d'accueil SHOPY.
+
+    Le comportement d'affichage est pilote par le parametre
+    WELCOME_PERSONNALISE (cf. settings.py) :
+
+      - False (defaut, developpement) : les 4 cartes restent
+        visibles, ce qui permet de tester chaque parcours en un clic.
+      - True (production) : un utilisateur deja inscrit ne voit que
+        l'acces correspondant a son role. Un client ne doit pas
+        « se reconnecter », un vendeur n'a pas a « creer sa boutique »
+        s'il en a deja une.
+    """
+    contexte = {
+        'affichage_personnalise': getattr(
+            settings, 'WELCOME_PERSONNALISE', False
+        ),
+        'a_un_compte_client': False,
+        'a_un_compte_vendeur': False,
+    }
+
+    if contexte['affichage_personnalise'] and request.user.is_authenticated:
+        # Import local pour eviter une dependance inutile.
+        from .models import Client, Vendeur
+
+        contexte['a_un_compte_client'] = Client.objects.filter(
+            user=request.user
+        ).exists()
+        contexte['a_un_compte_vendeur'] = Vendeur.objects.filter(
+            user=request.user
+        ).exists()
+
+    return render(request, 'core/welcome.html', contexte)
 
 @login_required
 def redirection_apres_connexion(request):
@@ -496,7 +718,11 @@ def dashboard_vendeur(request):
     debut_mois = aujourd_hui.replace(day=1)
 
     # Reset des ventes du mois au nouveau mois (remise à 0 le 1er de chaque mois)
-    vendeur.reset_ventes_si_nouveau_mois()
+    # + synchronisation avec les commandes acceptées/payées (source unique,
+    # évite tout double comptage entre l'ouverture de "Mes commandes" et l'acceptation).
+    ventes_du_mois = vendeur.synchroniser_ventes_du_mois(
+        (aujourd_hui.year, aujourd_hui.month)
+    )
 
 # Vérifier les promos expirées
     verifier_promos_expirees()
@@ -516,9 +742,8 @@ def dashboard_vendeur(request):
         abonnement = None
 
     produits_en_ligne = Produit.objects.filter(vendeur=vendeur, visible=True).count()
-    # Ventes du mois : commandes payées (directes ET panier), calculées sur le mois en cours
-    ventes_du_mois = calculer_ventes_vendeur(vendeur, (aujourd_hui.year, aujourd_hui.month))
-    produits_en_promo = Produit.objects.filter(vendeur=vendeur, visible=True, promo=True).count()
+    # Ventes du mois : déjà synchronisées plus haut (commandes acceptées/payées du mois).
+    produits_en_promo = Produit.objects.filter(vendeur=vendeur, visible=True, promo=True, prix_promo__isnull=False).count()
     produits_sans_promo = Produit.objects.filter(vendeur=vendeur, visible=True, promo=False).count()
     commandes_payees = Commande.objects.filter(vendeur=vendeur).filter(
         Q(paiement__statut='valide') | Q(paiement_panier__statut='valide')
@@ -526,9 +751,11 @@ def dashboard_vendeur(request):
     commandes_en_attente = commandes_payees.filter(statut='en_attente').count()
     dernieres_commandes = commandes_payees.order_by('-date_commande')[:5]
     paiement_en_attente = PaiementAbonnement.objects.filter(vendeur=vendeur, statut='en_attente').exists()
+    # Les meilleurs clients restent visibles même après désactivation du programme
+    # de fidélité. On n'utilise pas validite_jusqua pour filtrer car cela ferait
+    # disparaître les clients dès expiration de leur période de validité (90 jours).
     clients_fideles = FideliteClientVendeur.objects.filter(
         vendeur=vendeur,
-        validite_jusqua__gte=aujourd_hui
     ).order_by('-commandes_count')[:5]
     fidelite_regles = [
         {'achats': 3, 'reduction': 3},
@@ -734,7 +961,9 @@ def modifier_produit(request, pk):
 
         form = ProduitForm(request.POST, request.FILES, instance=produit)
         if form.is_valid():
-            form.save()
+            produit = form.save(commit=False)
+            appliquer_promotion(produit)
+            produit.save()
             request.session.pop('selected_photo_produit', None)
             request.session.pop('selected_photo_produit_next', None)
             return redirect('liste_produits_vendeur')
@@ -890,6 +1119,11 @@ def commandes_vendeur(request):
     from django.shortcuts import get_object_or_404, render
 
     vendeur = get_object_or_404(Vendeur, user=request.user)
+    # Ventes du mois : source unique = commandes acceptées/payées du mois en cours.
+    # On synchronise le champ vendeur.ventes_du_mois pour que l'en-tête
+    # (_vendor_header.html) et le dashboard affichent toujours la même valeur,
+    # sans double comptage à l'ouverture de la page.
+    ventes_du_mois = vendeur.synchroniser_ventes_du_mois()
     commandes = Commande.objects.filter(
         vendeur=vendeur,
         archivee=False,
@@ -914,6 +1148,7 @@ def commandes_vendeur(request):
     return render(request, 'core/commandes_vendeur.html', {
         'commandes': commandes,
         'vendeur': vendeur,
+        'ventes_du_mois': ventes_du_mois,
         'total_commandes': total_commandes,
         'commandes_attente': commandes_attente,
         'commandes_acceptees': commandes_acceptees,
@@ -939,11 +1174,40 @@ def changer_statut_commande(request, pk):
             produit.quantite += commande.quantite
             produit.save()
 
+            # ✅ Notification au client pour le refus de sa commande
+            client_obj = Client.objects.filter(numero=commande.numero_client).first()
+            if client_obj and client_obj.user:
+                creer_notification(
+                    user=client_obj.user,
+                    type='commande',
+                    titre='❌ Votre commande a été refusée',
+                    message=f'La commande #{commande.pk} ({commande.produit.nom}) a été refusée par {commande.vendeur.nom_boutique}.',
+                    lien='/mes-factures/'
+                )
+
+        # Restaurer stock si la commande était acceptée puis refusée/annulée
+        if ancien_statut in ('acceptee', 'livree') and nouveau_statut in ('refusee', 'annulee'):
+            produit = commande.produit
+            produit.quantite += commande.quantite
+            produit.save()
+
+            # ✅ Notification au client pour l'annulation après acceptation
+            client_obj = Client.objects.filter(numero=commande.numero_client).first()
+            if client_obj and client_obj.user:
+                creer_notification(
+                    user=client_obj.user,
+                    type='commande',
+                    titre='❌ Votre commande a été annulée',
+                    message=f'La commande #{commande.pk} ({commande.produit.nom}) a été annulée par {commande.vendeur.nom_boutique} après acceptation.',
+                    lien='/mes-factures/'
+                )
+
         if nouveau_statut in ('acceptee', 'livree') and ancien_statut not in ('acceptee', 'livree'):
             # ✅ La vente n'est comptabilisée qu'à l'acceptation par le vendeur.
+            # Source unique de vérité : on recalcule depuis les commandes
+            # acceptées/payées du mois (pas d'incrément manuel -> pas de double comptage).
             if commande.vendeur:
-                commande.vendeur.ventes_du_mois += commande.prix_total
-                commande.vendeur.save(update_fields=['ventes_du_mois'])
+                commande.vendeur.synchroniser_ventes_du_mois()
             creer_notification(
                 user=commande.vendeur.user,
                 type='commande',
@@ -952,13 +1216,21 @@ def changer_statut_commande(request, pk):
                 lien='/mes-commandes/'
             )
 
-        # ↩️ Si la commande était déjà comptée puis est refusée/annulée, on retire le montant
+            # ✅ Notification au client pour l'acceptation de sa commande
+            client_obj = Client.objects.filter(numero=commande.numero_client).first()
+            if client_obj and client_obj.user:
+                creer_notification(
+                    user=client_obj.user,
+                    type='commande',
+                    titre='✅ Votre commande a été acceptée',
+                    message=f'La commande #{commande.pk} ({commande.produit.nom}) a été acceptée par {commande.vendeur.nom_boutique}.',
+                    lien='/mes-factures/'
+                )
+
+        # ↩️ Si la commande était déjà comptée puis est refusée/annulée, on recalcule
         elif ancien_statut in ('acceptee', 'livree') and nouveau_statut in ('refusee', 'annulee'):
             if commande.vendeur:
-                commande.vendeur.ventes_du_mois = max(
-                    0, commande.vendeur.ventes_du_mois - commande.prix_total
-                )
-                commande.vendeur.save(update_fields=['ventes_du_mois'])
+                commande.vendeur.synchroniser_ventes_du_mois()
 
     return redirect('commandes_vendeur')
 
@@ -1091,6 +1363,14 @@ def admin_valider_vendeur(request, pk):
         if action == 'activer':
             vendeur.statut = 'actif'
             vendeur.save()
+            # Si un paiement d'abonnement est en attente, on ne crée pas
+            # d'abonnement d'essai : c'est la validation du paiement qui
+            # activera le plan payé choisi par le vendeur.
+            deja_paye = PaiementAbonnement.objects.filter(
+                vendeur=vendeur, statut='en_attente'
+            ).exists()
+            if deja_paye:
+                return redirect('admin_dashboard')
             # Créer abonnement essai
             plan_gratuit, _ = PlanAbonnement.objects.get_or_create(
                 nom='gratuit',
@@ -1310,6 +1590,9 @@ def payer_commande(request, pk):
         )
         log_action(request, 'payment', f'Commande {commande.pk} mode {mode_paiement} montant {montant}')
 
+        # ✅ Réduire le stock après confirmation du paiement (cohérent avec le flux panier)
+        reducer_stock(commande)
+
         if commande.vendeur and paiement.statut == 'valide':
             # ℹ️ La vente sera comptabilisée uniquement quand le vendeur acceptera la commande.
             creer_notification(
@@ -1372,33 +1655,25 @@ def payer_commande(request, pk):
 def confirmation_paiement_commande(request):
     """
     Page de confirmation de paiement pour le client.
-    Affiche les commandes payées par le client (connecté ou non).
+    N'affiche que les commandes du client connecté — jamais celles d'un autre client.
     """
     commande = None
-    
-    # First, check if user is authenticated and is a Client
+
+    # Only show orders belonging to the currently authenticated client.
+    # The previous fallback query that displayed the most recent order from
+    # ANY client was a privacy/correctness bug (bug #7).
     if request.user.is_authenticated:
         try:
             client = Client.objects.get(user=request.user)
-            # Get the most recent paid command for this client by phone number
             paiement = PaiementCommande.objects.filter(
                 commande__numero_client=client.numero,
                 statut='valide',
             ).select_related('commande').order_by('-date_soumission').first()
             commande = paiement.commande if paiement else None
         except Client.DoesNotExist:
-            # User is authenticated but not a client (e.g., vendor or admin)
-            # Try to find the most recent PaiementCommande
+            # Authenticated non-client (vendor/admin): no order to display
             pass
-    
-    # If no commande found or user is anonymous, get the most recent paid order
-    if not commande:
-        dernier_paiement = PaiementCommande.objects.filter(
-            statut='valide'
-        ).order_by('-date_soumission').first()
-        
-        commande = dernier_paiement.commande if dernier_paiement else None
-    
+
     return render(request, 'core/confirmation_paiement_commande.html', {
         'commande': commande,
     })
@@ -1785,6 +2060,31 @@ def calculer_ventes_vendeur(vendeur, annees_mois=None):
         )
     total = commandes_payees.aggregate(total=Sum('prix_total'))['total'] or 0
     return int(total)
+
+
+def appliquer_promotion(produit):
+    """
+    Normalise les champs de promotion d'un produit.
+
+    Une promotion n'est réelle que si un prix promo est renseigné. Si la case
+    est cochée sans prix promo (ou si les données sont incohérentes), on
+    désactive complètement la promotion pour que l'affichage soit identique
+    dans « Mes produits » et dans le catalogue.
+    """
+    if produit.promo and produit.prix_promo is not None:
+        debut = produit.date_debut_promo or timezone.now()
+        produit.date_debut_promo = debut
+        if produit.jours_promo:
+            produit.date_fin_promo = debut + timedelta(days=produit.jours_promo)
+        else:
+            produit.date_fin_promo = None
+    else:
+        produit.promo = False
+        produit.prix_promo = None
+        produit.jours_promo = None
+        produit.date_debut_promo = None
+        produit.date_fin_promo = None
+    return produit
 
 
 def verifier_promos_expirees():
@@ -2198,24 +2498,63 @@ def inscription_client(request):
         mot_de_passe = request.POST.get('mot_de_passe')
         confirmer = request.POST.get('confirmer_mot_de_passe')
 
-        if mot_de_passe != confirmer:
-            erreur = "Les mots de passe ne correspondent pas."
-        elif User.objects.filter(username=email).exists():
-            erreur = "Un compte existe déjà avec cet email."
+        # Barriere anti-robot, verifiee avant tout acces a la base :
+        # un programme ne doit pas meme atteindre les controles suivants.
+        if not verifier_captcha(request):
+            erreur = ("Reponse a la verification de securite incorrecte. "
+                      "Merci de reessayer.")
         else:
-            user = User.objects.create_user(
-                username=email, email=email, password=mot_de_passe
-            )
-            Client.objects.create(
-                user=user, nom=nom, numero=numero, ville=ville
-            )
-            log_action(request, 'signup_client', f'Client {email}')
-            return render(request, 'core/confirmation_inscription_client.html', {
-                'nom': nom,
-                'email': email,
-            })
+            # Chaque champ est valide selon sa nature avant toute creation.
+            # Un numero de telephone n'accepte QUE des chiffres ; un email
+            # doit avoir la forme d'une adresse ; un nom/ville non vides.
+            try:
+                nom = validate_texte_non_vide(nom, 'Le nom')
+                ville = validate_texte_non_vide(ville, 'La ville')
+                numero = nettoyer_telephone(numero)
+                email = validate_email(email)
+            except ValidationError as e:
+                erreur = ' '.join(e.messages)
 
-    return render(request, 'core/inscription_client.html', {'erreur': erreur})
+            if erreur is None:
+                if not mot_de_passe or len(mot_de_passe) < 8:
+                    erreur = ("Le mot de passe doit contenir au moins "
+                              "8 caractères.")
+                elif mot_de_passe != confirmer:
+                    erreur = "Les mots de passe ne correspondent pas."
+                elif User.objects.filter(username__iexact=email).exists():
+                    erreur = "Un compte existe déjà avec cet email."
+
+            if erreur is None:
+                user = User.objects.create_user(
+                    username=email, email=email, password=mot_de_passe
+                )
+                Client.objects.create(
+                    user=user, nom=nom, numero=numero, ville=ville
+                )
+                log_action(request, 'signup_client', f'Client {email}')
+
+                # Email de bienvenue (Resend en priorite, repli SMTP).
+                # Un echec n'empeche jamais la creation du compte.
+                try:
+                    email_bienvenue_client(
+                        prenom_ou_nom=nom or email,
+                        email_destinataire=email,
+                    )
+                except Exception as e:
+                    print('Erreur email de bienvenue client:', e)
+
+                return render(
+                    request, 'core/confirmation_inscription_client.html', {
+                        'nom': nom,
+                        'email': email,
+                    })
+
+    # Arrive ici sur un GET, ou sur un POST refuse : on fournit une
+    # question neuve (la precedente a ete consommee par la verification).
+    return render(request, 'core/inscription_client.html', {
+        'erreur': erreur,
+        'captcha_question': preparer_captcha(request),
+    })
 
 def connexion_client(request):
     erreur = None
@@ -2312,13 +2651,7 @@ def mot_de_passe_oublie(request):
             )
         
         try:
-            send_mail(
-                subject='SHOPY - Votre code de verification',
-                message='Bonjour,\n\nVotre code : ' + code + '\n\nValide 10 minutes.\n\n- L equipe SHOPY',
-                from_email='noreply@shopy-guinee.com',
-                recipient_list=[email_saisi],
-                fail_silently=False,
-            )
+            email_code_verification(email_destinataire=email_saisi, code=code)
             envoye = True
         except Exception as e:
             print('Erreur envoi email:', e)
@@ -2360,15 +2693,10 @@ def resend_verification_code(request):
         )
         
         try:
-            send_mail(
-                subject='SHOPY - Votre nouveau code',
-                message='Bonjour,\n\nVotre nouveau code : ' + code + '\n\nValide 10 minutes.\n\n- L equipe SHOPY',
-                from_email='noreply@shopy-guinee.com',
-                recipient_list=[email],
-                fail_silently=False,
-            )
+            email_code_verification(email_destinataire=email, code=code)
             return JsonResponse({'success': True, 'message': 'Nouveau code envoye.'})
         except Exception as e:
+            print('Erreur renvoi code:', e)
             return JsonResponse({'success': False, 'message': "Erreur d'envoi."})
     
     return JsonResponse({'success': False, 'message': 'Requete invalide.'})
@@ -2656,6 +2984,32 @@ def mes_notifications(request):
 # API NOTIFICATIONS POLLING
 # ============================================
 
+def api_marquer_notification_lue(request, pk):
+    """
+    Marque une notification comme lue (appel AJAX depuis la croix de fermeture).
+
+    Sans cet appel, la notification ressort au prochain chargement de page
+    et le polling la réaffiche : la croix ne servirait a rien.
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({'succes': False}, status=403)
+
+    # .filter(user=...) garantit qu'on ne peut pas marquer la
+    # notification d'un autre utilisateur (pas de fuite d'information).
+    modifie = Notification.objects.filter(
+        pk=pk,
+        user=request.user,
+    ).update(lue=True)
+
+    return JsonResponse({
+        'succes': True,
+        'modifie': modifie,
+        'nb_non_lues': Notification.objects.filter(
+            user=request.user, lue=False
+        ).count(),
+    })
+
+
 def api_notifications_nouvelles(request):
     """
     API pour le polling - retourne les nouvelles notifications depuis la dernière vérification.
@@ -2897,15 +3251,7 @@ def catalogue(request):
     categorie_slug = request.GET.get('categorie', '')
     tri = request.GET.get('tri', 'nom')
 
-    default_ville = ''
-    if request.user.is_authenticated:
-        try:
-            client = Client.objects.get(user=request.user)
-            if not selected_ville:
-                default_ville = client.ville
-        except Client.DoesNotExist:
-            pass
-
+    # Le tri par défaut s'effectue sur TOUTES les villes (pas de priorité ville client)
     produits = Produit.objects.filter(visible=True, vendeur__statut='actif').annotate(
         evaluation_count=Count('evaluations'),
         evaluation_note=Avg('evaluations__note')
@@ -2913,22 +3259,14 @@ def catalogue(request):
 
     if selected_ville:
         produits = produits.filter(vendeur__ville__icontains=selected_ville)
-    if default_ville and not selected_ville and tri == 'nom':
-        produits = produits.annotate(
-            priority=Case(
-                When(vendeur__ville__iexact=default_ville, then=Value(0)),
-                default=Value(1),
-                output_field=IntegerField()
-            )
-        ).order_by('priority', 'nom')
-    else:
-        ordre = {
-            'nom': 'nom',
-            'prix_croissant': 'prix',
-            'prix_decroissant': '-prix',
-            'nouveautes': '-id',
-        }.get(tri, 'nom')
-        produits = produits.order_by(ordre)
+
+    ordre = {
+        'nom': 'nom',
+        'prix_croissant': 'prix',
+        'prix_decroissant': '-prix',
+        'nouveautes': '-id',
+    }.get(tri, 'nom')
+    produits = produits.order_by(ordre)
 
     if recherche:
         produits = produits.filter(
@@ -2942,7 +3280,7 @@ def catalogue(request):
     if categorie_slug:
         produits = produits.filter(categorie__slug=categorie_slug)
 
-    ville_selectionnee = selected_ville or default_ville
+    ville_selectionnee = selected_ville
 
     categories = Categorie.objects.all()
     villes = Vendeur.objects.filter(statut='actif').values_list('ville', flat=True).distinct()

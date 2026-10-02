@@ -11,14 +11,19 @@
     <table class="table table-hover shadow-sm" style="border-radius:12px; overflow:hidden;">
       <thead style="background:#28a745; color:white;">
         <tr>
-          <th>Boutique</th><th>Plan</th><th>Montant</th>
-          <th>Numéro OM</th><th>Référence</th><th>Date</th><th>Action</th>
+          <th>Boutique</th><th>Contact vendeur</th><th>Plan</th><th>Montant</th>
+          <th>Numéro payeur</th><th>Référence</th><th>Date</th><th>Action</th>
         </tr>
       </thead>
       <tbody>
         {% for p in paiements %}
         <tr>
           <td><strong>{{ p.vendeur.nom_boutique }}</strong></td>
+          <td>
+            <div>📍 {{ p.vendeur.ville }}</div>
+            <div>📞 {{ p.vendeur.numero }}</div>
+            {% if p.vendeur.user.email %}<div>📧 {{ p.vendeur.user.email }}</div>{% endif %}
+          </td>
           <td><span class="badge bg-success">{{ p.plan.nom|upper }}</span></td>
           <td>{{ p.montant|floatformat:0 }} GNF</td>
           <td>{{ p.numero_paiement }}</td>

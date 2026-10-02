@@ -63,6 +63,13 @@ sitemaps = {
 }
 
 urlpatterns = [
+    # API Notifications Polling
+    # Placees AVANT le router DRF ci-dessous : celui-ci intercepte
+    # 'api/notifications/...' et renvoyait {'detail': 'Non trouve.'}
+    # au lieu d'appeler ces vues.
+    path('api/notifications/nouvelles/', views.api_notifications_nouvelles, name='api_notifications_nouvelles'),
+    path('api/notifications/<int:pk>/marquer-lue/', views.api_marquer_notification_lue, name='api_marquer_notification_lue'),
+
     path('api/', include(router.urls)),
     
     # Page d'accueil
@@ -161,6 +168,8 @@ urlpatterns = [
     
     # Authentication Client
     path('inscription-client/', views.inscription_client, name='inscription_client'),
+    # Question CAPTCHA neuve pour les formulaires d'inscription (client et vendeur)
+    path('renouveler-captcha/', views.renouveler_captcha, name='renouveler_captcha'),
     path('connexion-client/', views.connexion_client, name='connexion_client'),
     path('mot-de-passe-oublie/', views.mot_de_passe_oublie, name='mot_de_passe_oublie'),
     path('reinitialiser-mot-de-passe/', views.reinitialiser_mot_de_passe, name='reinitialiser_mot_de_passe'),
@@ -204,8 +213,8 @@ urlpatterns = [
     path('mes-notifications/', views.mes_notifications, name='mes_notifications'),
     
     # API Notifications Polling
-    path('api/notifications/nouvelles/', views.api_notifications_nouvelles, name='api_notifications_nouvelles'),
-    
+    # (routes declarees en tete d'urlpatterns, avant le router DRF)
+
     # Messages & Négociations
     path('mes-messages/', views.mes_messages_client, name='mes_messages_client'),
     path('negociation/<int:pk>/chat/', views.chat_negociation, name='chat_negociation'),

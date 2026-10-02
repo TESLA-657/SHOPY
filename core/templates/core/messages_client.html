@@ -4,16 +4,24 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+
+  <link rel="stylesheet" href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
 <style>
   .msg-layout{display:grid;grid-template-columns:360px 1fr;gap:14px;padding:12px;}
   .msg-list,.msg-preview{background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden}
   .msg-list-header,.msg-preview-header{padding:14px 16px;border-bottom:1px solid #eee;font-weight:800;}
   .msg-item{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-bottom:1px solid #f3f3f3;text-decoration:none;color:#222}
   .msg-item:hover{background:#f8fafc}
-  .msg-delete{opacity:0;background:none;border:none;cursor:pointer;color:#999;font-size:16px;padding:4px 8px;border-radius:8px;transition:all .2s}
+  .msg-delete{opacity:0;background:none;border:none;cursor:pointer;color:#999;font-size:16px;padding:4px 8px;border-radius:8px;transition: background-color .2s}
   .msg-item:hover .msg-delete{opacity:1}
-  .msg-delete:hover{background:#ffe8e8;color:#b42318}
-  .msg-avatar{width:38px;height:38px;border-radius:50%;background:#e8f7ef;color:#1f7a46;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .msg-delete:hover{background:#ffe8e8, color .2s}
+  .msg-item:hover .msg-delete{opacity:1}
+  .msg-delete:hover{background:#ffe8e8, border-color .2s}
+  .msg-item:hover .msg-delete{opacity:1}
+  .msg-delete:hover{background:#ffe8e8, box-shadow .2s}
+  .msg-item:hover .msg-delete{opacity:1}
+  .msg-delete:hover{background:#ffe8e8, transform .12s cubic-bezier(.2,.8,.3,1);color:#8e4023}
+  .msg-avatar{width:38px;height:38px;border-radius:50%;background:#e8f7ef;color:#047857;font-weight:800;display:flex;align-items:center;justify-content:center}
   .msg-main{flex:1;min-width:0}
   .msg-top{display:flex;justify-content:space-between;gap:8px}
   .msg-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -22,11 +30,14 @@
   .msg-tag{display:inline-block;margin-top:6px;padding:3px 8px;border-radius:999px;background:#f1f5f9;font-size:11px;font-weight:700}
   .preview-body{padding:16px}
   @media (max-width: 900px){.msg-layout{grid-template-columns:1fr}}
-  .msg-delete{background:none;border:none;color:#999;cursor:pointer;padding:4px 8px;border-radius:8px;font-size:16px;line-height:1;transition:all .2s}
-  .msg-delete:hover{background:#fee2e2;color:#dc2626}
+  .msg-delete{background:none;border:none;color:#999;cursor:pointer;padding:4px 8px;border-radius:8px;font-size:16px;line-height:1;transition: background-color .2s}
+  .msg-delete:hover{background:#fee2e2, color .2s}
+  .msg-delete:hover{background:#fee2e2, border-color .2s}
+  .msg-delete:hover{background:#fee2e2, box-shadow .2s}
+  .msg-delete:hover{background:#fee2e2, transform .12s cubic-bezier(.2,.8,.3,1);color:#e74c3c}
   .msg-item-row{display:flex;justify-content:space-between;align-items:flex-start;width:100%;gap:4px}
   .msg-item-row .msg-main{flex:1;min-width:0}
-  .unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#dc2626;color:#fff;font-size:11px;font-weight:700;margin-left:6px;}
+  .unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#e74c3c;color:#fff;font-size:11px;font-weight:700;margin-left:6px;}
   .msg-list:hover{transform: scale(1.1); transition: 0.5s;}
 </style>
 {% endblock %}
@@ -38,7 +49,7 @@
   <div class="messages-header-client">
     <div class="dashboard-stats-row">
       <div class="dashboard-stat-item">
-        <span class="dashboard-stat-icon">💬</span>
+        <span class="dashboard-stat-icon"><i class="bi bi-chat-dots-fill" aria-hidden="true"></i></span>
         <div>
           <p class="dashboard-stat-label">Mes messages</p>
           <p class="dashboard-stat-value">{{ conversations|length }}</p>
@@ -77,8 +88,7 @@
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-  backdrop-filter: blur(10px);
-  transition: background-color .2s ease-out, color .2s ease-out, border-color .2s ease-out, transform .2s cubic-bezier(.2,.8,.3,1), box-shadow .2s ease-out, opacity .2s ease-out;
+    transition: background-color .2s ease-out, color .2s ease-out, border-color .2s ease-out, transform .2s cubic-bezier(.2,.8,.3,1), box-shadow .2s ease-out, opacity .2s ease-out;
 }
 .messages-back-btn-client:hover {
   background: rgba(255,255,255,0.3);
@@ -90,7 +100,7 @@
   <div class="msg-layout">
     <div class="msg-list-client">
       <div class="msg-list-header-client">
-        💬 Conversations
+        <i class="bi bi-chat-dots-fill" aria-hidden="true"></i> Conversations
         <span class="msg-list-count-client">{{ conversations|length }}</span>
       </div>
 {% if conversations %}
@@ -114,7 +124,7 @@
         {% endfor %}
       {% else %}
         <div class="empty-state-client">
-          <div class="empty-icon-client">💬</div>
+          <div class="empty-icon-client"><i class="bi bi-chat-dots-fill" aria-hidden="true"></i></div>
           <p class="empty-title-client">Aucune conversation</p>
           <p class="empty-subtitle-client">Proposez un prix pour démarrer une discussion.</p>
         </div>
@@ -122,9 +132,9 @@
     </div>
 
     <div class="msg-preview">
-      <div class="msg-preview-header">💬 Aperçu</div>
+      <div class="msg-preview-header"><i class="bi bi-chat-dots-fill" aria-hidden="true"></i> Aperçu</div>
       <div class="preview-body">
-        <div class="preview-icon">💬</div>
+        <div class="preview-icon"><i class="bi bi-chat-dots-fill" aria-hidden="true"></i></div>
         <p style="margin:0;color:#666; text-align:center;">
           Sélectionnez une conversation pour ouvrir le chat.
           <br><br>
@@ -229,11 +239,11 @@
 }
 .msg-tag-client.accepte {
   background: #dcfce7;
-  color: #15803d;
+  color: #047857;
 }
 .msg-tag-client.refuse {
   background: #fee2e2;
-  color: #b91c1c;
+  color: #b02a37;
 }
 .unread-badge-client {
   display: inline-flex;
@@ -243,7 +253,7 @@
   height: 22px;
   padding: 0 6px;
   border-radius: 11px;
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  background: linear-gradient(135deg, #e74c3c, #b02a37);
   color: #fff;
   font-size: 11px;
   font-weight: 700;

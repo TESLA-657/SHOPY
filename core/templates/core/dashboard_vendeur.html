@@ -141,6 +141,17 @@
           <p>Configuration</p>
         </div>
       </a>
+
+      <a href="{% url 'messages_vendeur' %}" class="vendor-mini-card vendor-messages-card">
+        <span class="vendor-mini-icon blue"><i class="bi bi-chat-dots" aria-hidden="true"></i></span>
+        <div class="vendor-mini-content">
+          <h3>Messages</h3>
+          <p>Conversations clients</p>
+        </div>
+        {% if nb_messages_non_lus|default:0 %}
+          <span class="vendor-mini-badge">{{ nb_messages_non_lus|default:0 }}</span>
+        {% endif %}
+      </a>
     </div>
 
     <div class="vendor-summary-grid">
@@ -265,6 +276,23 @@
       padding: 16px 14px;
       transition: background-color .15s ease-out, color .15s ease-out, border-color .15s ease-out, transform .15s cubic-bezier(.2,.8,.3,1), box-shadow .15s ease-out, opacity .15s ease-out;
       color: #0f172a;
+    }
+
+    .vendor-messages-card { position: relative; }
+    .vendor-messages-card .vendor-mini-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: inline-grid;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      place-items: center;
+      color: #fff;
+      background: #dc2626;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 800;
     }
 
     .vendor-mini-card:hover {

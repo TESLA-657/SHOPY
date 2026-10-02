@@ -21,8 +21,20 @@
     <!-- Message -->
     <p class="wait-message">
       Votre boutique <strong>{{ nom_boutique }}</strong> a bien été créée.<br>
+      {% if paiement_en_attente %}
+      Votre paiement d'abonnement a été enregistré. Un administrateur va vérifier
+      votre demande de boutique et votre paiement en même temps.
+      {% else %}
       Un administrateur va vérifier vos informations et activer votre compte sous peu.
+      {% endif %}
     </p>
+
+    {% if paiement_en_attente %}
+    <div class="wait-info-card">
+      <p class="wait-info-label">💳 Paiement abonnement en attente</p>
+      <p class="wait-info-email">Plan {{ plan.nom|upper }} — {{ plan.prix|floatformat:0 }} GNF</p>
+    </div>
+    {% endif %}
     
     <!-- Info Card -->
     <div class="wait-info-card">

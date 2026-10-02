@@ -2,9 +2,12 @@
 {% load static %}
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/modifier-produit.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/product-form-anti-ia.css' %}">
 {% endblock %}
 
 {% block content %}
+
+{% include 'core/_vendor_header.html' %}
 
 <div class="mp-container">
 
@@ -15,7 +18,7 @@
       <div class="mp-header-content">
         <div class="mp-header-title">
           <div class="mp-header-icon">
-            {% if form.instance.pk %}✏️{% else %}➕{% endif %}
+            {% if form.instance.pk %}<i class="bi bi-pencil-square" aria-hidden="true"></i>{% else %}<i class="bi bi-plus-lg" aria-hidden="true"></i>{% endif %}
           </div>
           <div class="mp-header-text">
             <h2>{% if form.instance.pk %}Modifier le produit{% else %}Ajouter un produit{% endif %}</h2>
@@ -36,7 +39,7 @@
         {% if form.errors %}
         <div class="mp-alert">
           <div class="mp-alert-title">
-            ⚠️ Corrigez les erreurs suivantes
+            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> Corrigez les erreurs suivantes
           </div>
           <ul class="mp-alert-list">
             {% for field, errors in form.errors.items %}
@@ -59,7 +62,7 @@
           <!-- Nom -->
           <div class="mp-form-group">
             <label class="mp-label">
-              <span class="mp-label-icon">📦</span> Nom du produit
+              <span class="mp-label-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span> Nom du produit
             </label>
             {{ form.nom }}
           </div>
@@ -67,7 +70,7 @@
           <!-- Catégorie -->
           <div class="mp-form-group">
             <label class="mp-label">
-              <span class="mp-label-icon">🏷️</span> Catégorie
+              <span class="mp-label-icon"><i class="bi bi-tags" aria-hidden="true"></i></span> Catégorie
             </label>
             {{ form.categorie }}
           </div>
@@ -75,11 +78,11 @@
           <!-- Photo -->
           <div class="mp-form-group">
             <label class="mp-label">
-              <span class="mp-label-icon">📸</span> Photo du produit
+              <span class="mp-label-icon"><i class="bi bi-camera" aria-hidden="true"></i></span> Photo du produit
             </label>
             <div class="mp-photo-section">
               <label for="id_photo" class="mp-photo-label">
-                📁 Choisir une photo depuis votre appareil
+                <i class="bi bi-folder2-open" aria-hidden="true"></i> Choisir une photo depuis votre appareil
               </label>
               {{ form.photo }}
             </div>
@@ -90,7 +93,7 @@
             <div class="mp-col">
               <div class="mp-form-group mb-0">
                 <label class="mp-label">
-                  <span class="mp-label-icon">💰</span> Prix (GNF)
+                  <span class="mp-label-icon"><i class="bi bi-cash-stack" aria-hidden="true"></i></span> Prix (GNF)
                 </label>
                 {{ form.prix }}
               </div>
@@ -98,7 +101,7 @@
             <div class="mp-col">
               <div class="mp-form-group mb-0">
                 <label class="mp-label">
-                  <span class="mp-label-icon">📊</span> Stock disponible
+                  <span class="mp-label-icon"><i class="bi bi-boxes" aria-hidden="true"></i></span> Stock disponible
                 </label>
                 {{ form.quantite }}
               </div>
@@ -108,7 +111,7 @@
           <!-- Description -->
           <div class="mp-form-group">
             <label class="mp-label">
-              <span class="mp-label-icon">📝</span> Description / Caractéristiques
+              <span class="mp-label-icon"><i class="bi bi-card-text" aria-hidden="true"></i></span> Description / Caractéristiques
             </label>
             {{ form.description }}
           </div>
@@ -119,30 +122,30 @@
               <input type="checkbox" name="promo" id="id_promo" class="mp-promo-checkbox"
                      {% if form.instance.promo %}checked{% endif %}
                      onchange="togglePromo(this)">
-              <label for="id_promo" class="mp-promo-label">🔥 Promotion spéciale</label>
+              <label for="id_promo" class="mp-promo-label"><i class="bi bi-tag" aria-hidden="true"></i> Promotion spéciale</label>
             </div>
             <div id="section-promo" class="mp-promo-content {% if form.instance.promo %}active{% endif %}">
               <div class="mp-row">
                 <div class="mp-col">
                   <div class="mp-form-group mb-0">
-                    <label class="mp-label">💵 Prix promo (GNF)</label>
+                    <label class="mp-label"><i class="bi bi-cash-stack" aria-hidden="true"></i> Prix promo (GNF)</label>
                     {{ form.prix_promo }}
                   </div>
                 </div>
                 <div class="mp-col">
                   <div class="mp-form-group mb-0">
-                    <label class="mp-label">⏱️ Durée (jours)</label>
+                    <label class="mp-label"><i class="bi bi-calendar3" aria-hidden="true"></i> Durée (jours)</label>
                     {{ form.jours_promo }}
                   </div>
                 </div>
               </div>
-              <p class="mp-promo-hint">⚡ La promotion sera automatiquement désactivée après la durée définie.</p>
+              <p class="mp-promo-hint"><i class="bi bi-info-circle" aria-hidden="true"></i> La promotion sera automatiquement désactivée après la durée définie.</p>
             </div>
           </div>
 
           <!-- Submit Button -->
           <button type="submit" class="mp-submit-btn">
-            {% if form.instance.pk %}💾 Sauvegarder les modifications{% else %}✅ Publier le produit{% endif %}
+            {% if form.instance.pk %}<i class="bi bi-check2-circle" aria-hidden="true"></i> Sauvegarder les modifications{% else %}<i class="bi bi-plus-circle" aria-hidden="true"></i> Publier le produit{% endif %}
           </button>
 
         </form>

@@ -1,0 +1,227 @@
+/* ============================================
+   CATALOGUE — PALETTE SHOPY (surcharge)
+   ============================================
+   Surcharge de catalogue-style.css, chargee UNIQUEMENT par
+   catalogue.html pour ne pas impacter les 7 autres pages qui
+   partagent cette feuille de base (panier, paiements...).
+
+   Objectif : aligner le catalogue sur la palette verte/or de
+   l'accueil et du dashboard (cf. shopy-palette.css).
+   ============================================ */
+
+:root {
+  --primary-color:  #2E8B62;   /* vert d'action */
+  --primary-light:  #55A77E;
+  --primary-dark:   #1F6647;
+  --secondary-color:#C5A059;   /* or : accent unique */
+  --accent-color:   #C5A059;
+  --accent-green:   #2E8B62;
+
+  --text-primary:   #F3EFE7;   /* creme chaud */
+  --text-secondary: #C2CBC5;   /* gris-vert */
+  --text-light:     #8D9B93;
+
+  --bg-primary:     #0E1512;   /* fond vert foret */
+  --bg-secondary:   #151F1A;   /* carte */
+  --bg-card:        #151F1A;
+  --bg-elevated:    #1B2822;   /* survol */
+
+  --border-light:   #314138;
+  --border-strong:  #47594F;
+
+  --border-radius:  8px;       /* et non 16/20px : rayons courts */
+  --shadow-light:   0 4px 14px rgba(8, 12, 10, 0.35);
+  --shadow-medium:  0 10px 26px rgba(8, 12, 10, 0.42);
+  --shadow-hover:   0 14px 32px rgba(8, 12, 10, 0.5);
+  /* Pas de halo vert vif : l'accent est l'or, pas une lueur. */
+  --shadow-glow:    none;
+
+  --ease: cubic-bezier(.2, .8, .3, 1);
+}
+
+/* ---------- Fonds ---------- */
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: Calibri, "Segoe UI", sans-serif;
+}
+
+.catalogue-container,
+.page-shell { background: var(--bg-primary); }
+
+/* ---------- Cartes ---------- */
+.section-card,
+.product-card,
+.promo-card,
+.category-tag,
+.search-wrapper,
+.location-select {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-light);
+  color: var(--text-primary);
+}
+
+.product-card,
+.promo-card { border-radius: var(--border-radius); }
+
+.product-card:hover,
+.promo-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-3px);
+}
+
+/* Le degrade vert/rouge sur la carte au survol disparait :
+   deux couleurs d'accent se battent. L'or le remplace. */
+.product-card::before,
+.promo-card::before {
+  background: var(--secondary-color);
+  opacity: 0;
+}
+.product-card:hover::before,
+.promo-card:hover::before { opacity: 1; }
+
+/* ---------- Textes ---------- */
+.page-title,
+.section-title,
+.product-name,
+.promo-name { color: var(--text-primary); }
+
+.page-subtitle,
+.page-note,
+.page-text-muted,
+.product-seller,
+.promo-seller,
+.seller-location,
+.rating-count,
+.empty-state-subtitle { color: var(--text-secondary); }
+
+/* ---------- Prix : l'or, couleur d'accent unique ---------- */
+.price-current,
+.promo-price,
+.promo-price-single { color: var(--secondary-color); }
+
+.price-old,
+.promo-old-price { color: var(--text-light); }
+
+/* ---------- Badges ---------- */
+.badge-promo {
+  color: #1A1206;
+  background: var(--secondary-color);
+}
+.badge-verified,
+.seller-badge {
+  color: var(--primary-light);
+  background: rgba(46, 139, 98, 0.16);
+  border: 1px solid rgba(46, 139, 98, 0.4);
+}
+
+/* ---------- Boutons ---------- */
+.page-action-btn.primary,
+.search-wrapper button {
+  color: #fff;
+  background: var(--primary-color);
+  border: 1px solid var(--primary-light);
+}
+.page-action-btn.primary:hover {
+  background: var(--primary-light);
+  border-color: #78C49D;
+}
+.page-action-btn.secondary {
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+}
+.page-action-btn.secondary:hover {
+  color: var(--text-primary);
+  border-color: var(--secondary-color);
+}
+
+/* ---------- En-tete / recherche ---------- */
+.catalogue-header {
+  background: rgba(14, 21, 18, 0.96);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: none;
+}
+
+.search-input,
+.location-select {
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+}
+.search-input::placeholder { color: var(--text-light); }
+.search-input:focus,
+.location-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(46, 139, 98, 0.18);
+}
+
+/* ---------- Categories / promos ---------- */
+.category-tag {
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius);
+}
+.category-tag:hover { color: var(--text-primary); border-color: var(--border-strong); }
+.category-tag-active {
+  color: #fff;
+  background: var(--primary-color);
+  border-color: var(--primary-light);
+}
+
+.promo-badge {
+  color: #1A1206;
+  background: var(--secondary-color);
+}
+
+.promo-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+}
+.promo-card:hover { border-color: var(--secondary-color); }
+
+/* ---------- Images ---------- */
+.product-image-container,
+.promo-card-image {
+  background: var(--bg-elevated);
+}
+.product-image-placeholder,
+.promo-placeholder {
+  background: var(--bg-elevated);
+  color: var(--text-light);
+}
+.product-image:hover,
+.promo-card-image img:hover {
+  filter: brightness(.8);
+}
+
+/* ---------- Etats vides / panneaux ---------- */
+.info-panel,
+.empty-state {
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius);
+}
+.info-panel strong { color: var(--text-primary); }
+.empty-state-title { color: var(--text-primary); }
+
+.summary-chip {
+  color: var(--secondary-color);
+  background: #1E2419;
+  border: 1px solid #4A3F22;
+  border-radius: var(--border-radius);
+}
+
+.cart-icon-btn {
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+}
+.cart-icon-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--primary-color);
+}

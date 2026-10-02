@@ -13,9 +13,16 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Charge le fichier .env a la racine du projet s'il existe.
+# Les variables reellement definies dans l'environnement ou sur le
+# dashboard Render ont TOUJOURS priorite : .env ne fait que completer
+# ce qui manque en developpement local.
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -70,8 +77,49 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@shopy-guinee.
 # Email de contact pour les pages légales
 SUPPORT_EMAIL = os.environ.get('SUPPORT_EMAIL', 'support@shopy-guinee.com')
 
+# URL publique du site : utilisee pour construire les liens cliquables
+# dans les e-mails (confirmation de compte, code de verification...).
+# En local, laisser vide : les emails resteront sans lien.
+SITE_URL = os.environ.get('SITE_URL', '')
+
+# ============================================
+# AFFICHAGE PERSONNALISE DE LA PAGE D'ACCUEIL
+# ============================================
+# False = les 4 cartes (Acheter / Vendre / Connexion Vendeur /
+#          Mon Compte) restent visibles. Pratique en developpement
+#          pour tester et verifier chaque parcours en un clic.
+# True  = un utilisateur deja inscrit ne voit QUE ce qui le concerne :
+#          le client son « Mon Compte », le vendeur son « Mon Espace ».
+#          A activer au moment de la mise en production, une fois les
+#          tests manuels des 4 parcours termines.
+#
+# Variable d'environnement pour l'activer sans redemarrer le code :
+#   PowerShell : $env:WELCOME_PERSONNALISE="True"
+#   Render     : WELCOME_PERSONNALISE = True
+WELCOME_PERSONNALISE = os.environ.get(
+    'WELCOME_PERSONNALISE', 'False'
+).lower() in ('1', 'true', 'yes')
+
 # Pour recevoir les notifications admin
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@shopy-guinee.com')
+
+# ============================================
+# RESEND — service d'envoi d'emails
+# ============================================
+# La cle API n'est JAMAIS ecrite dans le code source : elle est lue
+# uniquement depuis la variable d'environnement RESEND_API_KEY.
+#   - en local      : fichier .env (ignore par Git, cf. .gitignore)
+#   - en production : dashboard Render -> Environment (cf. render.yaml)
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
+
+# Permet de desactiver l'envoi sans toucher au code (pratique en local).
+RESEND_ENABLED = os.environ.get('RESEND_ENABLED', 'True').lower() in ('1', 'true', 'yes')
+
+# Expediteur. En production, RESEND_FROM_EMAIL doit appartenir a un
+# domaine verifie sur Resend. Pour un simple test, Resend met a
+# disposition l'adresse de onboarding : onboarding@resend.dev
+RESEND_FROM_EMAIL = os.environ.get('RESEND_FROM_EMAIL', 'onboarding@resend.dev')
+RESEND_FROM_NAME = os.environ.get('RESEND_FROM_NAME', 'SHOPY')
 
 
 # Application definition
@@ -172,10 +220,68 @@ if not DEBUG:
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{BASE_DIR}/db.sqlite3',
-        conn_max_age=600,
+        # Reutilisation de la connexion pendant 10 minutes : evite
+        # d'ouvrir/fermer une connexion a chaque requete.
+        conn_max_age=int(os.environ.get('DB_CONN_MAX_AGE', 600)),
         conn_health_checks=True,
     )
 }
+
+# Borne le nombre de connexions simultanees par worker.
+# Sans maxconn, 1000 visiteurs connectes en meme temps peuvent epuiser
+# le pool PostgreSQL et faire tomber tout le site. 20 x 2 workers =
+# 40 connexions maxi : tres en dessous des limites d'un plan gratuit.
+#
+# `maxconn` est une option psycopg2 (PostgreSQL) uniquement : l'appliquer
+# a SQLite leve "TypeError: maxconn is an invalid keyword argument"
+# et empeche meme le demarrage du serveur en developpement local.
+if DATABASES['default'].get('ENGINE', '').endswith('postgresql'):
+    DATABASES['default'].setdefault('OPTIONS', {})
+    DATABASES['default']['OPTIONS']['maxconn'] = int(
+        os.environ.get('DB_MAX_CONN', 20)
+    )
+
+# ============================================
+# CACHE
+# ============================================
+# Objectif : absorber les lectures repetees (catalogue, pages produits)
+# qui allaient actuellement a la base a chaque affichage.
+#
+# Backend cache fichier en repli : aucune dependance externe a
+# installer. Si REDIS_URL est fourni (Render ou service externe),
+# Redis est automatiquement utilise, sans toucher au code.
+CACHE_REDIS_URL = os.environ.get('REDIS_URL', '').strip()
+
+if CACHE_REDIS_URL:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': CACHE_REDIS_URL,
+            'TIMEOUT': 300,
+        }
+    }
+else:
+    # Repli multi-processus sans dependance : cache sur disque.
+    # Plus lent que Redis mais toujours bien plus rapide qu'un SELECT.
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+            'LOCATION': os.path.join(BASE_DIR, 'media', 'shopy_cache'),
+            'TIMEOUT': 300,
+        }
+    }
+
+# ============================================
+# SESSIONS
+# ============================================
+# Les sessions en base ecrivent une ligne SQL par page affichee.
+# Avec 1000 visiteurs connectes en meme temps, cela inonde
+# inutilement PostgreSQL. Le cache les stocke hors base.
+#
+# Le comportement reste identique (y compris la deconnexion) :
+# seul le support de stockage change.
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
 
 
 # Password validation

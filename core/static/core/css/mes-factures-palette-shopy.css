@@ -1,0 +1,182 @@
+/* ============================================
+   MES FACTURES — PALETTE SHOPY (surcharge)
+   ============================================
+   Surcharge chargee uniquement par mes_factures.html.
+
+   account-style.css est partage par 11 pages : on ne le modifie pas.
+   On surcharge ici les elements de la page factures, qui utilisaient
+   encore un theme clair + des degrades vert vif (typique IA).
+
+   Ecran de consultation de factures : densite basse (padding large),
+   accent unique (or), aucune lueur.
+   ============================================ */
+
+:root {
+  --primary-color:  #2E8B62;
+  --primary-light:  #55A77E;
+  --secondary-color:#C5A059;
+  --accent-green:   #2E8B62;
+
+  --text-primary:   #F3EFE7;
+  --text-secondary: #C2CBC5;
+  --text-light:     #8D9B93;
+
+  --bg-primary:     #0E1512;
+  --bg-secondary:   #151F1A;
+  --bg-tertiary:    #121B17;
+  --bg-elevated:    #1B2822;
+
+  --border-light:   #314138;
+  --border:         #314138;
+  --border-2:       #47594F;
+}
+
+/* ---------- Fond de la page : plus d'orbe ni de degrade ---------- */
+.invoices-page {
+  background: var(--bg-primary) !important;
+}
+
+/* ---------- En-tete ---------- */
+.invoices-header {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--secondary-color);
+  border-radius: var(--border-radius, 8px) !important;
+  box-shadow: none !important;
+  color: var(--text-primary) !important;
+}
+
+.invoices-kicker {
+  color: var(--secondary-color) !important;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.invoice-headline {
+  color: var(--text-primary) !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 600;
+}
+
+.invoices-header-copy,
+.invoices-summary {
+  color: var(--text-secondary) !important;
+}
+
+/* ---------- Bouton retour ---------- */
+.invoices-back-btn {
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-2) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  font-weight: 700;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.invoices-back-btn:hover {
+  background: var(--bg-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--primary-color) !important;
+  transform: none !important;
+}
+
+/* ---------- Liste ---------- */
+.invoice-list-panel {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border);
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+.invoice-item {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border);
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  transition: border-color 120ms ease;
+}
+.invoice-item:hover { border-color: var(--border-2); }
+
+.invoice-item-image,
+.invoice-item-placeholder {
+  background: var(--bg-primary) !important;
+  color: var(--text-light) !important;
+}
+
+.invoice-item-content { color: var(--text-secondary) !important; }
+
+/* Prix : l'or, accent unique */
+.invoice-price {
+  color: var(--secondary-color) !important;
+  font-family: Calibri, "Segoe UI", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.invoice-meta,
+.invoice-footer { color: var(--text-light) !important; }
+
+/* ---------- Statuts : pastilles sobres, sans aplat vif ---------- */
+.invoice-status {
+  border-radius: 3px !important;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 3px 7px;
+}
+.invoice-status.accepted {
+  color: var(--primary-light);
+  background: rgba(46, 139, 98, 0.14);
+  border: 1px solid rgba(46, 139, 98, 0.34);
+}
+.invoice-status.waiting {
+  color: #E0A526;
+  background: rgba(224, 165, 38, 0.12);
+  border: 1px solid rgba(224, 165, 38, 0.32);
+}
+.invoice-status.rejected {
+  color: #E09383;
+  background: rgba(214, 91, 74, 0.12);
+  border: 1px solid rgba(214, 91, 74, 0.32);
+}
+
+/* ---------- Telechargement ---------- */
+.invoice-download {
+  background: var(--primary-color) !important;
+  color: #fff !important;
+  border: 1px solid var(--primary-light) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  font-weight: 700;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+.invoice-download:hover {
+  background: var(--primary-light) !important;
+  border-color: #78C49D !important;
+  transform: none !important;
+}
+
+.account-btn-primary {
+  background: var(--primary-color) !important;
+  border: 1px solid var(--primary-light) !important;
+  box-shadow: none !important;
+}
+
+/* ---------- Etat vide ---------- */
+.facture-empty-state {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border);
+  border-radius: 8px !important;
+  color: var(--text-secondary) !important;
+}
+.facture-empty-icon { color: var(--primary-light); }
+.facture-empty-title { color: var(--text-primary) !important; }
+.facture-empty-subtitle { color: var(--text-secondary) !important; }
+
+/* ---------- Conteneur compte ---------- */
+.account-container {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: Calibri, "Segoe UI", sans-serif;
+}

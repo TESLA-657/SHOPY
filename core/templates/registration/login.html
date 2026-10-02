@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <title>Connexion - SHOPY</title>
     <style>
@@ -9,7 +10,9 @@
         h2 { text-align: center; color: #2ecc71; }
         input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
         button { width: 100%; padding: 10px; background: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .password-toggle { color: var(--text-secondary, #6b7280); }
     </style>
+    <link href="{% static 'core/css/password-toggle.css' %}" rel="stylesheet">
 </head>
 <body>
     <div class="login-box">
@@ -20,5 +23,8 @@
             <button type="submit">Se connecter</button>
         </form>
     </div>
+
+    <!-- Afficher / masquer le mot de passe (icône œil) -->
+    <script src="{% static 'core/js/password-toggle.js' %}"></script>
 </body>
 </html>

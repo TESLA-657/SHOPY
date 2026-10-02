@@ -4,16 +4,24 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/account-style.css' %}">
+
+  <link rel="stylesheet" href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
 <style>
   .msg-layout{display:grid;grid-template-columns:360px 1fr;gap:14px;padding:12px;}
   .msg-list,.msg-preview{background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden}
   .msg-list-header,.msg-preview-header{padding:14px 16px;border-bottom:1px solid #eee;font-weight:800}
   .msg-item{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-bottom:1px solid #f3f3f3;text-decoration:none;color:#222}
   .msg-item:hover{background:#f8fafc}
-  .msg-delete{opacity:0;background:none;border:none;cursor:pointer;color:#999;font-size:16px;padding:4px 8px;border-radius:8px;transition:all .2s}
+  .msg-delete{opacity:0;background:none;border:none;cursor:pointer;color:#999;font-size:16px;padding:4px 8px;border-radius:8px;transition: background-color .2s}
   .msg-item:hover .msg-delete{opacity:1}
-  .msg-delete:hover{background:#ffe8e8;color:#b42318}
-  .msg-avatar{width:38px;height:38px;border-radius:50%;background:#e8eefc;color:#2b4ea2;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .msg-delete:hover{background:#ffe8e8, color .2s}
+  .msg-item:hover .msg-delete{opacity:1}
+  .msg-delete:hover{background:#ffe8e8, border-color .2s}
+  .msg-item:hover .msg-delete{opacity:1}
+  .msg-delete:hover{background:#ffe8e8, box-shadow .2s}
+  .msg-item:hover .msg-delete{opacity:1}
+  .msg-delete:hover{background:#ffe8e8, transform .12s cubic-bezier(.2,.8,.3,1);color:#8e4023}
+  .msg-avatar{width:38px;height:38px;border-radius:50%;background:#e7f6ee;color:#047857;font-weight:800;display:flex;align-items:center;justify-content:center}
   .msg-main{flex:1;min-width:0}
   .msg-top{display:flex;justify-content:space-between;gap:8px}
   .msg-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -22,11 +30,14 @@
   .msg-tag{display:inline-block;margin-top:6px;padding:3px 8px;border-radius:999px;background:#f1f5f9;font-size:11px;font-weight:700}
   .preview-body{padding:16px}
   @media (max-width: 900px){.msg-layout{grid-template-columns:1fr}}
-  .msg-delete{background:none;border:none;color:#999;cursor:pointer;padding:4px 8px;border-radius:8px;font-size:16px;line-height:1;transition:all .2s}
-  .msg-delete:hover{background:#fee2e2;color:#dc2626}
+  .msg-delete{background:none;border:none;color:#999;cursor:pointer;padding:4px 8px;border-radius:8px;font-size:16px;line-height:1;transition: background-color .2s}
+  .msg-delete:hover{background:#fee2e2, color .2s}
+  .msg-delete:hover{background:#fee2e2, border-color .2s}
+  .msg-delete:hover{background:#fee2e2, box-shadow .2s}
+  .msg-delete:hover{background:#fee2e2, transform .12s cubic-bezier(.2,.8,.3,1);color:#e74c3c}
   .msg-item-row{display:flex;justify-content:space-between;align-items:flex-start;width:100%;gap:4px}
   .msg-item-row .msg-main{flex:1;min-width:0}
-  .unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#dc2626;color:#fff;font-size:11px;font-weight:700;margin-left:6px;}
+  .unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#e74c3c;color:#fff;font-size:11px;font-weight:700;margin-left:6px;}
 </style>
 {% endblock %}
 
@@ -37,7 +48,7 @@
   <div class="messages-header-premium">
     <div class="dashboard-stats-row">
       <div class="dashboard-stat-item">
-        <span class="dashboard-stat-icon">💬</span>
+        <span class="dashboard-stat-icon"><i class="bi bi-chat-dots-fill" aria-hidden="true"></i></span>
         <div>
           <p class="dashboard-stat-label">Messages</p>
           <p class="dashboard-stat-value">{{ conversations|length }}</p>
@@ -51,7 +62,7 @@
 
 <style>
 .messages-header-premium {
-  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
   padding: 20px;
   position: relative;
   overflow: hidden;
@@ -76,8 +87,7 @@
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-  backdrop-filter: blur(10px);
-  transition: background-color .2s ease-out, color .2s ease-out, border-color .2s ease-out, transform .2s cubic-bezier(.2,.8,.3,1), box-shadow .2s ease-out, opacity .2s ease-out;
+    transition: background-color .2s ease-out, color .2s ease-out, border-color .2s ease-out, transform .2s cubic-bezier(.2,.8,.3,1), box-shadow .2s ease-out, opacity .2s ease-out;
 }
 .messages-back-btn:hover {
   background: rgba(255,255,255,0.3);
@@ -89,7 +99,7 @@
   <div class="msg-layout">
     <div class="msg-list-premium">
       <div class="msg-list-header-premium">
-        💬 Conversations
+        <i class="bi bi-chat-dots-fill" aria-hidden="true"></i> Conversations
         <span class="msg-list-count">{{ conversations|length }}</span>
       </div>
 {% if conversations %}
@@ -113,7 +123,7 @@
         {% endfor %}
       {% else %}
         <div class="empty-state-premium">
-          <div class="empty-icon-premium">💬</div>
+          <div class="empty-icon-premium"><i class="bi bi-chat-dots-fill" aria-hidden="true"></i></div>
           <p class="empty-title-premium">Aucune conversation</p>
           <p class="empty-subtitle-premium">Les échanges clients apparaîtront ici.</p>
         </div>
@@ -121,15 +131,15 @@
     </div>
 
     <div class="msg-preview">
-      <div class="msg-preview-header">💬 Aperçu</div>
+      <div class="msg-preview-header"><i class="bi bi-chat-dots-fill" aria-hidden="true"></i> Aperçu</div>
       <div class="preview-body">
-        <div class="preview-icon">💬</div>
+        <div class="preview-icon"><i class="bi bi-chat-dots-fill" aria-hidden="true"></i></div>
         <p style="margin:0;color:#666; text-align:center;">
           Sélectionnez une conversation pour ouvrir le chat complet.
           <br><br>
           Les clients connectés et vendeurs voient le même fil de discussion.
           <br><br>
-          <strong>💡 Tips:</strong> Les clients sans compte sont distingués par <strong>nom + numéro</strong>.
+          <strong><i class="bi bi-lightbulb" aria-hidden="true"></i> Tips:</strong> Les clients sans compte sont distingués par <strong>nom + numéro</strong>.
         </p>
       </div>
     </div>
@@ -151,7 +161,7 @@
   gap: 10px;
 }
 .msg-list-count {
-  background: #8b5cf6;
+  background: #059669;
   color: white;
   padding: 2px 10px;
   border-radius: 12px;
@@ -174,7 +184,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  background: linear-gradient(135deg, #059669, #047857);
   color: white;
   font-weight: 800;
   font-size: 18px;
@@ -230,11 +240,11 @@
 }
 .msg-tag-premium.accepte {
   background: #dcfce7;
-  color: #15803d;
+  color: #047857;
 }
 .msg-tag-premium.refuse {
   background: #fee2e2;
-  color: #b91c1c;
+  color: #b02a37;
 }
 .unread-badge-premium {
   display: inline-flex;
@@ -244,7 +254,7 @@
   height: 22px;
   padding: 0 6px;
   border-radius: 11px;
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  background: linear-gradient(135deg, #e74c3c, #b02a37);
   color: #fff;
   font-size: 11px;
   font-weight: 700;

@@ -4,158 +4,72 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/commandes-vendeur.css' %}">
-<style>
-  .archive-popup-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.18s ease-out;
-  }
-  .archive-popup-overlay.active {
-    display: flex;
-  }
-  .archive-popup-box {
-    background: white;
-    border-radius: 20px;
-    padding: 36px 32px 28px;
-    max-width: 420px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    animation: slideUp 0.18s ease-out;
-  }
-  .archive-popup-icon {
-    font-size: 56px;
-    margin-bottom: 12px;
-  }
-  .archive-popup-box h3 {
-    margin: 0 0 12px;
-    font-size: 22px;
-    color: #1a1a2e;
-    font-weight: 700;
-  }
-  .archive-popup-text {
-    color: #555;
-    font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 20px;
-  }
-  .archive-popup-badge {
-    display: inline-block;
-    background: #fef3c7;
-    color: #92400e;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-  }
-  .archive-popup-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-  }
-  .archive-popup-btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color .12s ease-out, color .12s ease-out, border-color .12s ease-out, transform .12s cubic-bezier(.2,.8,.3,1), box-shadow .12s ease-out, opacity .12s ease-out;
-    min-width: 130px;
-  }
-  .archive-popup-cancel {
-    background: #f1f5f9;
-    color: #475569;
-  }
-  .archive-popup-cancel:hover {
-    background: #e2e8f0;
-  }
-  .archive-popup-confirm {
-    background: linear-gradient(135deg, #dc3545, #b02a37);
-    color: white;
-    box-shadow: 0 4px 14px rgba(220,53,69,0.4);
-  }
-  .archive-popup-confirm:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(220,53,69,0.5);
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  @keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-</style>
+<link rel="stylesheet" href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
 {% endblock %}
 
 {% block content %}
 
+<div class="cv-page-scope">
 {% include 'core/_vendor_header.html' %}
 
 <div id="cv-commandes-container">
   <div id="cv-commandes-wrapper">
 
-    <!-- Header -->
-    <div class="cv-header">
+    <!-- En-tête de gestion -->
+    <header class="cv-header">
       <div class="cv-header-left">
-        <h4>📦 Mes Commandes</h4>
+        <h1><i class="bi bi-box-seam" aria-hidden="true"></i>Commandes</h1>
         <div class="cv-shop-name">{{ vendeur.nom_boutique }}</div>
       </div>
-      <a href="{% url 'dashboard_vendeur' %}" class="cv-back-btn">← Retour au Dashboard</a>
-    </div>
+      <a href="{% url 'dashboard_vendeur' %}" class="cv-back-btn">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i> Retour au tableau de bord
+      </a>
+    </header>
 
-<!-- Stats Grid -->
-    <div class="cv-stats-grid">
+    <!-- Repères opérationnels -->
+    <div class="cv-stats-grid" aria-label="Répartition des commandes">
       <div class="cv-stat-card total">
-        <div class="cv-stat-icon">📋</div>
-        <div class="cv-stat-label">Total</div>
+        <div class="cv-stat-icon"><i class="bi bi-list-check" aria-hidden="true"></i></div>
+        <div class="cv-stat-label">Toutes</div>
         <div class="cv-stat-value">{{ total_commandes }}</div>
       </div>
       <div class="cv-stat-card pending">
-        <div class="cv-stat-icon">⏳</div>
-        <div class="cv-stat-label">En attente</div>
+        <div class="cv-stat-icon"><i class="bi bi-hourglass-split" aria-hidden="true"></i></div>
+        <div class="cv-stat-label">À traiter</div>
         <div class="cv-stat-value">{{ commandes_attente }}</div>
       </div>
       <div class="cv-stat-card accepted">
-        <div class="cv-stat-icon">✅</div>
+        <div class="cv-stat-icon"><i class="bi bi-check2-circle" aria-hidden="true"></i></div>
         <div class="cv-stat-label">Acceptées</div>
         <div class="cv-stat-value">{{ commandes_acceptees }}</div>
       </div>
       <div class="cv-stat-card rejected">
-        <div class="cv-stat-icon">❌</div>
+        <div class="cv-stat-icon"><i class="bi bi-x-circle" aria-hidden="true"></i></div>
         <div class="cv-stat-label">Refusées</div>
         <div class="cv-stat-value">{{ commandes_refusees }}</div>
       </div>
     </div>
 
-<!-- Tabs pour Statut (En attente, Acceptées, Refusées) -->
-    <div class="cv-tabs">
-      <button class="cv-tab active" data-statut="all" onclick="switchStatutTab('all')">
-        📋 Tous <span class="cv-tab-count">{{ total_commandes }}</span>
+    <!-- Filtres par statut -->
+    <div class="cv-tabs" role="tablist" aria-label="Filtrer les commandes par statut">
+      <button type="button" class="cv-tab active" data-statut="all" role="tab" aria-selected="true" onclick="switchStatutTab('all')">
+        Toutes <span class="cv-tab-count">{{ total_commandes }}</span>
       </button>
-      <button class="cv-tab" data-statut="en_attente" onclick="switchStatutTab('en_attente')">
-        ⏳ En attente <span class="cv-tab-count">{{ commandes_attente }}</span>
+      <button type="button" class="cv-tab" data-statut="en_attente" role="tab" aria-selected="false" onclick="switchStatutTab('en_attente')">
+        À traiter <span class="cv-tab-count">{{ commandes_attente }}</span>
       </button>
-      <button class="cv-tab" data-statut="acceptee" onclick="switchStatutTab('acceptee')">
-        ✅ Acceptées <span class="cv-tab-count">{{ commandes_acceptees }}</span>
+      <button type="button" class="cv-tab" data-statut="acceptee" role="tab" aria-selected="false" onclick="switchStatutTab('acceptee')">
+        Acceptées <span class="cv-tab-count">{{ commandes_acceptees }}</span>
       </button>
-      <button class="cv-tab" data-statut="refusee" onclick="switchStatutTab('refusee')">
-        ❌ Refusées <span class="cv-tab-count">{{ commandes_refusees }}</span>
+      <button type="button" class="cv-tab" data-statut="refusee" role="tab" aria-selected="false" onclick="switchStatutTab('refusee')">
+        Refusées <span class="cv-tab-count">{{ commandes_refusees }}</span>
       </button>
     </div>
 
 <!-- Section: En attente -->
     <div class="cv-section" data-section="en_attente">
       <div class="cv-section-header pending">
-        <div class="cv-section-header-icon">⏳</div>
+        <div class="cv-section-header-icon"><i class="bi bi-hourglass-split" aria-hidden="true"></i></div>
         <div class="cv-section-title">Commandes en attente</div>
         <div class="cv-section-count">{{ commandes_attente }}</div>
       </div>
@@ -166,15 +80,15 @@
               {% if commande.produit.photo %}
                 <img src="{{ commande.produit.photo.url }}" class="cv-commande-image">
               {% else %}
-                <div class="cv-commande-placeholder">📦</div>
+                <div class="cv-commande-placeholder"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
               {% endif %}
               <div class="cv-commande-info">
                 <div class="cv-commande-title">{{ commande.produit.nom }}
-                  {% if commande.produit.promo %}<span class="cv-promo-badge">🔥 Promo</span>{% endif %}
+                  {% if commande.produit.promo %}<span class="cv-promo-badge"><i class="bi bi-fire" aria-hidden="true"></i> Promo</span>{% endif %}
                 </div>
                 <div class="cv-commande-meta">
-                  <span>👤 {{ commande.nom_client }}</span>
-                  <span>📍 {{ commande.ville_client }}</span>
+                  <span><i class="bi bi-person-fill" aria-hidden="true"></i> {{ commande.nom_client }}</span>
+                  <span><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> {{ commande.ville_client }}</span>
                 </div>
                 <div class="cv-commande-qte">Quantité: {{ commande.quantite }}</div>
                 <div class="cv-commande-message">Message : {{ commande.message|default:"Aucun message" }}</div>
@@ -182,21 +96,22 @@
               <div class="cv-commande-actions">
                 <form method="post" action="{% url 'changer_statut_commande' commande.pk %}" class="cv-select-form">
                   {% csrf_token %}
-                  <select name="statut" onchange="this.form.submit()">
-                    <option value="en_attente" selected>⏳ En attente</option>
-                    <option value="acceptee">✅ Accepter</option>
-                    <option value="refusee">❌ Refuser</option>
+                  <label class="visually-hidden" for="statut-commande-{{ commande.pk }}">Changer le statut de la commande {{ commande.pk }}</label>
+                  <select id="statut-commande-{{ commande.pk }}" name="statut" onchange="this.form.submit()">
+                    <option value="en_attente" selected>En attente</option>
+                    <option value="acceptee">Accepter</option>
+                    <option value="refusee">Refuser</option>
                   </select>
                 </form>
                 <div class="cv-commande-price">{{ commande.prix_total|format_prix }} GNF</div>
                 <div class="cv-commande-date">{{ commande.date_commande|date:"d/m/Y H:i" }}</div>
-                <div class="cv-commande-mode">💳 {{ commande.mode_paiement_label|default:"—" }}</div>
+                <div class="cv-commande-mode"><i class="bi bi-credit-card-2-front" aria-hidden="true"></i> {{ commande.mode_paiement_label|default:"—" }}</div>
               </div>
             </div>
           {% endif %}
         {% empty %}
           <div class="cv-empty-state">
-            <div class="cv-empty-icon">🛒</div>
+            <div class="cv-empty-icon"><i class="bi bi-cart3" aria-hidden="true"></i></div>
             <div class="cv-empty-title">Aucune commande en attente</div>
             <div class="cv-empty-subtitle">Les nouvelles commandes apparaîtront ici.</div>
           </div>
@@ -207,7 +122,7 @@
 <!-- Section: Acceptées -->
     <div class="cv-section" data-section="acceptee">
       <div class="cv-section-header accepted">
-        <div class="cv-section-header-icon">✅</div>
+        <div class="cv-section-header-icon"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></div>
         <div class="cv-section-title">Commandes acceptées</div>
         <div class="cv-section-count">{{ commandes_acceptees }}</div>
       </div>
@@ -218,30 +133,30 @@
               {% if commande.produit.photo %}
                 <img src="{{ commande.produit.photo.url }}" class="cv-commande-image">
               {% else %}
-                <div class="cv-commande-placeholder">📦</div>
+                <div class="cv-commande-placeholder"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
               {% endif %}
               <div class="cv-commande-info">
                 <div class="cv-commande-title">{{ commande.produit.nom }}
-                  {% if commande.produit.promo %}<span class="cv-promo-badge">🔥 Promo</span>{% endif %}
+                  {% if commande.produit.promo %}<span class="cv-promo-badge"><i class="bi bi-fire" aria-hidden="true"></i> Promo</span>{% endif %}
                 </div>
                 <div class="cv-commande-meta">
-                  <span>👤 {{ commande.nom_client }}</span>
-                  <span>📍 {{ commande.ville_client }}</span>
+                  <span><i class="bi bi-person-fill" aria-hidden="true"></i> {{ commande.nom_client }}</span>
+                  <span><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> {{ commande.ville_client }}</span>
                 </div>
                 <div class="cv-commande-qte">Quantité: {{ commande.quantite }}</div>
                 <div class="cv-commande-message">Message : {{ commande.message|default:"Aucun message" }}</div>
               </div>
               <div class="cv-commande-actions">
-                <span class="cv-commande-status accepted">✓ Acceptée</span>
+                <span class="cv-commande-status accepted"><i class="bi bi-check-lg" aria-hidden="true"></i> Acceptée</span>
                 <div class="cv-commande-price">{{ commande.prix_total|format_prix }} GNF</div>
                 <div class="cv-commande-date">{{ commande.date_commande|date:"d/m/Y H:i" }}</div>
-                <div class="cv-commande-mode">💳 {{ commande.mode_paiement_label|default:"—" }}</div>
+                <div class="cv-commande-mode"><i class="bi bi-credit-card-2-front" aria-hidden="true"></i> {{ commande.mode_paiement_label|default:"—" }}</div>
               </div>
             </div>
           {% endif %}
         {% empty %}
           <div class="cv-empty-state">
-            <div class="cv-empty-icon">🎉</div>
+            <div class="cv-empty-icon"><i class="bi bi-emoji-smile" aria-hidden="true"></i></div>
             <div class="cv-empty-title">Aucune commande acceptée</div>
             <div class="cv-empty-subtitle">Les commandes traitées seront listées ici.</div>
           </div>
@@ -252,7 +167,7 @@
 <!-- Section: Refusées -->
     <div class="cv-section" data-section="refusee">
       <div class="cv-section-header rejected">
-        <div class="cv-section-header-icon">❌</div>
+        <div class="cv-section-header-icon"><i class="bi bi-x-circle-fill" aria-hidden="true"></i></div>
         <div class="cv-section-title">Commandes refusées</div>
         <div class="cv-section-count">{{ commandes_refusees }}</div>
       </div>
@@ -263,29 +178,29 @@
               {% if commande.produit.photo %}
                 <img src="{{ commande.produit.photo.url }}" class="cv-commande-image">
               {% else %}
-                <div class="cv-commande-placeholder">📦</div>
+                <div class="cv-commande-placeholder"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
               {% endif %}
               <div class="cv-commande-info">
                 <div class="cv-commande-title">{{ commande.produit.nom }}
-                  {% if commande.produit.promo %}<span class="cv-promo-badge">🔥 Promo</span>{% endif %}
+                  {% if commande.produit.promo %}<span class="cv-promo-badge"><i class="bi bi-fire" aria-hidden="true"></i> Promo</span>{% endif %}
                 </div>
                 <div class="cv-commande-meta">
-                  <span>👤 {{ commande.nom_client }}</span>
-                  <span>📍 {{ commande.ville_client }}</span>
+                  <span><i class="bi bi-person-fill" aria-hidden="true"></i> {{ commande.nom_client }}</span>
+                  <span><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> {{ commande.ville_client }}</span>
                 </div>
                 <div class="cv-commande-qte">Quantité: {{ commande.quantite }}</div>
                 <div class="cv-commande-message">Message : {{ commande.message|default:"Aucun message" }}</div>
               </div>
               <div class="cv-commande-actions">
-                <span class="cv-commande-status rejected">✕ Refusée</span>
+                <span class="cv-commande-status rejected"><i class="bi bi-x-lg" aria-hidden="true"></i> Refusée</span>
                 <div class="cv-commande-date">{{ commande.date_commande|date:"d/m/Y H:i" }}</div>
-                <div class="cv-commande-mode">💳 {{ commande.mode_paiement_label|default:"—" }}</div>
+                <div class="cv-commande-mode"><i class="bi bi-credit-card-2-front" aria-hidden="true"></i> {{ commande.mode_paiement_label|default:"—" }}</div>
               </div>
             </div>
           {% endif %}
         {% empty %}
           <div class="cv-empty-state">
-            <div class="cv-empty-icon">👍</div>
+            <div class="cv-empty-icon"><i class="bi bi-hand-thumbs-up-fill" aria-hidden="true"></i></div>
             <div class="cv-empty-title">Aucune commande refusée</div>
             <div class="cv-empty-subtitle">Les commandes refusées seront affichées ici.</div>
           </div>
@@ -297,28 +212,28 @@
     <div class="cv-archive-section">
       <form method="post" action="{% url 'supprimer_historique' %}" id="archive-form">
         {% csrf_token %}
-        <button type="button" class="cv-archive-btn" onclick="openArchivePopup()">
-          🗑️ Archiver l'historique
+        <button type="button" class="cv-archive-btn" aria-haspopup="dialog" aria-controls="archive-popup-overlay" onclick="openArchivePopup()">
+          <i class="bi bi-trash3" aria-hidden="true"></i> Archiver l'historique
         </button>
       </form>
     </div>
 
     <!-- Stylish Archive Confirmation Popup -->
-    <div id="archive-popup-overlay" class="archive-popup-overlay" onclick="closeArchivePopup()">
+    <div id="archive-popup-overlay" class="archive-popup-overlay" role="dialog" aria-modal="true" aria-labelledby="archive-popup-title" aria-hidden="true" onclick="closeArchivePopup()">
       <div class="archive-popup-box" onclick="event.stopPropagation()">
-        <div class="archive-popup-icon">🗄️</div>
-        <h3>Confirmer l'archivage</h3>
+        <div class="archive-popup-icon"><i class="bi bi-archive" aria-hidden="true"></i></div>
+        <h3 id="archive-popup-title">Confirmer l'archivage</h3>
         <p class="archive-popup-text">
           Vous êtes sur le point d'<strong>archiver l'historique</strong> de vos commandes de plus d'un mois.
           <br><br>
-          <span class="archive-popup-badge">⚠️ Cette action est irréversible</span>
+          <span class="archive-popup-badge"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> Cette action est irréversible</span>
         </p>
         <div class="archive-popup-actions">
           <button type="button" class="archive-popup-btn archive-popup-cancel" onclick="closeArchivePopup()">
-            ❌ Annuler
+            <i class="bi bi-x-lg" aria-hidden="true"></i> Annuler
           </button>
           <button type="submit" form="archive-form" class="archive-popup-btn archive-popup-confirm">
-            ✅ Confirmer l'archivage
+            <i class="bi bi-check-lg" aria-hidden="true"></i> Confirmer l'archivage
           </button>
         </div>
       </div>
@@ -326,88 +241,95 @@
 
   </div>
 </div>
+</div>
 
 <script>
-  // Popup archivage
+  const archiveOverlay = document.getElementById('archive-popup-overlay');
+  const archiveTrigger = document.querySelector('.cv-archive-btn');
+  const archiveCancelButton = archiveOverlay.querySelector('.archive-popup-cancel');
+  const archiveFocusableSelector = 'button:not([disabled]), [href], select, input, [tabindex]:not([tabindex="-1"])';
+  let archiveWasOpened = false;
+
   function openArchivePopup() {
-    document.getElementById('archive-popup-overlay').classList.add('active');
+    archiveOverlay.classList.add('active');
+    archiveOverlay.setAttribute('aria-hidden', 'false');
+    archiveWasOpened = true;
+    document.body.classList.add('cv-modal-open');
+    archiveCancelButton.focus();
   }
+
   function closeArchivePopup() {
-    document.getElementById('archive-popup-overlay').classList.remove('active');
+    if (!archiveOverlay.classList.contains('active')) return;
+    archiveOverlay.classList.remove('active');
+    archiveOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('cv-modal-open');
+    if (archiveWasOpened && archiveTrigger) archiveTrigger.focus();
+    archiveWasOpened = false;
   }
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeArchivePopup();
+
+  archiveOverlay.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeArchivePopup();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+
+    const focusable = Array.from(archiveOverlay.querySelectorAll(archiveFocusableSelector));
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   });
 
-  let currentPromoTab = 'all';
   let currentStatutTab = 'all';
+  const statusTabs = Array.from(document.querySelectorAll('.cv-tab[data-statut]'));
 
-  // Fonctions pour les onglets Promo / Normal
-  function switchPromoTab(tab) {
-    currentPromoTab = tab;
-    
-    // Update promo tab buttons
-    document.querySelectorAll('.cv-tab[data-promo]').forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.dataset.promo === tab) {
-        btn.classList.add('active');
-      }
-    });
-    
-    // Filter by promo status
-    filterCommandes();
-  }
-
-  // Fonctions pour les onglets Statut (En attente, Acceptées, Refusées)
   function switchStatutTab(tab) {
+    if (!statusTabs.some(function (button) { return button.dataset.statut === tab; })) return;
     currentStatutTab = tab;
-    
-    // Update statut tab buttons
-    document.querySelectorAll('.cv-tab[data-statut]').forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.dataset.statut === tab) {
-        btn.classList.add('active');
-      }
+
+    statusTabs.forEach(function (button) {
+      const isActive = button.dataset.statut === tab;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-selected', String(isActive));
+      button.tabIndex = isActive ? 0 : -1;
     });
-    
-    // Filter by status
+
     filterCommandes();
   }
 
   function filterCommandes() {
-    // Filter sections by statut status
-    const sections = document.querySelectorAll('.cv-section');
-    
-    sections.forEach(section => {
-      const sectionStatut = section.dataset.section || 'all';
-      
-      // First filter by statut
-      let showByStatut = false;
-      if (currentStatutTab === 'all') {
-        showByStatut = true;
-      } else if (currentStatutTab === sectionStatut) {
-        showByStatut = true;
-      }
-      
-      section.style.display = showByStatut ? '' : 'none';
-    });
-    
-    // Then filter individual items by promo status within each visible section
-    const commandeItems = document.querySelectorAll('.cv-commande-item');
-    
-    commandeItems.forEach(item => {
-      const itemPromo = item.dataset.promo || 'non-promo';
-      
-      let showByPromo = false;
-      if (currentPromoTab === 'all') {
-        showByPromo = true;
-      } else if (currentPromoTab === itemPromo) {
-        showByPromo = true;
-      }
-      
-      item.style.display = showByPromo ? '' : 'none';
+    document.querySelectorAll('.cv-section').forEach(function (section) {
+      const isVisible = currentStatutTab === 'all' || section.dataset.section === currentStatutTab;
+      section.hidden = !isVisible;
+      section.setAttribute('aria-hidden', String(!isVisible));
     });
   }
+
+  statusTabs.forEach(function (button, index) {
+    button.tabIndex = index === 0 ? 0 : -1;
+    button.addEventListener('keydown', function (event) {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      let nextIndex = index;
+      if (event.key === 'ArrowLeft') nextIndex = (index - 1 + statusTabs.length) % statusTabs.length;
+      if (event.key === 'ArrowRight') nextIndex = (index + 1) % statusTabs.length;
+      if (event.key === 'Home') nextIndex = 0;
+      if (event.key === 'End') nextIndex = statusTabs.length - 1;
+      switchStatutTab(statusTabs[nextIndex].dataset.statut);
+      statusTabs[nextIndex].focus();
+    });
+  });
+
+  filterCommandes();
 </script>
 
 {% endblock %}

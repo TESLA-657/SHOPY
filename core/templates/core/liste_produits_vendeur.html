@@ -4,6 +4,8 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/mes-produits.css' %}">
+
+  <link rel="stylesheet" href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -23,7 +25,7 @@
     {% if suspendu %}
     <div class="mpc-suspended-overlay">
       <div class="mpc-suspended-modal">
-        <div class="mpc-suspended-icon">🔒</div>
+        <div class="mpc-suspended-icon"><i class="bi bi-lock-fill" aria-hidden="true"></i></div>
         <h3 class="mpc-suspended-title">
           {% if 'Essai gratuit' in vendeur.raison_suspension %}
             Essai gratuit expiré
@@ -44,11 +46,11 @@
         </p>
         {% if 'signalement' not in vendeur.raison_suspension %}
           <a href="{% url 'choisir_abonnement' %}" class="mpc-suspended-btn">
-            💳 Choisir un abonnement
+            <i class="bi bi-credit-card-2-front" aria-hidden="true"></i> Choisir un abonnement
           </a>
         {% else %}
           <a href="bahrytesla@gmail.com" class="mpc-suspended-btn-contact">
-            📧 Contacter l'administrateur
+            <i class="bi bi-envelope-fill" aria-hidden="true"></i> Contacter l'administrateur
           </a>
         {% endif %}
       </div>
@@ -57,7 +59,7 @@
 
     {% if abonnement and abonnement.jours_restants <= 5 and not suspendu %}
     <div style="background: rgba(210, 153, 34, 0.15); border: 1px solid rgba(210, 153, 34, 0.4); border-radius: 12px; padding: 12px 16px; text-align: center; margin-bottom: 20px;">
-      ⚠️ Abonnement expire dans <strong>{{ abonnement.jours_restants }} jour(s)</strong>.
+      <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> Abonnement expire dans <strong>{{ abonnement.jours_restants }} jour(s)</strong>.
       <a href="{% url 'choisir_abonnement' %}" style="color: var(--mp-primary); font-weight: bold; margin-left: 8px;">Renouveler →</a>
     </div>
     {% endif %}
@@ -66,11 +68,11 @@
     <div class="mpc-header">
       <div class="mpc-header-content">
         <div class="mpc-title-section">
-          <h1>📦 Mes produits</h1>
+          <h1><i class="bi bi-box-seam" aria-hidden="true"></i> Mes produits</h1>
           <p>Gérez votre catalogue, vos stocks et la visibilité en ligne</p>
         </div>
         <a href="{% url 'ajouter_produit' %}" class="mpc-add-btn">
-          ➕ Ajouter un produit
+          <i class="bi bi-plus-lg" aria-hidden="true"></i> Ajouter un produit
         </a>
       </div>
     </div>
@@ -81,10 +83,10 @@
         Tous <span class="mpc-tab-count">{{ produits.count }}</span>
       </button>
       <button class="mpc-tab" data-tab="promo" onclick="switchTab('promo')">
-        🔥 En promo <span class="mpc-tab-count">{{ produits_promo.count }}</span>
+        <i class="bi bi-fire" aria-hidden="true"></i> En promo <span class="mpc-tab-count">{{ produits_promo.count }}</span>
       </button>
       <button class="mpc-tab" data-tab="non-promo" onclick="switchTab('non-promo')">
-        📦 Normaux <span class="mpc-tab-count">{{ produits_non_promo.count }}</span>
+        <i class="bi bi-box-seam" aria-hidden="true"></i> Normaux <span class="mpc-tab-count">{{ produits_non_promo.count }}</span>
       </button>
     </div>
 
@@ -94,7 +96,7 @@
         type="text"
         id="recherche-vendeur-input"
         class="mpc-search-input"
-        placeholder="🔍 Rechercher un produit par nom ou description..."
+        placeholder="Rechercher un produit par nom ou description..."
       >
       <p id="recherche-vendeur-info" class="text-muted small mt-2 mb-0" style="display:none; color: var(--mp-text-muted);"></p>
     </div>
@@ -105,21 +107,21 @@
         <div class="mpc-product-card"
              data-nom="{{ p.nom|lower }}"
              data-description="{{ p.description|default:''|lower }}"
-             data-promo="{% if p.promo %}promo{% else %}non-promo{% endif %}">
+             data-promo="{% if p.promo_active %}promo{% else %}non-promo{% endif %}">
           
 <!-- Image with clickable overlay -->
           <div class="mpc-product-image">
             {% if p.photo %}
               <img src="{{ p.photo.url }}" alt="{{ p.nom }}">
             {% else %}
-              <div class="mpc-product-placeholder">📦</div>
+              <div class="mpc-product-placeholder"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
             {% endif %}
             <a href="{% url 'modifier_produit' p.id %}" class="mpc-image-link" title="Voir Détails"></a>
             
             <!-- Badges -->
             <div class="mpc-badges">
-              {% if p.promo %}
-              <span class="mpc-badge mpc-badge-promo">🔥 Promo</span>
+              {% if p.promo_active %}
+              <span class="mpc-badge mpc-badge-promo"><i class="bi bi-fire" aria-hidden="true"></i> Promo</span>
               {% endif %}
               <span class="mpc-badge mpc-badge-status {% if not p.visible %}masquer{% endif %}">
                 {% if p.visible %}En ligne{% else %}Masqué{% endif %}
@@ -139,7 +141,7 @@
           <div class="mpc-product-info">
             <h3 class="mpc-product-name">{{ p.nom }}</h3>
             <div class="mpc-product-price">
-              {% if p.promo and p.prix_promo %}
+              {% if p.promo_active %}
                 <span style="text-decoration: line-through; opacity: 0.6; font-size: 14px;">{{ p.prix|floatformat:0 }} GNF</span>
                 <span style="color: #e74c3c; font-weight: bold;">{{ p.prix_promo|floatformat:0 }} GNF</span>
               {% else %}
@@ -151,28 +153,28 @@
             <!-- Actions -->
             <div class="mpc-actions">
               <a href="{% url 'modifier_produit' p.id %}" class="mpc-btn-action mpc-btn-edit">
-                ✏️ Modifier
+                <i class="bi bi-pencil-square" aria-hidden="true"></i> Modifier
               </a>
               <a href="{% url 'supprimer_produit' p.id %}" class="mpc-btn-action mpc-btn-delete"
                  onclick="return confirm('Supprimer ce produit ?')">
-                🗑️ Supprimer
+                <i class="bi bi-trash3" aria-hidden="true"></i> Supprimer
               </a>
             </div>
           </div>
         </div>
       {% empty %}
         <div class="mpc-empty" style="grid-column: 1 / -1;">
-          <div class="mpc-empty-icon">📦</div>
+          <div class="mpc-empty-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
           <p class="mpc-empty-text">Vous n'avez pas encore de produits.</p>
           <a href="{% url 'ajouter_produit' %}" class="mpc-empty-btn">
-            ➕ Ajouter mon premier produit
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Ajouter mon premier produit
           </a>
         </div>
       {% endfor %}
     </div>
 
     <div id="msg-aucun-produit-vendeur" class="mpc-empty" style="display:none; margin-top: 20px;">
-      <div class="mpc-empty-icon">🔍</div>
+      <div class="mpc-empty-icon"><i class="bi bi-search" aria-hidden="true"></i></div>
       <p class="mpc-empty-text">Aucun produit trouvé pour cette recherche.</p>
     </div>
 
@@ -183,14 +185,14 @@
 {% if request.session.limite_atteinte %}
 <div id="popup-limite" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center;">
   <div style="background: var(--mp-bg-2); border: 1px solid var(--mp-border); border-radius: var(--mp-radius-2); padding: 32px; max-width:380px; width:90%; text-align:center;">
-    <div style="font-size:48px;">🚫</div>
+    <div style="font-size:48px;"><i class="bi bi-slash-circle" aria-hidden="true"></i></div>
     <h5 class="fw-bold mt-3 mb-2" style="color: var(--mp-text);">Limite atteinte !</h5>
     <p style="color: var(--mp-text-muted); margin-bottom: 24px;">
       Votre plan <strong>{{ request.session.plan_actuel|upper }}</strong> est limité à
       <strong>{{ request.session.limite }} produits</strong>.
     </p>
     <a href="{% url 'choisir_abonnement' %}" style="display:block; background: var(--mp-primary); color:white; padding:14px; border-radius: var(--mp-radius); font-weight:bold; text-decoration:none; margin-bottom:10px;">
-      🚀 Upgrader mon abonnement
+      <i class="bi bi-rocket-takeoff" aria-hidden="true"></i> Upgrader mon abonnement
     </a>
     <a href="{% url 'liste_produits_vendeur' %}?clear=1" onclick="document.getElementById('popup-limite').remove();" style="display:block; color: var(--mp-text-muted); font-size:13px; text-decoration:none; padding:10px;">
       Fermer

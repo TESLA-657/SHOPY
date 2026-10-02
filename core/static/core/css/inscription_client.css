@@ -3,8 +3,8 @@
 :root {
   --primary-color: #059669;
   --secondary-color: #d97706;
-  --accent-blue: #1a237e;
-  --accent-purple: #5b2d8e;
+  --accent-blue: #047857;
+  --accent-purple: #059669;
   --text-primary: #111827827;
   --text-secondary: #6b7280;
   --bg-card: #f8fafc;
@@ -90,8 +90,7 @@ body::after {
   border-radius: 24px;
   padding: 40px 36px;
   box-shadow: 0 8px 40px rgba(17, 24, 41, 0.2);
-  backdrop-filter: blur(10px);
-  position: relative;
+    position: relative;
   overflow: hidden;
 }
 
@@ -181,7 +180,7 @@ body::after {
   font-size: 15px;
   color: var(--text-primary);
   background: #f1f5f9;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform .12s cubic-bezier(.2,.8,.3,1);
 }
 
 .form-input::placeholder {
@@ -217,7 +216,7 @@ body::after {
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform .12s cubic-bezier(.2,.8,.3,1);
   box-shadow: 0 4px 15px rgba(230, 0, 18, 0.4);
   margin-top: 8px;
 }
@@ -270,7 +269,7 @@ body::after {
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform .12s cubic-bezier(.2,.8,.3,1);
   margin-top: 8px;
 }
 
@@ -352,7 +351,7 @@ body::after {
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform .12s cubic-bezier(.2,.8,.3,1);
 }
 
 .popup-button:hover {

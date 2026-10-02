@@ -131,7 +131,7 @@ body {
   border-radius: var(--pa-radius);
   padding: 16px 20px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform .12s cubic-bezier(.2,.8,.3,1);
   text-decoration: none;
   color: inherit;
 }
@@ -318,7 +318,7 @@ body {
   padding: 14px 16px;
   font-size: 1rem;
   color: var(--pa-text);
-  transition: all 0.25s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform .12s cubic-bezier(.2,.8,.3,1);
 }
 
 .pa-form-input:focus {
@@ -341,7 +341,7 @@ body {
   font-weight: 700;
   color: white;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform .12s cubic-bezier(.2,.8,.3,1);
   margin-top: 20px;
 }
 
@@ -366,7 +366,7 @@ body {
   background: var(--pa-card);
   border: 1px solid var(--pa-border);
   border-radius: var(--pa-radius-2);
-  transition: all 0.25s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform .12s cubic-bezier(.2,.8,.3,1);
   margin-top: 16px;
 }
 

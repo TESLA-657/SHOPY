@@ -2,8 +2,10 @@
 Middleware de rate limiting pour protéger contre les attaques brute-force.
 """
 
+import sys
 import time
 from collections import defaultdict
+from django.conf import settings
 from django.core.cache import cache
 from django.http import JsonResponse
 
@@ -19,7 +21,14 @@ class RateLimitMiddleware:
     # Configuration par défaut
     DEFAULT_RATE = 60  # requêtes par minute
     DEFAULT_BURST = 10  # requêtes par seconde
-    
+
+    # Vrai pendant les tests Django : toutes les requêtes viennent de la
+    # même IP (testserver) et dépassent le plafond. Le rate limiter n'a
+    # de sens que sur du trafic réel ; en test il rendait la suite
+    # instable (429 apparaissant selon le nombre de tests lancés avant).
+    # Détection automatique : 'test' est le premier argument de manage.py test.
+    _testing = 'test' in sys.argv
+
     def __init__(self, get_response):
         self.get_response = get_response
         # Chemins exemptés (pas de rate limiting)
@@ -37,6 +46,11 @@ class RateLimitMiddleware:
         }
     
     def __call__(self, request):
+        # Neutralisé pendant les tests (cf. _testing) : sinon toutes les
+        # requêtes partagent la même IP et finissent par être bloquées.
+        if self._testing or getattr(settings, 'TESTING', False):
+            return self.get_response(request)
+
         # Vérifier si exempté
         if self.is_exempt(request):
             return self.get_response(request)

@@ -20,6 +20,13 @@ services:
         sync: false
       - key: DJANGO_SUPERUSER_PASSWORD
         sync: false
+      # --- Service d'envoi d'emails Resend ---
+      # sync: false → saisir la cle dans le dashboard Render
+      # (Service → Environment) puis "Manual Deploy → Clear build cache & Deploy"
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
       - key: PYTHON_VERSION
         value: "3.11.0"
       - key: DATABASE_URL

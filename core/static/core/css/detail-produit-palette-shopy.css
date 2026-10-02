@@ -1,0 +1,108 @@
+/* ============================================
+   FICHE PRODUIT — ALIGNEMENT PALETTE SHOPY
+   ============================================
+   detail-produit.css etait deja en vert + or (bonne base),
+   mais avec des nuances divergentes : emeraude #1B4D3E, fond
+   chaud #12100E, gris beige #A79E93.
+
+   Cette surcharge aligne les valeurs sur la palette centrale
+   (shopy-palette.css) afin que la fiche ne « saute » pas de
+   couleur en passant du catalogue a la page produit.
+
+   Aucune regle structurelle ici : uniquement les couleurs.
+   ============================================ */
+
+:root {
+  /* Reprend exactement la palette centrale */
+  --primary: #2E8B62;
+  --primary-light: #55A77E;
+  --primary-dark: #1F6647;
+  --gold: #C5A059;
+  --gold-light: #E0A526;
+  --danger: #D65B4A;
+  --danger-light: #C24A3B;
+
+  /* Fonds : memes valeurs que --shopy-bg / --shopy-bg-3 */
+  --bg: #0E1512;
+  --surface: #151F1A;
+  --surface-hover: #1B2822;
+  --surface-muted: #121B17;
+  --border: #314138;
+  --border-light: #47594F;
+
+  /* Texte creme chaud + gris-vert (et non beige) */
+  --text: #F3EFE7;
+  --text-muted: #C2CBC5;
+  --text-subtle: #8D9B93;
+
+  --shadow-sm: 0 2px 6px rgba(8, 12, 10, 0.35);
+  --shadow-md: 0 4px 14px rgba(8, 12, 10, 0.42);
+  --shadow-lg: 0 10px 24px rgba(8, 12, 10, 0.5);
+}
+
+/* ---------- Prix : l'or, accent unique ---------- */
+.price-current,
+.price-current-old { color: var(--gold); }
+.price-label { color: var(--text-muted); }
+
+/* ---------- Badges et etats ---------- */
+.promo-badge-large {
+  color: #1A1206;
+  background: var(--gold);
+}
+.verified-badge {
+  color: var(--primary-light);
+  background: rgba(46, 139, 98, 0.16);
+  border-color: rgba(46, 139, 98, 0.4);
+}
+.category-tag {
+  color: var(--primary-light);
+  background: rgba(46, 139, 98, 0.14);
+  border-color: rgba(46, 139, 98, 0.32);
+}
+
+/* ---------- Boutons d'action ---------- */
+.action-btn,
+.cart-btn {
+  color: #fff;
+  background: var(--primary);
+  border: 1px solid var(--primary-light);
+}
+.action-btn:hover,
+.cart-btn:hover {
+  background: var(--primary-light);
+  border-color: #78C49D;
+}
+.action-btn.secondary,
+.contact-btn {
+  color: var(--text-secondary);
+  background: var(--surface-hover);
+  border: 1px solid var(--border-light);
+}
+.contact-btn:hover {
+  color: var(--text);
+  border-color: var(--gold);
+}
+.report-btn {
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+}
+.report-btn:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* ---------- Fond et images ---------- */
+.product-detail-container { background: var(--bg); }
+.image-container,
+.image-placeholder {
+  background: var(--surface-hover);
+  border-color: var(--border);
+}
+.product-main-image:hover { filter: brightness(.88); }
+
+/* ---------- Fil d Ariane ---------- */
+.breadcrumb-nav { color: var(--text-muted); }
+.breadcrumb-separator { color: var(--text-subtle); }
+.breadcrumb-current { color: var(--text); }

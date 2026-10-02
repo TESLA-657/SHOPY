@@ -168,17 +168,49 @@ class Vendeur(models.Model):
         
         aujourd_hui = timezone.now().date()
         
-        # Si dernier_reset_ventes n'est pas défini ou est du mois dernier
+        # Si dernier_reset_ventes n'est pas défini ou n'est pas du mois en cours
         if not self.dernier_reset_ventes or (
-            self.dernier_reset_ventes.year < aujourd_hui.year or
-            self.dernier_reset_ventes.month < aujourd_hui.month
-        ):
+            self.dernier_reset_ventes.year,
+            self.dernier_reset_ventes.month,
+        ) != (aujourd_hui.year, aujourd_hui.month):
             # Réinitialiser les ventes du mois
             self.ventes_du_mois = 0
             self.dernier_reset_ventes = aujourd_hui
             self.save(update_fields=['ventes_du_mois', 'dernier_reset_ventes'])
             return True
         return False
+
+    def synchroniser_ventes_du_mois(self, mois=None):
+        """
+        Recalcule ventes_du_mois depuis les commandes réellement acceptées
+        du mois en cours (source unique de vérité : commandes payées +
+        statut acceptee/livree). Évite tout double comptage.
+        """
+        from django.utils import timezone
+        from django.db.models import Sum, Q
+
+        aujourd_hui = timezone.now().date()
+        if mois is None:
+            mois = (aujourd_hui.year, aujourd_hui.month)
+
+        self.reset_ventes_si_nouveau_mois()
+        # Import local tardif pour éviter tout import circulaire au chargement.
+        from .models import Commande
+        commandes = Commande.objects.filter(
+            vendeur=self,
+            archivee=False,
+            statut__in=['acceptee', 'livree'],
+        ).filter(
+            Q(paiement__statut='valide') | Q(paiement_panier__statut='valide')
+        ).filter(
+            date_commande__year=mois[0],
+            date_commande__month=mois[1],
+        )
+        total = int(commandes.aggregate(total=Sum('prix_total'))['total'] or 0)
+        if self.ventes_du_mois != total:
+            self.ventes_du_mois = total
+            self.save(update_fields=['ventes_du_mois'])
+        return total
 
 class FideliteClientVendeur(models.Model):
     vendeur = models.ForeignKey('Vendeur', on_delete=models.CASCADE, related_name='client_fidelites')

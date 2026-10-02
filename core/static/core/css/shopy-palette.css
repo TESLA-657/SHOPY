@@ -1,0 +1,59 @@
+/* ============================================
+   PALETTE CENTRALE SHOPY
+   ============================================
+   Source de verite unique des couleurs de l'application.
+
+   Harmonologie : vert foret (confiance, commerce) + or (accent, prix,
+   qualite) + creme chaud (confort de lecture sur fond sombre).
+
+   Regles non negociables :
+     1. UNE SEULE couleur d'accent : l'or (--shopy-gold). Si tout est
+        accentue, plus rien ne l'est.
+     2. L'or ne fait jamais d'aplat : c'est un accent, pas un fond.
+     3. Les gris sont legerement verts : ils appartiennent au fond
+        au lieu de flotter comme du gris froid.
+
+   Toute nouvelle page doit utiliser ces variables, jamais des
+   couleurs en dur.
+   ============================================ */
+
+:root {
+  /* Fonds (du plus profond au plus clair) */
+  --shopy-bg:        #0E1512;  /* fond principal */
+  --shopy-bg-2:      #121B17;  /* fond secondaire, champs de formulaire */
+  --shopy-bg-3:      #18231E;  /* survol, fond tertiaire */
+  --shopy-card:      #151F1A;  /* carte */
+  --shopy-card-2:    #1B2822;  /* carte survolee */
+
+  /* Bordures */
+  --shopy-border:    #314138;  /* bordure standard */
+  --shopy-border-2:  #47594F;  /* bordure au survol */
+
+  /* Texte */
+  --shopy-text:      #F3EFE7;  /* creme chaud, texte principal */
+  --shopy-text-2:    #C2CBC5;  /* gris-vert, texte secondaire */
+  --shopy-muted:     #8D9B93;  /* gris-vert, legendes */
+
+  /* Accent unique */
+  --shopy-gold:      #C5A059;
+  --shopy-gold-dim:  #8C6F3D;  /* or attenue, bordures */
+
+  /* Vert d'action (boutons, liens actifs) */
+  --shopy-green:      #2E8B62;
+  --shopy-green-hov:  #55A77E;
+  --shopy-green-soft: rgba(46, 139, 98, 0.14);
+
+  /* Etats */
+  --shopy-yellow:    #E0A526;  /* attente, promo */
+  --shopy-red:       #D65B4A;  /* erreur, refus */
+  --shopy-blue:      #4A7C8C;  /* information (usage rare) */
+
+  /* Rayons : courts, jamais 20px+ */
+  --shopy-radius:    6px;
+  --shopy-radius-2:  8px;
+
+  /* Transitions : 120ms, propriete ciblee, jamais `transition: all` */
+  --shopy-ease:      cubic-bezier(.2, .8, .3, 1);
+  --shopy-t-fast:    120ms;
+  --shopy-t-base:    200ms;
+}

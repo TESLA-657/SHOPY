@@ -1,0 +1,159 @@
+/* ============================================
+   PARAMETRES VENDEUR — ANTI-IA SHOPY
+   Surcharge de parametres-vendeur.css (palette GitHub generique
+   violet/rose/bleu) vers la direction metier SHOPY : vert sombre,
+   or en accent, rayons courts, transitions 120ms ciblees,
+   aucun halo ni degrade parfait.
+   ============================================ */
+
+.pv-container {
+  --pv-bg: #0E1512;
+  --pv-bg-2: #121B17;
+  --pv-bg-3: #18231E;
+  --pv-card: #151F1A;
+  --pv-card-2: #1B2822;
+  --pv-border: #314138;
+  --pv-border-2: #47594F;
+  --pv-text: #F3EFE7;
+  --pv-text-2: #C2CBC5;
+  --pv-muted: #8D9B93;
+  --pv-gold: #C5A059;
+  --pv-green: #2E8B62;
+  --pv-green-hover: #55A77E;
+  --pv-green-glow: rgba(46, 139, 98, 0.18);
+  --pv-yellow: #E0A526;
+  --pv-red: #D65B4A;
+  --pv-radius: 6px;
+  --pv-radius-2: 8px;
+}
+
+/* ---------- Enveloppe ---------- */
+.account-container.pv-container {
+  background: var(--pv-bg);
+  min-height: calc(100vh - 150px);
+  padding: 24px;
+}
+
+/* ---------- Header (ex « purple ») ---------- */
+.account-header-purple {
+  background: var(--pv-card);
+  border: 1px solid var(--pv-border);
+  border-radius: var(--pv-radius-2);
+  box-shadow: none;
+  overflow: visible;
+}
+.account-header-purple::before { content: none; }
+
+.account-stats-label {
+  color: var(--pv-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+.account-stats-value {
+  color: var(--pv-text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* ---------- Bouton retour ---------- */
+.pv-back-btn {
+  color: var(--pv-text-2);
+  background: transparent;
+  border: 1px solid var(--pv-border-2);
+  border-radius: var(--pv-radius);
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.pv-back-btn:hover {
+  color: var(--pv-text);
+  background: var(--pv-bg-3);
+  border-color: var(--pv-green);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---------- Cartes de menu ---------- */
+.account-menu-card,
+.pv-card,
+.account-card {
+  background: var(--pv-card);
+  border: 1px solid var(--pv-border);
+  border-radius: var(--pv-radius-2);
+  box-shadow: none;
+}
+
+.account-card-header {
+  border-radius: var(--pv-radius-2) var(--pv-radius-2) 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+.account-card-header.boutique {
+  background: var(--pv-bg-2);
+  color: var(--pv-text-2);
+  border-bottom: 1px solid var(--pv-border);
+}
+
+/* ---------- Champs ---------- */
+.pv-form-section input[type="text"],
+.pv-form-section input[type="email"],
+.pv-form-section input[type="tel"],
+.pv-form-section input[type="number"],
+.pv-form-section input[type="password"],
+.pv-form-section select,
+.pv-form-section textarea,
+.form-label-styled + input,
+.form-label-styled + select {
+  color: var(--pv-text);
+  background: var(--pv-bg-2);
+  border: 1px solid var(--pv-border);
+  border-radius: var(--pv-radius);
+  box-shadow: none;
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+.pv-form-section input:focus,
+.pv-form-section select:focus,
+.pv-form-section textarea:focus {
+  background: var(--pv-bg-3);
+  border-color: var(--pv-green);
+  box-shadow: 0 0 0 3px var(--pv-green-glow);
+  outline: none;
+}
+
+.form-label-styled {
+  color: var(--pv-text-2);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* ---------- Boutons ---------- */
+.pv-submit,
+.account-btn,
+.account-menu-card button[type="submit"] {
+  color: #fff;
+  background: var(--pv-green);
+  border: 1px solid var(--pv-green-hover);
+  border-radius: var(--pv-radius);
+  font-weight: 800;
+  box-shadow: none;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+.pv-submit:hover,
+.account-btn:hover,
+.account-menu-card button[type="submit"]:hover {
+  background: var(--pv-green-hover);
+  border-color: #78C49D;
+  transform: none;
+  box-shadow: none;
+}
+.pv-submit:active,
+.account-btn:active { transform: scale(0.97); }
+
+@media (max-width: 768px) {
+  .account-container.pv-container { padding: 18px 14px 36px; }
+  .account-stats-value { font-size: 21px; }
+}

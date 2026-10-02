@@ -1,0 +1,266 @@
+/* ============================================
+   PAGE COMMANDER — ANTI-IA SHOPY
+   Même direction métier que le formulaire produit :
+   fond sombre vert, or en accent, rayons courts,
+   transitions 120ms ciblées, aucun halo ni scale().
+   ============================================ */
+
+.co-container {
+  --co-bg: #0E1512;
+  --co-bg-2: #121B17;
+  --co-bg-3: #18231E;
+  --co-card: #151F1A;
+  --co-border: #314138;
+  --co-border-2: #47594F;
+  --co-text: #F3EFE7;
+  --co-text-2: #C2CBC5;
+  --co-muted: #8D9B93;
+  --co-primary: #2E8B62;
+  --co-primary-hover: #55A77E;
+  --co-primary-glow: rgba(46, 139, 98, 0.18);
+  --co-gold: #C5A059;
+  --co-yellow: #E0A526;
+  --co-red: #D65B4A;
+  --co-radius: 6px;
+  --co-radius-2: 8px;
+
+  background: var(--co-bg);
+  min-height: calc(100vh - 150px);
+  padding: 24px;
+}
+
+.co-wrapper { max-width: 560px; margin: 0 auto; }
+
+/* ---------- En-tête ---------- */
+.co-header {
+  padding: 0 0 18px;
+  margin-bottom: 20px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--co-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.co-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.co-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--co-text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.co-title i { color: var(--co-primary-hover); }
+
+.co-subtitle {
+  margin: 6px 0 0;
+  color: var(--co-muted);
+  font-size: 13px;
+}
+
+.co-subtitle strong { color: var(--co-text-2); font-weight: 600; }
+
+.co-price {
+  padding: 9px 13px;
+  color: var(--co-gold);
+  background: #1E2419;
+  border: 1px solid #4A3F22;
+  border-radius: var(--co-radius);
+  font-family: Calibri, "Segoe UI", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.co-fidelity {
+  margin: 12px 0 0;
+  padding: 9px 12px;
+  color: var(--co-primary-hover);
+  background: #16281F;
+  border: 1px solid #2D604A;
+  border-left: 3px solid var(--co-primary);
+  border-radius: var(--co-radius);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ---------- Carte du formulaire ---------- */
+.co-card {
+  padding: 0;
+  background: var(--co-card);
+  border: 1px solid var(--co-border);
+  border-radius: var(--co-radius-2);
+  box-shadow: none;
+}
+
+.co-card-inner { padding: 22px; background: transparent; border: 0; border-radius: 0; }
+
+.co-alert {
+  margin-bottom: 18px;
+  padding: 11px 13px;
+  color: #F0A092;
+  background: #321D19;
+  border: 1px solid #74433A;
+  border-left: 3px solid var(--co-red);
+  border-radius: var(--co-radius);
+  font-size: 13px;
+}
+
+.co-alert strong { color: #F5BDB2; }
+
+/* ---------- Récapitulatif client connecté ---------- */
+.co-known {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: var(--co-bg-2);
+  border: 1px solid var(--co-border);
+  border-radius: var(--co-radius);
+}
+
+.co-known-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  color: var(--co-text-2);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.co-known-title i { color: var(--co-primary-hover); }
+
+.co-known-line {
+  margin: 0 0 4px;
+  color: var(--co-muted);
+  font-size: 13px;
+}
+
+.co-known-line:last-child { margin-bottom: 0; }
+.co-known-line strong { color: var(--co-text); font-weight: 600; }
+
+/* ---------- Champs ---------- */
+.co-group { margin-bottom: 18px; }
+
+.co-label {
+  display: block;
+  margin: 0 0 6px;
+  color: var(--co-text-2);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.co-input,
+.co-textarea {
+  display: block;
+  width: 100%;
+  padding: 12px 13px;
+  color: var(--co-text);
+  background: var(--co-bg-2);
+  border: 1px solid var(--co-border);
+  border-radius: var(--co-radius);
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 14px;
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.co-textarea { resize: vertical; min-height: 84px; }
+
+.co-input::placeholder,
+.co-textarea::placeholder { color: #6E7C74; }
+
+.co-input:hover,
+.co-textarea:hover { border-color: var(--co-border-2); }
+
+.co-input:focus,
+.co-textarea:focus {
+  background: var(--co-bg-3);
+  border-color: var(--co-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--co-primary-glow);
+}
+
+.co-hint {
+  margin: 6px 0 0;
+  color: var(--co-muted);
+  font-size: 12px;
+}
+
+.co-hint strong { color: var(--co-text-2); font-weight: 600; }
+
+/* ---------- Actions ---------- */
+.co-submit {
+  width: 100%;
+  padding: 13px 18px;
+  color: #fff;
+  background: var(--co-primary);
+  border: 1px solid var(--co-primary-hover);
+  border-radius: var(--co-radius);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.co-submit i { margin-right: 6px; }
+.co-submit:hover { background: var(--co-primary-hover); border-color: #78C49D; }
+.co-submit:active { transform: scale(0.97); }
+
+.co-login-hint {
+  margin: 4px 0 0;
+  color: var(--co-muted);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+.co-login-link {
+  color: var(--co-primary-hover);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.co-login-link:hover { color: #78C49D; text-decoration: underline; }
+
+.co-back {
+  display: block;
+  margin-top: 18px;
+  padding: 10px 14px;
+  color: var(--co-text-2);
+  background: transparent;
+  border: 1px solid var(--co-border-2);
+  border-radius: var(--co-radius);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.co-back:hover {
+  color: var(--co-text);
+  background: var(--co-bg-3);
+  border-color: var(--co-primary);
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .co-container { padding: 18px 14px 36px; }
+  .co-card-inner { padding: 18px; }
+  .co-title { font-size: 22px; }
+}

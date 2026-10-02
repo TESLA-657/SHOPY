@@ -4,6 +4,7 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/statistiques-avancees.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/statistiques-vendeur-anti-ia.css' %}">
 <script src="{% static 'core/vendor/chartjs/chart.umd.min.js' %}"></script>
 {% endblock %}
 
@@ -51,12 +52,12 @@
         <h5 class="sa-section-title">Evolution des ventes (12 derniers mois)</h5>
         {% if evolution_pourcent is not None %}
         <span style="margin-left:auto; font-size:13px; 
-          {% if evolution_pourcent > 0 %}color:#3fb950{% else %}color:#e74c3c{% endif %};">
+          {% if evolution_pourcent > 0 %}color:#55A77E{% else %}color:#D65B4A{% endif %};">
           {% if evolution_pourcent > 0 %}↑{% else %}↓{% endif %} {{ evolution_pourcent }}% vs mois dernier
         </span>
         {% endif %}
       </div>
-      <div style="height:280px; background:rgba(255,255,255,0.03); border-radius:12px; padding:16px;">
+      <div style="height:280px; background:#121B17; border-radius:8px; padding:16px;">
         <canvas id="salesChart"></canvas>
       </div>
     </div>
@@ -66,34 +67,34 @@
       <div class="sa-section-header">
         <h5 class="sa-section-title">📅 Remise à zéro mensuelle &amp; historique</h5>
       </div>
-      <p style="color:#94a3b8; font-size:13px; margin:0 0 14px;">
+      <p style="color:#8D9B93; font-size:13px; margin:0 0 14px;">
         Les ventes repartent de <strong>0 GNF</strong> à chaque nouveau mois.
         Vous pouvez consulter l'historique des mois passés en choisissant une date.
       </p>
 
       <form method="get" class="sa-month-select" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px;">
-        <label style="color:#cbd5e1; font-size:13px;">🕐 Choisir un mois :</label>
-        <input type="month" name="mois" value="{{ date_selectionnee|date:'Y-m' }}" style="background:#0b0e14; color:#e2e8f0; border:1px solid rgba(148,163,184,0.25); border-radius:10px; padding:8px 12px; font-size:14px;">
+        <label style="color:#C2CBC5; font-size:13px;">🕐 Choisir un mois :</label>
+        <input type="month" name="mois" value="{{ date_selectionnee|date:'Y-m' }}" style="background:#121B17; color:#F3EFE7; border:1px solid #47594F; border-radius:6px; padding:8px 12px; font-size:14px;">
         <button type="submit" class="sa-back-btn" style="border:none; cursor:pointer;">Voir les ventes</button>
         <a href="{% url 'statistiques_vendeur' %}" class="sa-back-btn" style="text-decoration:none;">↺ Mois courant</a>
       </form>
 
-      <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(148,163,184,0.15); border-radius:12px; padding:8px 16px;">
+      <div style="background:#121B17; border:1px solid #314138; border-radius:8px; padding:8px 16px;">
         <table style="width:100%; border-collapse:collapse; font-size:13px;">
           <thead>
-            <tr style="color:#64748b; text-transform:uppercase; font-size:11px; letter-spacing:0.06em;">
+            <tr style="color:#8D9B93; text-transform:uppercase; font-size:11px; letter-spacing:0.06em;">
               <th style="text-align:left; padding:10px 6px;">Mois</th>
               <th style="text-align:right; padding:10px 6px;">Ventes (GNF)</th>
             </tr>
           </thead>
           <tbody>
             {% for m in historique_mensuel %}
-            <tr style="{% if m.selectionne %}background:rgba(63,185,80,0.10);{% endif %} border-top:1px solid rgba(148,163,184,0.08);">
-              <td style="padding:10px 6px; color:#e2e8f0;">
+            <tr style="{% if m.selectionne %}background:rgba(46,139,98,0.14);{% endif %} border-top:1px solid #18231E;">
+              <td style="padding:10px 6px; color:#F3EFE7;">
                 {{ m.libelle }} {{ m.annee }}
-                {% if m.selectionne %}<span style="color:#3fb950; font-weight:700;"> ← sélectionné</span>{% endif %}
+                {% if m.selectionne %}<span style="color:#55A77E; font-weight:700;"> ← sélectionné</span>{% endif %}
               </td>
-              <td style="padding:10px 6px; text-align:right; color:#3fb950; font-weight:700;">
+              <td style="padding:10px 6px; text-align:right; color:#55A77E; font-weight:700;">
                 {{ m.total|format_prix }}
               </td>
             </tr>
@@ -101,61 +102,6 @@
           </tbody>
         </table>
       </div>
-    </div>
-
-    <div class="sa-conversion-section">
-      <div class="sa-section-header">
-        <h5 class="sa-section-title">Analyse des commandes</h5>
-      </div>
-
-      {% if total_commandes > 0 %}
-      <div class="sa-chart-container">
-        <div class="sa-progress-bars">
-          <div class="sa-progress-group">
-            <div class="sa-progress-header">
-              <span class="sa-progress-label">Acceptees</span>
-              <span class="sa-progress-value">{{ commandes_acceptees }} / {{ total_commandes }}</span>
-            </div>
-            <div class="sa-progress-bar"><div class="sa-progress-fill green" style="width:60%;"></div></div>
-          </div>
-          <div class="sa-progress-group">
-            <div class="sa-progress-header">
-              <span class="sa-progress-label">En attente</span>
-              <span class="sa-progress-value">{{ commandes_attente }} / {{ total_commandes }}</span>
-            </div>
-            <div class="sa-progress-bar"><div class="sa-progress-fill yellow" style="width:25%;"></div></div>
-          </div>
-          <div class="sa-progress-group">
-            <div class="sa-progress-header">
-              <span class="sa-progress-label">Refusees</span>
-              <span class="sa-progress-value">{{ commandes_refusees }} / {{ total_commandes }}</span>
-            </div>
-            <div class="sa-progress-bar"><div class="sa-progress-fill red" style="width:15%;"></div></div>
-          </div>
-        </div>
-        <div class="sa-pie-chart-wrapper">
-          <div class="sa-stats-numbers">
-            <div class="sa-stat-number-item">
-              <span class="sa-stat-num green">{{ commandes_acceptees }}</span>
-              <span class="sa-stat-label">Acceptees</span>
-            </div>
-            <div class="sa-stat-number-item">
-              <span class="sa-stat-num yellow">{{ commandes_attente }}</span>
-              <span class="sa-stat-label">En attente</span>
-            </div>
-            <div class="sa-stat-number-item">
-              <span class="sa-stat-num red">{{ commandes_refusees }}</span>
-              <span class="sa-stat-label">Refusees</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% else %}
-      <div class="sa-empty-state">
-        <div class="sa-empty-icon">📊</div>
-        <p>Pas encore de donnees.</p>
-      </div>
-      {% endif %}
     </div>
 
     {% if meilleur_produit %}
@@ -209,11 +155,11 @@
     datasets: [{
       label: "Ventes (GNF)",
       data: data,
-      borderColor: "#3fb950",
-      backgroundColor: "rgba(63,185,80,0.2)",
+      borderColor: "#55A77E",
+      backgroundColor: "rgba(46,139,98,0.18)",
       fill: true,
       tension: 0.4,
-      pointBackgroundColor: "#3fb950",
+      pointBackgroundColor: "#55A77E",
       pointRadius: 4,
       pointHoverRadius: 6
     }]
@@ -236,17 +182,17 @@
     },
     scales: {
       x: { 
-        ticks: { color: "#aaa" }, 
-        grid: { color: "rgba(255,255,255,0.1)" } 
+        ticks: { color: "#8D9B93" }, 
+        grid: { color: "#18231E" } 
       },
       y: { 
         ticks: { 
-          color: "#aaa",
+          color: "#8D9B93",
           callback: function(value) {
             return value.toLocaleString();
           }
         }, 
-        grid: { color: "rgba(255,255,255,0.1)" }, 
+        grid: { color: "#18231E" }, 
         beginAtZero: true
       }
     }

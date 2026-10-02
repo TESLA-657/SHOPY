@@ -24,6 +24,7 @@ def notifications_count(request):
         }
         notifications = [
             {
+                'id': notif.id,
                 'title': notif.titre,
                 'body': notif.message,
                 'type': type_map.get(notif.type, 'info'),

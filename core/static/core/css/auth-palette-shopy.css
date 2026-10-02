@@ -1,0 +1,185 @@
+/* ============================================
+   CONNEXION & INSCRIPTION — PALETTE SHOPY
+   ============================================
+   Surcharge commune aux 4 pages d'authentification :
+       connexion_client / connexion_vendeur
+       inscription_client / inscription_vendeur
+
+   Ces 4 pages partageaient 4 palettes divergentes (orange, bleu,
+   rouge, turquoise) ET un overlay bleu/violet sur fond blanc.
+   C'est la premiere impression de l'application pour un nouveau
+   visiteur : elles doivent etre identiques entre elles et alignees
+   sur le reste du site.
+
+   On passe du clair au vert foret, avec voile vert sur le fond.
+   ============================================ */
+
+:root {
+  --primary-color:  #2E8B62;
+  --primary-light:  #55A77E;
+  --primary-dark:   #1F6647;
+  --secondary-color:#C5A059;   /* or : accent unique */
+  --secondary:      #C5A059;
+  --accent:         #C5A059;
+  --accent-blue:    #4A7C8C;
+  --accent-purple:  #6B5B95;
+  --accent-teal:    #4A7C8C;
+  --accent-green:   #2E8B62;
+
+  --text-primary:   #F3EFE7;
+  --text-secondary: #C2CBC5;
+  --text:           #F3EFE7;
+  --text-muted:     #8D9B93;
+
+  --bg-primary:     #0E1512;
+  --bg-secondary:   #151F1A;
+  --bg-card:        #151F1A;
+  --bg-elevated:    #1B2822;
+
+  --border-light:   #314138;
+  --border:         #314138;
+  --border-2:       #47594F;
+  --radius:         8px;
+}
+
+/* ---------- Fond : voile vert au lieu du bleu/violet ---------- */
+body {
+  background-color: var(--bg-primary);
+  font-family: Calibri, "Segoe UI", sans-serif;
+}
+
+body::after {
+  background: linear-gradient(180deg,
+    rgba(14, 21, 18, 0.90) 0%,
+    rgba(14, 21, 18, 0.78) 50%,
+    rgba(14, 21, 18, 0.92) 100%) !important;
+}
+
+/* ---------- Carte : verte et opaque ---------- */
+.login-card,
+.register-card,
+.signup-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius) !important;
+  box-shadow: 0 18px 40px rgba(8, 12, 10, 0.5) !important;
+}
+
+/* ---------- Titres ---------- */
+.login-title,
+.register-title,
+.signup-title,
+h1.login-title { color: var(--text-primary) !important; }
+
+.login-subtitle,
+.register-subtitle,
+.signup-subtitle { color: var(--text-secondary) !important; }
+
+.login-icon,
+.register-icon {
+  color: var(--primary-light);
+  background: rgba(46, 139, 98, 0.14);
+  border: 1px solid rgba(46, 139, 98, 0.34);
+}
+
+/* ---------- Champs ---------- */
+.form-label,
+.login-form .form-label {
+  color: var(--text-secondary) !important;
+  font-weight: 700;
+}
+
+.form-input,
+.login-form input[type="text"],
+.login-form input[type="password"],
+.login-form input[type="email"],
+.login-form input[type="tel"],
+.login-form select,
+.register-form input,
+.register-form select {
+  color: var(--text-primary) !important;
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-light) !important;
+  border-radius: 6px !important;
+}
+.form-input::placeholder,
+.login-form input::placeholder { color: var(--text-muted) !important; }
+
+/* Indication sous un champ : discrète, lisible sur fond vert */
+.form-hint {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+.form-input:focus,
+.login-form input:focus,
+.register-form input:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(46, 139, 98, 0.18) !important;
+  outline: none;
+}
+
+/* ---------- Bouton principal ---------- */
+.login-button,
+.register-button,
+.btn-login,
+.btn-register,
+button[type="submit"] {
+  color: #fff !important;
+  background: var(--primary-color) !important;
+  border: 1px solid var(--primary-light) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+.login-button:hover,
+.register-button:hover,
+.btn-login:hover,
+.btn-register:hover,
+button[type="submit"]:hover {
+  background: var(--primary-light) !important;
+  border-color: #78C49D !important;
+  transform: none !important;
+}
+.login-button:active,
+button[type="submit"]:active { transform: scale(0.97); }
+
+/* ---------- Liens ---------- */
+.login-link,
+.register-link {
+  color: var(--secondary-color) !important;
+  text-decoration: none;
+}
+.login-link:hover { color: #E0A526 !important; }
+.login-link-text { color: var(--text-secondary) !important; }
+.login-return { color: var(--text-muted) !important; }
+
+/* ---------- Popups ---------- */
+.popup-content,
+.confirmation-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-light);
+  color: var(--text-primary) !important;
+}
+.popup-title { color: var(--text-primary) !important; }
+.popup-message { color: var(--text-secondary) !important; }
+.popup-button {
+  color: #fff !important;
+  background: var(--primary-color) !important;
+  border: 1px solid var(--primary-light) !important;
+}
+
+/* ---------- Alertes ---------- */
+.alert-success,
+.alert-info {
+  color: var(--primary-light) !important;
+  background: rgba(46, 139, 98, 0.12) !important;
+  border: 1px solid rgba(46, 139, 98, 0.36) !important;
+}
+.alert-error,
+.alert-danger {
+  color: #F0A092 !important;
+  background: rgba(214, 91, 74, 0.12) !important;
+  border: 1px solid rgba(214, 91, 74, 0.36) !important;
+}

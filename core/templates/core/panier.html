@@ -3,6 +3,9 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'core/css/catalogue-style.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/panier-paiement-palette-shopy.css' %}">
+
+  <link rel="stylesheet" href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
 <style>
   /* Styles spécifiques pour le panier stylé */
   .cart-container {
@@ -52,7 +55,7 @@
   }
 
   .btn-continue-shopping {
-    background: linear-gradient(135deg, #09eb4d, #08d44c);
+    background: linear-gradient(135deg, #10b981, #059669);
     color: #000;
     padding: 14px 35px;
     border-radius: 50px;
@@ -96,7 +99,7 @@
   }
 
   .vendor-badge {
-    background: linear-gradient(135deg, #09eb4d, #08d44c);
+    background: linear-gradient(135deg, #10b981, #059669);
     color: #000;
     font-size: 0.75rem;
     padding: 4px 10px;
@@ -134,7 +137,7 @@
     width: 100px;
     height: 100px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+    background: #EDEAE4;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,7 +164,7 @@
   }
 
   .promo-badge {
-    background: #ff4757;
+    background: #e74c3c;
     color: white;
     font-size: 0.75rem;
     padding: 4px 10px;
@@ -210,8 +213,8 @@
   }
 
   .qty-btn:hover {
-    border-color: #08d44c;
-    background: #f0fff0;
+    border-color: #059669;
+    background: #f1f8f4;
   }
 
   .qty-input {
@@ -226,7 +229,7 @@
   .product-total {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #08d44c;
+    color: #059669;
   }
 
   /* Action */
@@ -240,14 +243,14 @@
     border-radius: 50%;
     border: none;
     background: #fff0f0;
-    color: #ff4757;
+    color: #e74c3c;
     cursor: pointer;
     font-size: 1.2rem;
     transition: background-color .12s ease-out, color .12s ease-out, border-color .12s ease-out, transform .12s cubic-bezier(.2,.8,.3,1), box-shadow .12s ease-out, opacity .12s ease-out;
   }
 
   .btn-remove:hover {
-    background: #ff4757;
+    background: #e74c3c;
     color: white;
   }
 
@@ -314,7 +317,7 @@
   .total-amount {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #08d44c;
+    color: #059669;
   }
 
   .cart-actions {
@@ -325,7 +328,7 @@
 
   .btn-checkout {
     flex: 1;
-    background: linear-gradient(135deg, #09eb4d, #08d44c);
+    background: linear-gradient(135deg, #10b981, #059669);
     color: #000;
     padding: 18px 35px;
     border-radius: 50px;
@@ -366,21 +369,21 @@
   }
 
   .alert-success {
-    background: #e8f8e8;
-    color: #1a7a1a;
-    border-left: 4px solid #08d44c;
+    background: #eaf6f0;
+    color: #047857;
+    border-left: 4px solid #059669;
   }
 
   .alert-error {
     background: #ffeaea;
-    color: #a11a1a;
-    border-left: 4px solid #ff4757;
+    color: #8e4023;
+    border-left: 4px solid #e74c3c;
   }
 
   .alert-info {
-    background: #e8f4ff;
-    color: #1a4a7a;
-    border-left: 4px solid #4a90e2;
+    background: #e7f6ee;
+    color: #065f46;
+    border-left: 4px solid #059669;
   }
 
   /* Responsive */
@@ -426,7 +429,7 @@
 {% block content %}
 <div class="cart-container">
     <div class="cart-header">
-        <h1>🛒 Mon Panier</h1>
+        <h1><i class="bi bi-cart3" aria-hidden="true"></i> Mon Panier</h1>
         <p>Gérez vos articles avant de passer la commande</p>
     </div>
 
@@ -438,7 +441,7 @@
 
     {% if not items %}
         <div class="empty-cart">
-            <div class="empty-cart-icon">🛒</div>
+            <div class="empty-cart-icon"><i class="bi bi-cart3" aria-hidden="true"></i></div>
             <h2>Votre panier est vide</h2>
             <p>Découvrez nos produits et ajoutez vos favoris au panier</p>
             <a href="{% url 'catalogue' %}" class="btn-continue-shopping">
@@ -452,12 +455,12 @@
                 <div class="vendor-header">
                     <div class="vendor-info">
                         <h3>
-                            🏪 {{ vendor_data.vendeur.nom_boutique }}
+                            <i class="bi bi-shop" aria-hidden="true"></i> {{ vendor_data.vendeur.nom_boutique }}
                             {% if vendor_data.vendeur.statut == 'actif' %}
                             <span class="vendor-badge">Actif</span>
                             {% endif %}
                         </h3>
-                        <p class="vendor-location">📍 {{ vendor_data.vendeur.ville }}</p>
+                        <p class="vendor-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> {{ vendor_data.vendeur.ville }}</p>
                     </div>
                 </div>
 
@@ -466,7 +469,7 @@
                     {% if item.produit.photo %}
                     <img src="{{ item.produit.photo.url }}" alt="{{ item.produit.nom }}" class="product-image">
                     {% else %}
-                    <div class="product-placeholder">📦</div>
+                    <div class="product-placeholder"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
                     {% endif %}
 
                     <div class="product-details">
@@ -490,7 +493,7 @@
                             <form method="post" action="{% url 'modifier_quantite_panier' item.pk %}" style="display:flex;align-items:center;gap:8px;">
                                 {% csrf_token %}
                                 <button type="submit" name="quantite" value="{{ item.quantite|add:-1 }}" class="qty-btn">-</button>
-                                <input type="number" name="quantite" value="{{ item.quantite }}" min="1" max="{{ item.produit.quantite }}" class="qty-input" readonly>
+                                <input type="number" value="{{ item.quantite }}" min="1" max="{{ item.produit.quantite }}" class="qty-input" readonly>
                                 <button type="submit" name="quantite" value="{{ item.quantite|add:1 }}" class="qty-btn">+</button>
                             </form>
                         </div>
@@ -503,7 +506,7 @@
                     </div>
 
                     <div class="product-action">
-                        <a href="{% url 'supprimer_du_panier' item.pk %}" class="btn-remove" onclick="return confirm('Retirer ce produit du panier ?')" title="Supprimer">✕</a>
+                        <a href="{% url 'supprimer_du_panier' item.pk %}" class="btn-remove" onclick="return confirm('Retirer ce produit du panier ?')" title="Supprimer"><i class="bi bi-x-lg" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 {% endfor %}
@@ -532,7 +535,7 @@
                     ← Continuez vos achats
                 </a>
                 <a href="{% url 'commander_panier' %}" class="btn-checkout">
-                    🛒 Passer la commande
+                    <i class="bi bi-cart3" aria-hidden="true"></i> Passer la commande
                 </a>
             </div>
         </div>
